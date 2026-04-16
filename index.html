@@ -416,95 +416,135 @@ function renderMain(){
 // ─── BALANÇO GERAL — mostra apenas TOTAL por categoria ─────────
 function renderBalanco(){
   atualizaResumo();
-  let catAtivas=cats.filter(c=>!FIXAS.includes(c.id)&&catAtiva(c,M,Y));
- 
-  let totalRec=totalTipo('receita');
-  let totalDep=totalTipo('despesa');
-  let totalInv=totalTipo('investimento');
-  let saldo=saldoMes(M,Y);
-  let pm=M-1,py=Y;if(pm<0){pm=11;py=Y-1;}
-  let ant=saldoBruto(pm,py);
-  let ftxt=ant>0?'Receitas − Despesas − Invest. + Saldo anterior ('+fmt(ant)+')':'Receitas − Despesas − Invest. (saldo anterior negativo ignorado)';
- 
-  // Para o balanço: cada categoria aparece UMA vez, mostrando seus totais por tipo
-  // Se tem múltiplos tipos, mostra uma linha por tipo dentro da categoria
-  let rows='';
- 
-  // Coletar categorias com receitas
-  let cComRec=catAtivas.filter(c=>totalCatTipo(c.id,'receita')>0);
-  // Categorias com apenas despesas (sem receita)
-  let cComDep=catAtivas.filter(c=>totalCatTipo(c.id,'despesa')>0&&totalCatTipo(c.id,'receita')===0);
-  // Categorias com investimento
-  let cComInv=catAtivas.filter(c=>totalCatTipo(c.id,'investimento')>0&&totalCatTipo(c.id,'receita')===0&&totalCatTipo(c.id,'despesa')===0);
-  // Categorias mistas (receita + outros) — despesas e investimentos aparecem na seção receitas
-  
-  // Seção RECEITAS
-  if(cComRec.length>0||totalRec>0){
-    rows+=`<tr class="s-rec"><td colspan="2">Receitas</td></tr>`;
-    cComRec.forEach(c=>{
-      let t=totaisCat(c.id);
-      // Linha principal: receita
-      rows+=`<tr onclick="goToTab('${c.id}')" style="cursor:pointer;">
-        <td>${esc(c.nome)}<span class="cat-tipo-badge badge-rec">entrada</span></td>
-        <td class="val-rec">${fmt(t.rec)}</td>
-      </tr>`;
-      // Se também tem despesa, mostra sub-linha
-      if(t.dep>0){
-        rows+=`<tr onclick="goToTab('${c.id}')" style="cursor:pointer;opacity:0.85;">
-          <td style="padding-left:28px;font-size:12px;color:var(--T3);">↳ despesas incluídas</td>
-          <td class="val-dep" style="font-size:12px;">-${fmt(t.dep)}</td>
-        </tr>`;
+
+  let catAtivas = cats.filter(c => !FIXAS.includes(c.id) && catAtiva(c, M, Y));
+
+  let totalRec = totalTipo('receita');
+  let totalDep = totalTipo('despesa');
+  let totalInv = totalTipo('investimento');
+  let saldo = saldoMes(M, Y);
+
+  let pm = M - 1, py = Y;
+  if (pm < 0) { pm = 11; py = Y - 1; }
+  let ant = saldoBruto(pm, py);
+
+  let ftxt = ant > 0
+    ? 'Receitas − Despesas − Invest. + Saldo anterior (' + fmt(ant) + ')'
+    : 'Receitas − Despesas − Invest. (saldo anterior negativo ignorado)';
+
+  let receitasCat = [];
+  let despesasCat = [];
+
+  // 🔥 NOVA LÓGICA INTELIGENTE
+  catAtivas.forEach(c => {
+    let rec = totalCatTipo(c.id, 'receita', M, Y);
+    let dep = totalCatTipo(c.id, 'despesa', M, Y);
+    let inv = totalCatTipo(c.id, 'investimento', M, Y);
+
+    let saldoCat = rec - dep - inv;
+
+    if (saldoCat > 0) {
+      receitasCat.push({ c, valor: saldoCat, rec, dep, inv });
+    } 
+    else if (saldoCat < 0) {
+      despesasCat.push({ c, valor: Math.abs(saldoCat), rec, dep, inv });
+    }
+  });
+
+  let rows = '';
+
+  // ─── RECEITAS ─────────────────────────────
+  if (receitasCat.length > 0 || totalRec > 0) {
+    rows += `<tr class="s-rec"><td colspan="2">Receitas</td></tr>`;
+
+    receitasCat.forEach(item => {
+      rows += `
+        <tr onclick="goToTab('${item.c.id}')" style="cursor:pointer;">
+          <td>
+            ${esc(item.c.nome)}
+            <span class="cat-tipo-badge badge-rec">entrada</span>
+          </td>
+          <td class="val-rec">${fmt(item.valor)}</td>
+        </tr>
+      `;
+
+      // detalhe opcional (mostra composição)
+      if (item.dep > 0) {
+        rows += `
+          <tr onclick="goToTab('${item.c.id}')" style="cursor:pointer;opacity:0.8;">
+            <td style="padding-left:28px;font-size:12px;color:var(--T3);">
+              ↳ despesas internas
+            </td>
+            <td class="val-dep" style="font-size:12px;">-${fmt(item.dep)}</td>
+          </tr>
+        `;
       }
-      if(t.inv>0){
-        rows+=`<tr onclick="goToTab('${c.id}')" style="cursor:pointer;opacity:0.85;">
-          <td style="padding-left:28px;font-size:12px;color:var(--T3);">↳ invest. incluídos</td>
-          <td class="val-inv" style="font-size:12px;">-${fmt(t.inv)}</td>
-        </tr>`;
+
+      if (item.inv > 0) {
+        rows += `
+          <tr onclick="goToTab('${item.c.id}')" style="cursor:pointer;opacity:0.8;">
+            <td style="padding-left:28px;font-size:12px;color:var(--T3);">
+              ↳ investimentos internos
+            </td>
+            <td class="val-inv" style="font-size:12px;">-${fmt(item.inv)}</td>
+          </tr>
+        `;
       }
     });
-    rows+=`<tr class="tot"><td>Total receitas</td><td class="val-rec">${fmt(totalRec)}</td></tr>`;
+
+    rows += `<tr class="tot"><td>Total receitas</td><td class="val-rec">${fmt(totalRec)}</td></tr>`;
   }
- 
-  // Seção DESPESAS
-  if(cComDep.length>0||totalDep>0){
-    rows+=`<tr class="s-dep"><td colspan="2">Despesas</td></tr>`;
-    cComDep.forEach(c=>{
-      let t=totaisCat(c.id);
-      rows+=`<tr onclick="goToTab('${c.id}')" style="cursor:pointer;">
-        <td>${esc(c.nome)}<span class="cat-tipo-badge badge-dep">a pagar</span></td>
-        <td class="val-dep">${fmt(t.dep)}</td>
-      </tr>`;
+
+  // ─── DESPESAS ─────────────────────────────
+  if (despesasCat.length > 0 || totalDep > 0) {
+    rows += `<tr class="s-dep"><td colspan="2">Despesas</td></tr>`;
+
+    despesasCat.forEach(item => {
+      rows += `
+        <tr onclick="goToTab('${item.c.id}')" style="cursor:pointer;">
+          <td>
+            ${esc(item.c.nome)}
+            <span class="cat-tipo-badge badge-dep">a pagar</span>
+          </td>
+          <td class="val-dep">${fmt(item.valor)}</td>
+        </tr>
+      `;
     });
-    rows+=`<tr class="tot"><td>Total despesas</td><td class="val-dep">${fmt(totalDep)}</td></tr>`;
+
+    rows += `<tr class="tot"><td>Total despesas</td><td class="val-dep">${fmt(totalDep)}</td></tr>`;
   }
- 
-  // Seção INVESTIMENTOS
-  if(cComInv.length>0||totalInv>0){
-    rows+=`<tr class="s-inv"><td colspan="2">Investimentos</td></tr>`;
-    cComInv.forEach(c=>{
-      let t=totaisCat(c.id);
-      rows+=`<tr onclick="goToTab('${c.id}')" style="cursor:pointer;">
-        <td>${esc(c.nome)}<span class="cat-tipo-badge badge-inv">investido</span></td>
-        <td class="val-inv">${fmt(t.inv)}</td>
-      </tr>`;
-    });
-    rows+=`<tr class="tot"><td>Total investimentos</td><td class="val-inv">${fmt(totalInv)}</td></tr>`;
-  }
- 
-  // Categorias sem nenhum lançamento — não aparecem
-  rows+=`<tr class="tot"><td style="font-weight:700;">Saldo do mês</td><td class="${saldo>=0?'val-rec':'val-dep'}" style="font-weight:700;">${fmt(saldo)}</td></tr>`;
- 
-  document.getElementById('main').innerHTML=`
-    <div class="tc"><div class="tw">
-      <table><thead><tr><th>Categoria</th><th>Valor</th></tr></thead><tbody>${rows}</tbody></table>
-      <div class="sf">${ftxt}<br><span style="color:var(--G);font-size:10px;">Toque em uma categoria para ver os lançamentos</span></div>
-    </div></div>`;
+
+  // ─── SALDO FINAL ─────────────────────────
+  rows += `
+    <tr class="tot">
+      <td style="font-weight:700;">Saldo do mês</td>
+      <td class="${saldo >= 0 ? 'val-rec' : 'val-dep'}" style="font-weight:700;">
+        ${fmt(saldo)}
+      </td>
+    </tr>
+  `;
+
+  document.getElementById('main').innerHTML = `
+    <div class="tc">
+      <div class="tw">
+        <table>
+          <thead>
+            <tr><th>Categoria</th><th>Valor</th></tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+
+        <div class="sf">
+          ${ftxt}<br>
+          <span style="color:var(--G);font-size:10px;">
+            Toque em uma categoria para ver os lançamentos
+          </span>
+        </div>
+      </div>
+    </div>
+  `;
 }
- 
-function goToTab(id){
-  aba=id;renderAbas();renderMain();
-}
- 
+
 // ─── DETALHE CATEGORIA ─────────────────────────────────────────
 let abaTipo={};
  
