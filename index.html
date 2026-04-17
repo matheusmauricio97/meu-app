@@ -41,32 +41,19 @@ body{
   height:100%;
   overflow:hidden;
 }
-/* FIX BORDA PRETA IPHONE: garante que o fundo verde cubra a status bar */
 body::before{
-  content:'';
-  position:fixed;
-  top:0;left:0;right:0;
+  content:'';position:fixed;top:0;left:0;right:0;
   height:calc(var(--safe-top) + 80px);
   background:linear-gradient(160deg,rgba(26,122,74,0.93) 0%,rgba(0,85,45,0.97) 100%);
-  z-index:0;
-  pointer-events:none;
+  z-index:0;pointer-events:none;
 }
 body::after{content:'';position:fixed;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(0,122,255,0.16) 0%,transparent 70%);bottom:-100px;right:-100px;pointer-events:none;z-index:0;}
-.app{
-  display:flex;
-  flex-direction:column;
-  height:100%;
-  max-width:480px;
-  margin:0 auto;
-  position:relative;
-  z-index:1;
-}
+.app{display:flex;flex-direction:column;height:100%;max-width:480px;margin:0 auto;position:relative;z-index:1;}
 @media(min-width:768px){
   body{display:flex;align-items:center;justify-content:center;}
   .app{height:92vh;border-radius:var(--rx);overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,0.18),0 0 0 0.5px rgba(255,255,255,0.4);}
 }
  
-/* HEADER — padding top cobre a status bar */
 .hdr{
   background:linear-gradient(160deg,rgba(26,122,74,0.93) 0%,rgba(0,85,45,0.97) 100%);
   backdrop-filter:var(--bl);-webkit-backdrop-filter:var(--bl);
@@ -90,23 +77,19 @@ body::after{content:'';position:fixed;width:400px;height:400px;border-radius:50%
 .rc-val{font-size:15px;font-weight:600;color:#fff;font-family:var(--m);letter-spacing:-0.3px;}
 .rc-hint{font-size:9px;color:rgba(255,255,255,0.5);margin-top:2px;line-height:1.3;}
  
-/* ABAS */
 .abas-wrap{flex-shrink:0;background:var(--bg2);backdrop-filter:var(--bl2);-webkit-backdrop-filter:var(--bl2);border-bottom:0.5px solid var(--bd2);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
 .abas-wrap::-webkit-scrollbar{display:none;}
 .abas-inner{display:flex;padding:0 10px;min-width:max-content;}
 .ab{padding:11px 14px;font-size:13px;font-family:var(--f);font-weight:400;color:var(--T3);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;transition:color 0.15s;}
 .ab.on{color:var(--G);font-weight:600;border-bottom-color:var(--G);}
  
-/* MAIN */
 .main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--safe-bot) + 16px);}
  
-/* TABELA */
 .tc{padding:14px;}
 .tw{background:var(--bg1);backdrop-filter:var(--bl);-webkit-backdrop-filter:var(--bl);border:0.5px solid var(--bd);border-radius:var(--rl);overflow:hidden;box-shadow:var(--sh),var(--in);}
 table{width:100%;border-collapse:collapse;table-layout:fixed;}
 thead th{background:rgba(26,122,74,0.85);color:rgba(255,255,255,0.95);font-weight:600;font-size:12px;padding:10px 14px;text-align:left;}
 thead th:last-child{text-align:right;width:110px;}
-/* seção colorida */
 tr.s-rec td{background:rgba(46,204,113,0.1);color:var(--G);font-size:11px;font-weight:600;padding:5px 14px;text-transform:uppercase;letter-spacing:0.5px;}
 tr.s-dep td{background:rgba(255,59,48,0.09);color:var(--R);font-size:11px;font-weight:600;padding:5px 14px;text-transform:uppercase;letter-spacing:0.5px;}
 tr.s-inv td{background:rgba(0,122,255,0.09);color:var(--B);font-size:11px;font-weight:600;padding:5px 14px;text-transform:uppercase;letter-spacing:0.5px;}
@@ -115,7 +98,6 @@ tbody td:last-child{text-align:right;}
 tbody tr:last-child td{border-bottom:none;}
 tr.tot td{background:rgba(0,0,0,0.035);font-weight:600;font-size:13px;}
  
-/* linhas da tabela de detalhe */
 .cd{display:flex;align-items:center;gap:6px;}
 .cd input{border:none;background:none;font-size:13px;font-family:var(--f);color:var(--TX);width:100%;outline:none;padding:2px 0;}
 .cd input:focus{background:rgba(0,0,0,0.05);border-radius:4px;padding:2px 6px;}
@@ -125,7 +107,6 @@ tr.tot td{background:rgba(0,0,0,0.035);font-weight:600;font-size:13px;}
 .dbtn{background:none;border:none;color:var(--T3);cursor:pointer;font-size:16px;line-height:1;padding:2px;flex-shrink:0;}
 .dbtn:active{color:var(--RM);}
  
-/* ADD LINHA */
 .al{display:flex;flex-direction:column;gap:8px;padding:12px 14px;border-top:0.5px solid rgba(0,0,0,0.07);background:rgba(255,255,255,0.5);}
 .al-tipo{display:flex;gap:6px;}
 .at{flex:1;padding:6px 4px;font-size:11px;font-family:var(--f);font-weight:500;border-radius:6px;cursor:pointer;border:0.5px solid rgba(0,0,0,0.12);background:rgba(0,0,0,0.04);color:var(--T3);transition:all 0.15s;}
@@ -139,7 +120,6 @@ tr.tot td{background:rgba(0,0,0,0.035);font-weight:600;font-size:13px;}
 .abtn:active{opacity:0.85;}
 .sf{font-size:11px;color:var(--T3);padding:9px 14px;border-top:0.5px solid rgba(0,0,0,0.07);background:rgba(255,255,255,0.4);line-height:1.4;}
  
-/* GRÁFICOS */
 .gc{padding:14px;display:flex;flex-direction:column;gap:12px;}
 .gcard{background:var(--bg1);backdrop-filter:var(--bl);-webkit-backdrop-filter:var(--bl);border:0.5px solid var(--bd);border-radius:var(--rl);overflow:hidden;box-shadow:var(--sh),var(--in);}
 .gh{background:rgba(26,122,74,0.82);color:rgba(255,255,255,0.95);font-size:11px;font-weight:600;padding:9px 14px;text-transform:uppercase;letter-spacing:0.5px;}
@@ -151,7 +131,6 @@ tr.tot td{background:rgba(0,0,0,0.035);font-weight:600;font-size:13px;}
 .bf{height:100%;border-radius:99px;transition:width 0.5s cubic-bezier(.4,0,.2,1);}
 .bv{font-size:11px;font-family:var(--m);color:var(--TX);width:78px;text-align:right;flex-shrink:0;}
  
-/* ANO */
 .anc{padding:14px;}
 .anav{display:flex;align-items:center;justify-content:center;gap:14px;padding:8px 0 14px;}
 .anav button{width:34px;height:34px;background:var(--bg1);backdrop-filter:var(--bl2);-webkit-backdrop-filter:var(--bl2);border:0.5px solid var(--bd);border-radius:10px;color:var(--TX);font-size:17px;cursor:pointer;box-shadow:var(--sh);}
@@ -171,17 +150,14 @@ tr.tot td{background:rgba(0,0,0,0.035);font-weight:600;font-size:13px;}
 .aw tbody tr:last-child td{border-bottom:none;}
 .aw tbody tr.tot td{background:rgba(0,0,0,0.035);font-weight:700;}
  
-/* CORES */
 .cv{color:var(--G)!important;}.cr{color:var(--RM)!important;}.cb{color:var(--BM)!important;}.cp{color:var(--P)!important;}
 .mo{font-family:var(--m);}
  
-/* BALANÇO — badge tipo por categoria */
 .cat-tipo-badge{display:inline-block;font-size:9px;font-weight:600;padding:2px 6px;border-radius:99px;margin-left:6px;vertical-align:middle;text-transform:uppercase;letter-spacing:0.4px;}
 .badge-rec{background:rgba(46,204,113,0.15);color:var(--G);}
 .badge-dep{background:rgba(255,59,48,0.12);color:var(--RM);}
 .badge-inv{background:rgba(0,122,255,0.12);color:var(--BM);}
  
-/* MODAL */
 .ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.35);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:100;align-items:flex-end;justify-content:center;}
 .ov.on{display:flex;}
 @media(min-width:768px){.ov{align-items:center;}}
@@ -193,9 +169,9 @@ tr.tot td{background:rgba(0,0,0,0.035);font-weight:600;font-size:13px;}
   box-shadow:0 -4px 40px rgba(0,0,0,0.18);
   padding:20px;
   padding-bottom:calc(20px + var(--safe-bot));
-  width:100%;max-width:480px;max-height:86vh;overflow-y:auto;
+  width:100%;max-width:480px;max-height:90vh;overflow-y:auto;
 }
-@media(min-width:768px){.mo-box{border-radius:var(--rx);max-height:80vh;padding-bottom:20px;}}
+@media(min-width:768px){.mo-box{border-radius:var(--rx);max-height:85vh;padding-bottom:20px;}}
 .mo-handle{width:38px;height:4px;background:rgba(0,0,0,0.2);border-radius:99px;margin:0 auto 18px;}
 @media(min-width:768px){.mo-handle{display:none;}}
 .mo-box h3{font-size:17px;font-weight:600;margin-bottom:16px;letter-spacing:-0.3px;}
@@ -217,11 +193,23 @@ tr.tot td{background:rgba(0,0,0,0.035);font-weight:600;font-size:13px;}
 .ci-drag{color:var(--T3);font-size:18px;flex-shrink:0;touch-action:none;}
 .ci-name{flex:1;font-size:14px;color:var(--TX);}
 .ci-meta{display:flex;align-items:center;gap:6px;flex-shrink:0;}
-.ci-badge{font-size:10px;padding:2px 7px;border-radius:99px;font-weight:600;background:rgba(0,0,0,0.07);color:var(--T2);}
-.ci-temp{font-size:10px;color:var(--T3);}
+.ci-badges{display:flex;flex-wrap:wrap;gap:3px;margin-top:3px;}
+.ci-badge{font-size:9px;padding:2px 6px;border-radius:99px;font-weight:600;}
+.ci-badge.b-per{background:rgba(46,204,113,0.15);color:var(--G);}
+.ci-badge.b-rec{background:rgba(88,86,214,0.12);color:var(--P);}
+.ci-badge.b-temp{background:rgba(255,59,48,0.1);color:var(--R);}
+.ci-badge.b-dat{background:rgba(0,0,0,0.07);color:var(--T2);}
 .slbl{font-size:11px;font-weight:600;color:var(--T3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;}
-.temp-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-.temp-row label{font-size:13px;color:var(--TX);}
+ 
+/* ─── RECORRÊNCIA ─────────────────────────────────────── */
+.rec-opts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px;}
+.rec-opt{padding:8px 4px;font-size:11px;font-family:var(--f);font-weight:500;border-radius:8px;cursor:pointer;border:0.5px solid rgba(0,0,0,0.12);background:rgba(0,0,0,0.04);color:var(--T3);text-align:center;transition:all 0.15s;}
+.rec-opt.on{background:rgba(88,86,214,0.14);color:var(--P);border-color:rgba(88,86,214,0.35);font-weight:600;}
+.date-wrap{background:rgba(255,255,255,0.6);border-radius:var(--r);border:0.5px solid rgba(0,0,0,0.1);padding:12px;margin-bottom:10px;}
+.date-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.date-row:last-child{margin-bottom:0;}
+.date-row label{font-size:12px;color:var(--T3);width:50px;flex-shrink:0;}
+.date-row .mi{margin-bottom:0;flex:1;}
 .sw{position:relative;width:44px;height:26px;flex-shrink:0;}
 .sw input{opacity:0;width:0;height:0;}
 .sw-track{position:absolute;inset:0;background:rgba(0,0,0,0.15);border-radius:99px;transition:background 0.2s;}
@@ -229,14 +217,13 @@ tr.tot td{background:rgba(0,0,0,0.035);font-weight:600;font-size:13px;}
 .sw-thumb{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,0.3);transition:transform 0.2s;}
 .sw input:checked~.sw-thumb{transform:translateX(18px);}
  
-/* BALANÇO: destaque do valor por tipo */
 .val-rec{color:var(--G);font-family:var(--m);}
 .val-dep{color:var(--RM);font-family:var(--m);}
 .val-inv{color:var(--BM);font-family:var(--m);}
-.val-neu{color:var(--T2);font-family:var(--m);}
- 
-/* linha de categoria no balanço com subtítulo de tipo */
 .cat-row-sub{font-size:10px;color:var(--T3);margin-top:2px;font-weight:400;}
+ 
+/* badge de recorrência nas abas */
+.aba-rec-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--P);margin-left:4px;vertical-align:middle;margin-bottom:1px;}
 </style>
 </head>
 <body>
@@ -267,16 +254,36 @@ tr.tot td{background:rgba(0,0,0,0.035);font-weight:600;font-size:13px;}
     <div class="mo-handle"></div>
     <h3>Categorias</h3>
     <div class="clist" id="clist"></div>
+ 
     <div class="slbl">Nova categoria</div>
     <input class="mi" id="nNome" placeholder="Nome da categoria..." />
-    <div class="temp-row">
-      <label class="sw"><input type="checkbox" id="nTemp" onchange="toggleTempUI()"><div class="sw-track"></div><div class="sw-thumb"></div></label>
-      <label for="nTemp" style="font-size:13px;color:var(--TX);">Categoria temporária</label>
+ 
+    <!-- Recorrência -->
+    <div class="slbl" style="margin-top:4px;">Recorrência</div>
+    <div class="rec-opts">
+      <div class="rec-opt on" data-rec="perpetua" onclick="setRec('perpetua')">Perpétua</div>
+      <div class="rec-opt" data-rec="mensal" onclick="setRec('mensal')">Mensal</div>
+      <div class="rec-opt" data-rec="bimestral" onclick="setRec('bimestral')">Bimestral</div>
+      <div class="rec-opt" data-rec="custom" onclick="setRec('custom')">Personaliz.</div>
     </div>
-    <div id="tempDateWrap" style="display:none;margin-bottom:10px;">
-      <div style="font-size:12px;color:var(--T3);margin-bottom:6px;">Válida até:</div>
-      <input class="mi" type="month" id="nAte" style="margin-bottom:0;" />
+ 
+    <!-- Datas de vigência -->
+    <div class="date-wrap" id="dateWrap">
+      <div class="date-row">
+        <label>Início</label>
+        <input class="mi" type="month" id="nInicio" />
+      </div>
+      <div class="date-row" id="fimRow">
+        <label>Fim</label>
+        <input class="mi" type="month" id="nFim" />
+      </div>
+      <div class="date-row" id="customRow" style="display:none;">
+        <label>A cada</label>
+        <input class="mi" type="number" id="nCustomMeses" min="1" max="24" placeholder="meses" style="max-width:90px;" />
+        <span style="font-size:12px;color:var(--T3);">meses</span>
+      </div>
     </div>
+ 
     <div class="mo-foot">
       <button class="bcl" onclick="fecharModal()">Fechar</button>
       <button class="bok" onclick="adicionarCat()">Adicionar</button>
@@ -286,7 +293,6 @@ tr.tot td{background:rgba(0,0,0,0.035);font-weight:600;font-size:13px;}
  
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script>
-// ─── UTILITÁRIOS ───────────────────────────────────────────────
 const MESES=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 const MC=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
  
@@ -298,62 +304,127 @@ function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').repl
 // ─── ESTADO ────────────────────────────────────────────────────
 let hoje=new Date(),M=hoje.getMonth(),Y=hoje.getFullYear(),AY=hoje.getFullYear();
 let aba='balanco',chartRef=null;
+let novaRec='perpetua'; // estado do formulário
  
 const FIXAS=['balanco','graficos','anual'];
+ 
+// Estrutura de categoria:
+// { id, nome, rec: 'perpetua'|'mensal'|'bimestral'|'custom', customMeses:N, inicio:'YYYY-MM'|null, fim:'YYYY-MM'|null }
 let cats=[
-  {id:'balanco',nome:'Balanço geral',temp:false,ate:null},
-  {id:'salario',nome:'Salário',temp:false,ate:null},
-  {id:'cartao_itau',nome:'Cartão Itaú',temp:false,ate:null},
-  {id:'cartao_nubank',nome:'Cartão Nubank',temp:false,ate:null},
-  {id:'aluguel',nome:'Aluguel',temp:false,ate:null},
-  {id:'mercado',nome:'Mercado',temp:false,ate:null},
-  {id:'transporte',nome:'Transporte',temp:false,ate:null},
-  {id:'investimentos',nome:'Investimentos',temp:false,ate:null},
-  {id:'graficos',nome:'Gráficos',temp:false,ate:null},
-  {id:'anual',nome:'Ano',temp:false,ate:null},
+  {id:'balanco',nome:'Balanço geral',rec:'perpetua',customMeses:null,inicio:null,fim:null},
+  {id:'salario',nome:'Salário',rec:'perpetua',customMeses:null,inicio:null,fim:null},
+  {id:'cartao_itau',nome:'Cartão Itaú',rec:'perpetua',customMeses:null,inicio:null,fim:null},
+  {id:'cartao_nubank',nome:'Cartão Nubank',rec:'perpetua',customMeses:null,inicio:null,fim:null},
+  {id:'aluguel',nome:'Aluguel',rec:'perpetua',customMeses:null,inicio:null,fim:null},
+  {id:'mercado',nome:'Mercado',rec:'perpetua',customMeses:null,inicio:null,fim:null},
+  {id:'transporte',nome:'Transporte',rec:'perpetua',customMeses:null,inicio:null,fim:null},
+  {id:'investimentos',nome:'Investimentos',rec:'perpetua',customMeses:null,inicio:null,fim:null},
+  {id:'graficos',nome:'Gráficos',rec:'perpetua',customMeses:null,inicio:null,fim:null},
+  {id:'anual',nome:'Ano',rec:'perpetua',customMeses:null,inicio:null,fim:null},
 ];
 let dados={};
  
 function salvar(){
   try{
-    localStorage.setItem('fin4_d',JSON.stringify(dados));
-    localStorage.setItem('fin4_c',JSON.stringify(cats.filter(c=>!FIXAS.includes(c.id))));
+    localStorage.setItem('fin5_d',JSON.stringify(dados));
+    localStorage.setItem('fin5_c',JSON.stringify(cats.filter(c=>!FIXAS.includes(c.id))));
   }catch(e){}
 }
 function carregar(){
   try{
-    let d=localStorage.getItem('fin4_d');if(d)dados=JSON.parse(d);
-    let c=localStorage.getItem('fin4_c');
+    let d=localStorage.getItem('fin5_d');if(d)dados=JSON.parse(d);
+    // migração de dados antigos (fin4)
+    if(!d){let old=localStorage.getItem('fin4_d');if(old)dados=JSON.parse(old);}
+    let c=localStorage.getItem('fin5_c');
     if(c){
       let sv=JSON.parse(c);
       cats=[
-        {id:'balanco',nome:'Balanço geral',temp:false,ate:null},
-        ...sv,
-        {id:'graficos',nome:'Gráficos',temp:false,ate:null},
-        {id:'anual',nome:'Ano',temp:false,ate:null},
+        {id:'balanco',nome:'Balanço geral',rec:'perpetua',customMeses:null,inicio:null,fim:null},
+        ...sv.map(x=>migrarCat(x)),
+        {id:'graficos',nome:'Gráficos',rec:'perpetua',customMeses:null,inicio:null,fim:null},
+        {id:'anual',nome:'Ano',rec:'perpetua',customMeses:null,inicio:null,fim:null},
       ];
+    } else {
+      // migração do formato antigo (temp/ate)
+      let old=localStorage.getItem('fin4_c');
+      if(old){
+        let sv=JSON.parse(old);
+        cats=[
+          {id:'balanco',nome:'Balanço geral',rec:'perpetua',customMeses:null,inicio:null,fim:null},
+          ...sv.map(x=>migrarCat(x)),
+          {id:'graficos',nome:'Gráficos',rec:'perpetua',customMeses:null,inicio:null,fim:null},
+          {id:'anual',nome:'Ano',rec:'perpetua',customMeses:null,inicio:null,fim:null},
+        ];
+      }
     }
   }catch(e){}
 }
+ 
+function migrarCat(x){
+  // compatibilidade com formato antigo (temp/ate) → novo (rec/inicio/fim)
+  return {
+    id: x.id,
+    nome: x.nome,
+    rec: x.rec || (x.temp ? 'mensal' : 'perpetua'),
+    customMeses: x.customMeses || null,
+    inicio: x.inicio || null,
+    fim: x.fim || x.ate || null,
+  };
+}
 carregar();
+ 
+// ─── RECORRÊNCIA: verifica se categoria está ativa em M/Y ───────
+function catAtiva(c, m, y){
+  // verifica datas de início e fim
+  let key = toKey(m, y); // 'YYYY-MM'
+  if(c.inicio && key < c.inicio) return false;
+  if(c.fim && key > c.fim) return false;
+ 
+  // verifica padrão de recorrência a partir do início
+  if(c.rec === 'perpetua' || c.rec === 'mensal') return true;
+ 
+  let base = c.inicio || '2020-01'; // mês de referência
+  let [by, bm] = base.split('-').map(Number);
+  let diffMeses = (y - by) * 12 + (m - (bm - 1));
+ 
+  if(c.rec === 'bimestral') return diffMeses % 2 === 0;
+  if(c.rec === 'custom') {
+    let n = parseInt(c.customMeses) || 1;
+    return diffMeses % n === 0;
+  }
+  return true;
+}
+ 
+function toKey(m, y){ return `${y}-${String(m+1).padStart(2,'0')}`; }
+ 
+function recLabel(c){
+  if(c.rec === 'perpetua') return 'perpétua';
+  if(c.rec === 'mensal') return 'mensal';
+  if(c.rec === 'bimestral') return 'bimestral';
+  if(c.rec === 'custom') return `a cada ${c.customMeses}m`;
+  return '';
+}
+ 
+// ─── UI: seleção de recorrência no modal ───────────────────────
+function setRec(r){
+  novaRec = r;
+  document.querySelectorAll('.rec-opt').forEach(el => {
+    el.classList.toggle('on', el.dataset.rec === r);
+  });
+  // "fim" não faz sentido em perpétua sem início
+  document.getElementById('fimRow').style.display = r === 'perpetua' ? 'none' : '';
+  document.getElementById('customRow').style.display = r === 'custom' ? '' : 'none';
+}
  
 // ─── HELPERS DADOS ─────────────────────────────────────────────
 function chave(m,y){return(y!==undefined?y:Y)+'-'+(m!==undefined?m:M);}
 function gd(cid,m,y){let k=chave(m,y);if(!dados[k])dados[k]={};if(!dados[k][cid])dados[k][cid]=[];return dados[k][cid];}
  
-function catAtiva(c,m,y){
-  if(!c.temp||!c.ate)return true;
-  let [ay,am]=c.ate.split('-').map(Number);
-  if(y<ay)return true;
-  if(y===ay&&m<=am-1)return true;
-  return false;
-}
- 
 function totalTipo(tipo,m,y){
   return cats
-    .filter(c=>!FIXAS.includes(c.id)&&catAtiva(c,m,y))
+    .filter(c=>!FIXAS.includes(c.id)&&catAtiva(c,m??M,y??Y))
     .reduce((s,c)=>{
-      return s+gd(c.id,m,y).filter(l=>l.tipo===tipo).reduce((a,l)=>a+(parseFloat(l.valor)||0),0);
+      return s+gd(c.id,m??M,y??Y).filter(l=>l.tipo===tipo).reduce((a,l)=>a+(parseFloat(l.valor)||0),0);
     },0);
 }
  
@@ -361,32 +432,17 @@ function saldoBruto(m,y){
   return totalTipo('receita',m,y)-totalTipo('despesa',m,y)-totalTipo('investimento',m,y);
 }
  
-function saldoMes(m, y){
-  let saldo = 0;
-
-  for (let i = 0; i <= m; i++) {
-    let bruto = saldoBruto(i, y);
-
-    if (saldo >= 0) {
-      saldo = bruto + saldo;
-    } else {
-      saldo = bruto;
-    }
+function saldoMes(m,y){
+  let saldo=0;
+  for(let i=0;i<=m;i++){
+    let bruto=saldoBruto(i,y);
+    if(saldo>=0){saldo=bruto+saldo;}else{saldo=bruto;}
   }
-
   return saldo;
 }
  
 function totalCatTipo(cid,tipo,m,y){
-  return gd(cid,m,y).filter(l=>l.tipo===tipo).reduce((s,l)=>s+(parseFloat(l.valor)||0),0);
-}
- 
-// Retorna totais agrupados por tipo para uma categoria
-function totaisCat(cid,m,y){
-  let r=totalCatTipo(cid,'receita',m,y);
-  let d=totalCatTipo(cid,'despesa',m,y);
-  let i=totalCatTipo(cid,'investimento',m,y);
-  return {rec:r,dep:d,inv:i,total:r+d+i};
+  return gd(cid,m??M,y??Y).filter(l=>l.tipo===tipo).reduce((s,l)=>s+(parseFloat(l.valor)||0),0);
 }
  
 // ─── RESUMO HEADER ─────────────────────────────────────────────
@@ -408,7 +464,8 @@ function renderAbas(){
   visiveis.forEach(c=>{
     let b=document.createElement('button');
     b.className='ab'+(c.id===aba?' on':'');
-    b.textContent=c.nome;
+    let dot = (!FIXAS.includes(c.id) && c.rec!=='perpetua') ? '<span class="aba-rec-dot"></span>' : '';
+    b.innerHTML=esc(c.nome)+dot;
     b.onclick=()=>{aba=c.id;renderAbas();renderMain();};
     nav.appendChild(b);
   });
@@ -422,148 +479,50 @@ function renderMain(){
   renderDetalhe();
 }
  
-// ─── BALANÇO GERAL — mostra apenas TOTAL por categoria ─────────
+// ─── BALANÇO GERAL ─────────────────────────────────────────────
 function renderBalanco(){
   atualizaResumo();
-
-  let catAtivas = cats.filter(c => !FIXAS.includes(c.id) && catAtiva(c, M, Y));
-
-  let totalRec = totalTipo('receita');
-  let totalDep = totalTipo('despesa');
-  let totalInv = totalTipo('investimento');
-  let saldo = saldoMes(M, Y);
-
-  // ─── SALDO MÊS ANTERIOR ─────────────────────
-  let pm = M - 1, py = Y;
-  if (pm < 0) { pm = 11; py = Y - 1; }
-
-  let saldoAnterior = saldoMes(pm, py);
-
-  let ftxt = saldoAnterior > 0
-    ? 'Inclui saldo positivo do mês anterior'
-    : 'Receitas − Despesas − Invest.';
-
-  // ─── SEPARAÇÃO INTELIGENTE ──────────────────
-  let receitasCat = [];
-  let despesasCat = [];
-
-  catAtivas.forEach(c => {
-    let rec = totalCatTipo(c.id, 'receita', M, Y);
-    let dep = totalCatTipo(c.id, 'despesa', M, Y);
-    let inv = totalCatTipo(c.id, 'investimento', M, Y);
-
-    let saldoCat = rec - dep - inv;
-
-    if (saldoCat > 0) {
-      receitasCat.push({ c, valor: saldoCat, rec, dep, inv });
-    } 
-    else if (saldoCat < 0) {
-      despesasCat.push({ c, valor: Math.abs(saldoCat), rec, dep, inv });
-    }
+  let catAtivas=cats.filter(c=>!FIXAS.includes(c.id)&&catAtiva(c,M,Y));
+  let totalRec=totalTipo('receita'),totalDep=totalTipo('despesa'),totalInv=totalTipo('investimento'),saldo=saldoMes(M,Y);
+  let pm=M-1,py=Y;if(pm<0){pm=11;py=Y-1;}
+  let saldoAnterior=saldoMes(pm,py);
+  let ftxt=saldoAnterior>0?'Inclui saldo positivo do mês anterior':'Receitas − Despesas − Invest.';
+ 
+  let receitasCat=[],despesasCat=[];
+  catAtivas.forEach(c=>{
+    let rec=totalCatTipo(c.id,'receita'),dep=totalCatTipo(c.id,'despesa'),inv=totalCatTipo(c.id,'investimento');
+    let saldoCat=rec-dep-inv;
+    if(saldoCat>0)receitasCat.push({c,valor:saldoCat,rec,dep,inv});
+    else if(saldoCat<0)despesasCat.push({c,valor:Math.abs(saldoCat),rec,dep,inv});
   });
-
-  let rows = '';
-
-  // ─── RECEITAS ─────────────────────────────
-  rows += `<tr class="s-rec"><td colspan="2">Receitas</td></tr>`;
-
-  // 🔥 SALDO ANTERIOR (NOVO)
-  if (saldoAnterior > 0) {
-    rows += `
-      <tr style="cursor:pointer;opacity:0.95;">
-        <td>
-          Saldo do mês anterior
-          <span class="cat-tipo-badge badge-rec">carry</span>
-        </td>
-        <td class="val-rec">${fmt(saldoAnterior)}</td>
-      </tr>
-    `;
+ 
+  let rows='';
+  rows+=`<tr class="s-rec"><td colspan="2">Receitas</td></tr>`;
+  if(saldoAnterior>0){
+    rows+=`<tr style="cursor:pointer;opacity:0.95;"><td>Saldo do mês anterior<span class="cat-tipo-badge badge-rec">carry</span></td><td class="val-rec">${fmt(saldoAnterior)}</td></tr>`;
   }
-
-  receitasCat.forEach(item => {
-    rows += `
-      <tr onclick="goToTab('${item.c.id}')" style="cursor:pointer;">
-        <td>
-          ${esc(item.c.nome)}
-          <span class="cat-tipo-badge badge-rec">entrada</span>
-        </td>
-        <td class="val-rec">${fmt(item.valor)}</td>
-      </tr>
-    `;
-
-    if (item.dep > 0) {
-      rows += `
-        <tr onclick="goToTab('${item.c.id}')" style="cursor:pointer;opacity:0.8;">
-          <td style="padding-left:28px;font-size:12px;color:var(--T3);">
-            ↳ despesas internas
-          </td>
-          <td class="val-dep" style="font-size:12px;">-${fmt(item.dep)}</td>
-        </tr>
-      `;
-    }
-
-    if (item.inv > 0) {
-      rows += `
-        <tr onclick="goToTab('${item.c.id}')" style="cursor:pointer;opacity:0.8;">
-          <td style="padding-left:28px;font-size:12px;color:var(--T3);">
-            ↳ investimentos internos
-          </td>
-          <td class="val-inv" style="font-size:12px;">-${fmt(item.inv)}</td>
-        </tr>
-      `;
-    }
+  receitasCat.forEach(item=>{
+    rows+=`<tr onclick="goToTab('${item.c.id}')" style="cursor:pointer;"><td>${esc(item.c.nome)}<span class="cat-tipo-badge badge-rec">entrada</span></td><td class="val-rec">${fmt(item.valor)}</td></tr>`;
+    if(item.dep>0)rows+=`<tr onclick="goToTab('${item.c.id}')" style="cursor:pointer;opacity:0.8;"><td style="padding-left:28px;font-size:12px;color:var(--T3);">↳ despesas internas</td><td class="val-dep" style="font-size:12px;">-${fmt(item.dep)}</td></tr>`;
+    if(item.inv>0)rows+=`<tr onclick="goToTab('${item.c.id}')" style="cursor:pointer;opacity:0.8;"><td style="padding-left:28px;font-size:12px;color:var(--T3);">↳ investimentos internos</td><td class="val-inv" style="font-size:12px;">-${fmt(item.inv)}</td></tr>`;
   });
-
-  rows += `<tr class="tot"><td>Total receitas</td><td class="val-rec">${fmt(totalRec + (saldoAnterior > 0 ? saldoAnterior : 0))}</td></tr>`;
-
-  // ─── DESPESAS ─────────────────────────────
-  rows += `<tr class="s-dep"><td colspan="2">Despesas</td></tr>`;
-
-  despesasCat.forEach(item => {
-    rows += `
-      <tr onclick="goToTab('${item.c.id}')" style="cursor:pointer;">
-        <td>
-          ${esc(item.c.nome)}
-          <span class="cat-tipo-badge badge-dep">a pagar</span>
-        </td>
-        <td class="val-dep">${fmt(item.valor)}</td>
-      </tr>
-    `;
+  rows+=`<tr class="tot"><td>Total receitas</td><td class="val-rec">${fmt(totalRec+(saldoAnterior>0?saldoAnterior:0))}</td></tr>`;
+  rows+=`<tr class="s-dep"><td colspan="2">Despesas</td></tr>`;
+  despesasCat.forEach(item=>{
+    rows+=`<tr onclick="goToTab('${item.c.id}')" style="cursor:pointer;"><td>${esc(item.c.nome)}<span class="cat-tipo-badge badge-dep">a pagar</span></td><td class="val-dep">${fmt(item.valor)}</td></tr>`;
   });
-
-  rows += `<tr class="tot"><td>Total despesas</td><td class="val-dep">${fmt(totalDep)}</td></tr>`;
-
-  // ─── SALDO FINAL ─────────────────────────
-  rows += `
-    <tr class="tot">
-      <td style="font-weight:700;">Saldo do mês</td>
-      <td class="${saldo >= 0 ? 'val-rec' : 'val-dep'}" style="font-weight:700;">
-        ${fmt(saldo)}
-      </td>
-    </tr>
-  `;
-
-  document.getElementById('main').innerHTML = `
-    <div class="tc">
-      <div class="tw">
-        <table>
-          <thead>
-            <tr><th>Categoria</th><th>Valor</th></tr>
-          </thead>
-          <tbody>${rows}</tbody>
-        </table>
-
-        <div class="sf">
-          ${ftxt}<br>
-          <span style="color:var(--G);font-size:10px;">
-            Toque em uma categoria para ver os lançamentos
-          </span>
-        </div>
-      </div>
-    </div>
-  `;
+  rows+=`<tr class="tot"><td>Total despesas</td><td class="val-dep">${fmt(totalDep)}</td></tr>`;
+  rows+=`<tr class="tot"><td style="font-weight:700;">Saldo do mês</td><td class="${saldo>=0?'val-rec':'val-dep'}" style="font-weight:700;">${fmt(saldo)}</td></tr>`;
+ 
+  document.getElementById('main').innerHTML=`
+    <div class="tc"><div class="tw">
+      <table><thead><tr><th>Categoria</th><th>Valor</th></tr></thead><tbody>${rows}</tbody></table>
+      <div class="sf">${ftxt}<br><span style="color:var(--G);font-size:10px;">Toque em uma categoria para ver os lançamentos</span></div>
+    </div></div>`;
 }
-
+ 
+function goToTab(id){aba=id;renderAbas();renderMain();}
+ 
 // ─── DETALHE CATEGORIA ─────────────────────────────────────────
 let abaTipo={};
  
@@ -579,7 +538,7 @@ function renderDetalhe(){
  
   function blocoLinhas(list,tipo,colorClass,label){
     if(list.length===0)return'';
-    let rows=list.map((l)=>{
+    let rows=list.map(l=>{
       let i=linhas.indexOf(l);
       return`<tr><td><div class="cd"><button class="dbtn" onclick="delLinha(${i})">&#215;</button><input type="text" value="${esc(l.desc)}" oninput="editDesc(${i},this.value)"/></div></td><td><div class="cv-cell"><input type="number" value="${l.valor}" oninput="editVal(${i},this.value)" step="0.01" min="0" inputmode="decimal"/></div></td></tr>`;
     }).join('');
@@ -601,9 +560,21 @@ function renderDetalhe(){
     rows+=`<tr class="tot"><td style="font-weight:600;">Resultado</td><td class="${net>=0?'cv':'cr'} mo" style="font-weight:600;">${fmt(net)}</td></tr>`;
   }
  
+  // info de recorrência da categoria
+  let cat=cats.find(c=>c.id===aba);
+  let recInfo='';
+  if(cat&&!FIXAS.includes(cat.id)){
+    let parts=[];
+    parts.push('Recorrência: <strong>'+recLabel(cat)+'</strong>');
+    if(cat.inicio)parts.push('início: '+cat.inicio);
+    if(cat.fim)parts.push('fim: '+cat.fim);
+    recInfo=`<div class="sf" style="color:var(--P);background:rgba(88,86,214,0.06);">${parts.join(' · ')}</div>`;
+  }
+ 
   document.getElementById('main').innerHTML=`
     <div class="tc"><div class="tw">
       <table><thead><tr><th>Descrição</th><th>Valor</th></tr></thead><tbody>${rows}</tbody></table>
+      ${recInfo}
       <div class="al">
         <div class="al-tipo">
           <button class="at ${t==='receita'?'ar':''}" id="atR" onclick="setAbaTipo('receita')">Receita</button>
@@ -622,8 +593,7 @@ function renderDetalhe(){
 function setAbaTipo(t){
   abaTipo[aba]=t;
   ['R','D','I'].forEach(x=>{
-    let el=document.getElementById('at'+x);
-    if(!el)return;
+    let el=document.getElementById('at'+x);if(!el)return;
     let map={R:'receita',D:'despesa',I:'investimento'};
     let cls={receita:'ar',despesa:'ad',investimento:'ai'};
     el.className='at'+(t===map[x]?' '+cls[t]:'');
@@ -718,19 +688,36 @@ function mudaMes(d){
 }
  
 // ─── MODAL CATEGORIAS ─────────────────────────────────────────
-function abrirModal(){renderCList();document.getElementById('ov').classList.add('on');}
+function abrirModal(){
+  novaRec='perpetua';
+  setRec('perpetua');
+  document.getElementById('nNome').value='';
+  document.getElementById('nInicio').value='';
+  document.getElementById('nFim').value='';
+  document.getElementById('nCustomMeses').value='';
+  renderCList();
+  document.getElementById('ov').classList.add('on');
+}
 function fecharModal(){document.getElementById('ov').classList.remove('on');}
-function toggleTempUI(){document.getElementById('tempDateWrap').style.display=document.getElementById('nTemp').checked?'block':'none';}
  
 function renderCList(){
   let el=document.getElementById('clist');
   let editaveis=cats.filter(c=>!FIXAS.includes(c.id));
-  el.innerHTML=editaveis.map((c,i)=>{
-    let badge=c.temp?`<span class="ci-temp">até ${c.ate}</span>`:'';
+  el.innerHTML=editaveis.map(c=>{
+    let badges='';
+    if(c.rec==='perpetua')badges+=`<span class="ci-badge b-per">perpétua</span>`;
+    else if(c.rec==='mensal')badges+=`<span class="ci-badge b-rec">mensal</span>`;
+    else if(c.rec==='bimestral')badges+=`<span class="ci-badge b-rec">bimestral</span>`;
+    else if(c.rec==='custom')badges+=`<span class="ci-badge b-rec">a cada ${c.customMeses}m</span>`;
+    if(c.inicio)badges+=`<span class="ci-badge b-dat">de ${c.inicio}</span>`;
+    if(c.fim)badges+=`<span class="ci-badge b-temp">até ${c.fim}</span>`;
     return`<div class="ci" draggable="true" data-id="${c.id}" ondragstart="dragStart(event,'${c.id}')" ondragover="dragOver(event)" ondrop="dragDrop(event,'${c.id}')">
       <span class="ci-drag">&#8942;&#8942;</span>
-      <span class="ci-name">${esc(c.nome)}</span>
-      <div class="ci-meta">${badge}<button class="dbtn" onclick="delCat('${c.id}')">&#215;</button></div>
+      <div style="flex:1;min-width:0;">
+        <div class="ci-name">${esc(c.nome)}</div>
+        <div class="ci-badges">${badges}</div>
+      </div>
+      <div class="ci-meta"><button class="dbtn" onclick="delCat('${c.id}')">&#215;</button></div>
     </div>`;
   }).join('');
 }
@@ -752,19 +739,22 @@ function dragDrop(e,targetId){
 }
  
 function adicionarCat(){
-  let nome=document.getElementById('nNome').value.trim();if(!nome)return;
-  let temp=document.getElementById('nTemp').checked;
-  let ate=temp?document.getElementById('nAte').value:null;
-  if(temp&&!ate){alert('Escolha a data de validade.');return;}
+  let nome=document.getElementById('nNome').value.trim();
+  if(!nome)return;
+  let rec=novaRec;
+  let inicio=document.getElementById('nInicio').value||null;
+  let fim=(rec!=='perpetua')?document.getElementById('nFim').value||null:null;
+  let customMeses=(rec==='custom')?parseInt(document.getElementById('nCustomMeses').value)||2:null;
+ 
+  if(rec==='custom'&&(!customMeses||customMeses<1)){alert('Informe o intervalo em meses.');return;}
+ 
   let id='c'+Date.now();
   let idx=cats.findIndex(c=>c.id==='graficos');
-  cats.splice(idx,0,{id,nome,temp,ate});
+  cats.splice(idx,0,{id,nome,rec,customMeses,inicio,fim});
   document.getElementById('nNome').value='';
-  document.getElementById('nTemp').checked=false;
-  document.getElementById('nAte').value='';
-  document.getElementById('tempDateWrap').style.display='none';
   salvar();renderCList();renderAbas();
 }
+ 
 function delCat(id){
   cats=cats.filter(c=>c.id!==id);
   if(aba===id)aba='balanco';
@@ -773,7 +763,8 @@ function delCat(id){
  
 document.getElementById('ov').addEventListener('click',function(e){if(e.target===this)fecharModal();});
  
-// ─── INIT ──────────────────────────────────────────────────────
+// init
+setRec('perpetua');
 document.getElementById('mesTit').textContent=MESES[M]+' '+Y;
 renderAbas();
 renderMain();
