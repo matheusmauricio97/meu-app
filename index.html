@@ -24,8 +24,11 @@
   --r:12px;--rl:16px;--rx:20px;
   --f:-apple-system,'Helvetica Neue',sans-serif;
   --m:'SF Mono',ui-monospace,'Courier New',monospace;
-  --safe-top:env(safe-area-inset-top,0px);
-  --safe-bot:env(safe-area-inset-bottom,0px);
+  /* ===== SAFE AREAS CORRETAS ===== */
+  --safe-top: env(safe-area-inset-top, 44px);
+  --safe-bot: env(safe-area-inset-bottom, 20px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
   --bbg1:#e2f2ea;--bbg2:#d8ecf8;--bbg3:#e8e2f5;
   --mi-bg:rgba(255,255,255,0.8);--mi-bd:rgba(0,0,0,0.15);
   --mo-bg:rgba(242,242,247,0.97);--mo-e-bg:rgba(235,240,255,0.97);
@@ -67,15 +70,85 @@
   --chart-tick:rgba(255,255,255,0.45);--chart-grid:rgba(255,255,255,0.07);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-html{height:100%;background:linear-gradient(145deg,var(--bbg1) 0%,var(--bbg2) 55%,var(--bbg3) 100%);}
-body{font-family:var(--f);background:linear-gradient(145deg,var(--bbg1) 0%,var(--bbg2) 55%,var(--bbg3) 100%);background-attachment:fixed;color:var(--TX);font-size:14px;height:100%;overflow:hidden;transition:background 0.5s;}
-body::before{content:'';position:fixed;top:0;left:0;right:0;height:calc(var(--safe-top)+80px);background:linear-gradient(160deg,rgba(26,122,74,0.93) 0%,rgba(0,85,45,0.97) 100%);z-index:0;pointer-events:none;}
-.app{display:flex;flex-direction:column;height:100%;max-width:480px;margin:0 auto;position:relative;z-index:1;}
-@media(min-width:768px){body{display:flex;align-items:center;justify-content:center;}.app{height:92vh;border-radius:var(--rx);overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,0.3),0 0 0 0.5px rgba(255,255,255,0.1);}}
-.hdr{background:linear-gradient(160deg,rgba(26,122,74,0.93) 0%,rgba(0,85,45,0.97) 100%);backdrop-filter:var(--bl);-webkit-backdrop-filter:var(--bl);padding-top:calc(var(--safe-top)+14px);padding-left:18px;padding-right:18px;padding-bottom:18px;flex-shrink:0;box-shadow:0 1px 0 rgba(255,255,255,0.1),var(--sh);}
-@media(min-width:768px){.hdr{padding-top:24px;}}
-.hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
-.hdr-title{font-size:18px;font-weight:600;color:#fff;letter-spacing:-0.4px;}
+ 
+/* ===== BASE: HTML e BODY ocupam 100% da tela física ===== */
+html{
+  height: 100%;
+  /* Impede bounce scroll no iOS que causa espaços brancos */
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+}
+body{
+  font-family:var(--f);
+  background:linear-gradient(145deg,var(--bbg1) 0%,var(--bbg2) 55%,var(--bbg3) 100%);
+  background-attachment:fixed;
+  color:var(--TX);
+  font-size:14px;
+  /* 100dvh = dynamic viewport height, respeita barra de endereço do Safari */
+  height: 100dvh;
+  width: 100%;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  transition:background 0.5s;
+}
+ 
+/* Fundo verde atrás da status bar (Dynamic Island / notch) */
+body::before{
+  content:'';
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  /* Cobre apenas a safe area + um pouco mais */
+  height:calc(var(--safe-top) + 120px);
+  background:linear-gradient(160deg,rgba(26,122,74,0.95) 0%,rgba(0,85,45,0.98) 100%);
+  z-index:0;
+  pointer-events:none;
+}
+ 
+/* ===== APP CONTAINER ===== */
+.app{
+  display:flex;
+  flex-direction:column;
+  /* Usa a altura total da viewport incluindo safe areas */
+  height: 100dvh;
+  width: 100%;
+  max-width:480px;
+  margin:0 auto;
+  position:relative;
+  z-index:1;
+  overflow: hidden;
+}
+ 
+/* Desktop: janelinha centralizada */
+@media(min-width:768px){
+  html, body { position: static; overflow: auto; height: auto; }
+  body{display:flex;align-items:center;justify-content:center;min-height:100vh;}
+  .app{height:92vh;border-radius:var(--rx);overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,0.3),0 0 0 0.5px rgba(255,255,255,0.1);}
+}
+ 
+/* ===== HEADER: padding-top = safe area do topo ===== */
+.hdr{
+  background:linear-gradient(160deg,rgba(26,122,74,0.93) 0%,rgba(0,85,45,0.97) 100%);
+  backdrop-filter:var(--bl);
+  -webkit-backdrop-filter:var(--bl);
+  /* O padding-top absorve o Dynamic Island / notch / status bar */
+  padding-top: calc(var(--safe-top) + 10px);
+  padding-left: max(18px, var(--safe-left));
+  padding-right: max(18px, var(--safe-right));
+  padding-bottom:16px;
+  flex-shrink:0;
+  box-shadow:0 1px 0 rgba(255,255,255,0.1),var(--sh);
+  /* Garante que o header não encolha em telas pequenas */
+  min-height: calc(var(--safe-top) + 130px);
+}
+@media(min-width:768px){.hdr{padding-top:24px;min-height:auto;}}
+ 
+.hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.hdr-title{font-size:17px;font-weight:600;color:#fff;letter-spacing:-0.4px;}
 .mnav{display:flex;align-items:center;gap:6px;}
 .mnav button{width:30px;height:30px;border:0.5px solid rgba(255,255,255,0.25);background:rgba(255,255,255,0.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:8px;color:#fff;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 .mnav button:active{background:rgba(255,255,255,0.32);}
@@ -83,16 +156,39 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:calc(var(--sa
 .cat-btn{background:rgba(255,255,255,0.16);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:0.5px dashed rgba(255,255,255,0.5);border-radius:8px;color:rgba(255,255,255,0.92);font-size:12px;font-family:var(--f);padding:6px 11px;cursor:pointer;}
 .cat-btn:active{background:rgba(255,255,255,0.28);}
 .resumo{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
-.rc{background:rgba(255,255,255,0.14);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:0.5px solid rgba(255,255,255,0.25);border-radius:var(--r);padding:10px 12px;}
-.rc-lbl{font-size:10px;color:rgba(255,255,255,0.65);margin-bottom:3px;text-transform:uppercase;letter-spacing:0.6px;}
-.rc-val{font-size:15px;font-weight:600;color:#fff;font-family:var(--m);letter-spacing:-0.3px;}
+.rc{background:rgba(255,255,255,0.14);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:0.5px solid rgba(255,255,255,0.25);border-radius:var(--r);padding:9px 10px;}
+.rc-lbl{font-size:10px;color:rgba(255,255,255,0.65);margin-bottom:2px;text-transform:uppercase;letter-spacing:0.6px;}
+.rc-val{font-size:14px;font-weight:600;color:#fff;font-family:var(--m);letter-spacing:-0.3px;}
 .rc-hint{font-size:9px;color:rgba(255,255,255,0.5);margin-top:2px;line-height:1.3;}
-.abas-wrap{flex-shrink:0;background:var(--bg2);backdrop-filter:var(--bl2);-webkit-backdrop-filter:var(--bl2);border-bottom:0.5px solid var(--bd2);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+ 
+/* ===== ABAS ===== */
+.abas-wrap{
+  flex-shrink:0;
+  background:var(--bg2);
+  backdrop-filter:var(--bl2);
+  -webkit-backdrop-filter:var(--bl2);
+  border-bottom:0.5px solid var(--bd2);
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
 .abas-wrap::-webkit-scrollbar{display:none;}
 .abas-inner{display:flex;padding:0 10px;min-width:max-content;}
-.ab{padding:11px 14px;font-size:13px;font-family:var(--f);font-weight:400;color:var(--T3);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;transition:color 0.15s;}
+.ab{padding:10px 14px;font-size:13px;font-family:var(--f);font-weight:400;color:var(--T3);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;transition:color 0.15s;}
 .ab.on{color:var(--G);font-weight:600;border-bottom-color:var(--G);}
-.main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--safe-bot)+16px);}
+ 
+/* ===== ÁREA PRINCIPAL: ocupa o espaço restante e rola ===== */
+.main{
+  flex:1;
+  overflow-y:auto;
+  overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  /* Padding bottom = safe area inferior (home indicator) */
+  padding-bottom: calc(var(--safe-bot) + 16px);
+  /* Evita que o conteúdo fique escondido atrás do home indicator */
+  scroll-padding-bottom: calc(var(--safe-bot) + 16px);
+}
+ 
 .tc{padding:14px;}
 .tw{background:var(--bg1);backdrop-filter:var(--bl);-webkit-backdrop-filter:var(--bl);border:0.5px solid var(--bd);border-radius:var(--rl);overflow:hidden;box-shadow:var(--sh),var(--in);}
 table{width:100%;border-collapse:collapse;table-layout:fixed;}
@@ -184,7 +280,21 @@ tr.tot td{background:var(--tot-bg);font-weight:600;font-size:13px;}
 .ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:100;align-items:flex-end;justify-content:center;}
 .ov.on{display:flex;}
 @media(min-width:768px){.ov{align-items:center;}}
-.mo-box{background:var(--mo-bg);backdrop-filter:var(--bl);-webkit-backdrop-filter:var(--bl);border-radius:22px 22px 0 0;border:0.5px solid var(--bd);box-shadow:0 -4px 40px rgba(0,0,0,0.3);padding:20px;padding-bottom:calc(20px + var(--safe-bot));width:100%;max-width:480px;max-height:90vh;overflow-y:auto;}
+.mo-box{
+  background:var(--mo-bg);
+  backdrop-filter:var(--bl);
+  -webkit-backdrop-filter:var(--bl);
+  border-radius:22px 22px 0 0;
+  border:0.5px solid var(--bd);
+  box-shadow:0 -4px 40px rgba(0,0,0,0.3);
+  padding:20px;
+  /* Padding bottom = safe area + espaço extra para o home indicator */
+  padding-bottom: calc(var(--safe-bot) + 20px);
+  width:100%;
+  max-width:480px;
+  max-height:90dvh;
+  overflow-y:auto;
+}
 @media(min-width:768px){.mo-box{border-radius:var(--rx);max-height:85vh;padding-bottom:20px;}}
 .mo-handle{width:38px;height:4px;background:rgba(128,128,128,0.3);border-radius:99px;margin:0 auto 18px;}
 @media(min-width:768px){.mo-handle{display:none;}}
@@ -341,7 +451,7 @@ function fmtA(v){let a=Math.abs(v),s=v<0?'-':'';if(a>=1e6)return s+'R$'+(a/1e6).
 function fmtS(v){let a=Math.abs(v),s=v<0?'-':'';return a>=1000?s+'R$'+(a/1000).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})+'k':s+'R$'+a.toLocaleString('pt-BR',{minimumFractionDigits:0});}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
  
-/* ===== #3 TEMA POR HORÁRIO ===== */
+/* ===== TEMA POR HORÁRIO ===== */
 function aplicarTema(){
   const h=new Date().getHours();
   const escuro=(h>=19||h<7);
@@ -387,7 +497,6 @@ function salvar(){
 }
 function carregar(){
   try{
-    // Tenta versão 6, depois 5, depois 4
     let d=localStorage.getItem('fin6_d')||localStorage.getItem('fin5_d')||localStorage.getItem('fin4_d');
     if(d)dados=JSON.parse(d);
     let c=localStorage.getItem('fin6_c')||localStorage.getItem('fin5_c')||localStorage.getItem('fin4_c');
@@ -450,11 +559,6 @@ function totalTipo(tipo,m,y){
 }
 function saldoBruto(m,y){return totalTipo('receita',m,y)-totalTipo('despesa',m,y)-totalTipo('investimento',m,y);}
  
-/* ===== #4 CORREÇÃO DO SALDO ACUMULADO =====
-   Lógica: O saldo se acumula mês a mês desde janeiro do ano.
-   Se em algum mês o acumulado ficar negativo, ele vai a 0 (não carrega dívida para frente).
-   Retorna: {carry: saldo acumulado até mês anterior, total: saldo com carry do mês atual}
-*/
 function calcSaldo(m,y){
   let acum=0;
   for(let i=0;i<m;i++){
@@ -475,7 +579,6 @@ function atualizaResumo(){
   document.getElementById('sRec').textContent=fmtS(rec);
   document.getElementById('sDep').textContent=fmtS(dep);
   document.getElementById('sSaldo').textContent=fmtS(total);
-  // Hint apenas se houver carry positivo real
   document.getElementById('sHint').textContent=carry>0?'+ ant. '+fmtS(carry):'';
 }
  
@@ -557,7 +660,7 @@ function goToTab(id){aba=id;renderAbas();renderMain();}
  
 let abaTipo={};
  
-/* ===== #1 MODOS DE LANÇAMENTO ===== */
+/* ===== MODOS DE LANÇAMENTO ===== */
 function setLncModo(m){
   lncModo=m;
   document.querySelectorAll('.lm').forEach(el=>{
@@ -607,7 +710,6 @@ function renderDetalhe(){
     if(cat.fim)parts.push('fim: '+cat.fim);
     recInfo=`<div class="sf" style="color:var(--P);background:rgba(88,86,214,0.06);">${parts.join(' · ')}</div>`;
   }
-  let modoSel={unico:'on-p',perpetuo:'on-p',recebimento:'on-g',parcelas:'on-x'}[lncModo]||'on-p';
   let modoHtml=`<div class="lnc-modos">
     <button class="lm${lncModo==='unico'?' on-p':''}" data-m="unico" onclick="setLncModo('unico')">Único</button>
     <button class="lm${lncModo==='perpetuo'?' on-p':''}" data-m="perpetuo" onclick="setLncModo('perpetuo')">Débito ∞</button>
@@ -641,7 +743,6 @@ function addLinha(){
   if(modo==='unico'){
     gd(aba).push({desc,valor,tipo,modo:'unico'});
   } else if(modo==='perpetuo'||modo==='recebimento'){
-    // Propaga para este mês + todos do ano até dez + 2 anos seguintes
     for(let mi=M;mi<12;mi++) gd(aba,mi,Y).push({desc,valor,tipo,modo});
     for(let yi=Y+1;yi<=Y+2;yi++) for(let mi=0;mi<12;mi++) gd(aba,mi,yi).push({desc,valor,tipo,modo});
   } else if(modo==='parcelas'&&parcTotal>=2){
@@ -658,7 +759,7 @@ function delLinha(i){gd(aba).splice(i,1);salvar();renderDetalhe();}
 function editDesc(i,v){gd(aba)[i].desc=v;salvar();atualizaResumo();}
 function editVal(i,v){gd(aba)[i].valor=parseFloat(v)||0;salvar();atualizaResumo();}
  
-/* ===== #5 GRÁFICOS COM FILTRO DE ANO ===== */
+/* ===== GRÁFICOS ===== */
 function renderGraficos(){
   let el=document.getElementById('subConteudo');
   if(!el)return;
@@ -670,7 +771,6 @@ function renderGraficos(){
     sA.push(calcSaldo(m,GY).total);
   }
   let tRec=rA.reduce((a,v)=>a+v,0),tDep=dA.reduce((a,v)=>a+v,0),tInv=iA.reduce((a,v)=>a+v,0),tSaldo=calcSaldo(11,GY).total;
-  // Barras do mês atual (usa M/Y do header)
   let rec=totalTipo('receita'),dep=totalTipo('despesa'),inv=totalTipo('investimento'),maxG=Math.max(rec,dep,inv,1);
   let cDep=cats.filter(c=>!FIXAS.includes(c.id)&&catAtiva(c,M,Y));
   let maxD=Math.max(...cDep.map(c=>totalCatTipo(c.id,'despesa')),1);
