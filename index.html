@@ -361,11 +361,20 @@ function saldoBruto(m,y){
   return totalTipo('receita',m,y)-totalTipo('despesa',m,y)-totalTipo('investimento',m,y);
 }
  
-function saldoMes(m,y){
-  let bruto=saldoBruto(m,y);
-  let pm=m-1,py=y;if(pm<0){pm=11;py=y-1;}
-  let ant=saldoBruto(pm,py);
-  return ant>=0?bruto+ant:bruto;
+function saldoMes(m, y){
+  let saldo = 0;
+
+  for (let i = 0; i <= m; i++) {
+    let bruto = saldoBruto(i, y);
+
+    if (saldo >= 0) {
+      saldo = bruto + saldo;
+    } else {
+      saldo = bruto;
+    }
+  }
+
+  return saldo;
 }
  
 function totalCatTipo(cid,tipo,m,y){
