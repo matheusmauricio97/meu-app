@@ -170,16 +170,26 @@ tr.tot td{background:rgba(0,0,0,0.035);font-weight:600;font-size:13px;}
   display:flex;align-items:center;gap:8px;
   padding:10px 0;border-bottom:0.5px solid rgba(0,0,0,0.08);
   background:transparent;transition:background 0.15s;
+  position:relative;
 }
 .ci:last-child{border-bottom:none;}
-.ci.drag-over{background:rgba(46,204,113,0.08);border-radius:8px;}
-.ci.dragging{opacity:0.35;}
+.ci.drag-target-above::before{
+  content:'';position:absolute;top:-1px;left:0;right:0;height:2px;
+  background:var(--GM);border-radius:99px;
+}
+.ci.drag-target-below::after{
+  content:'';position:absolute;bottom:-1px;left:0;right:0;height:2px;
+  background:var(--GM);border-radius:99px;
+}
+.ci.dragging-source{opacity:0.3;}
 .ci-drag{
   color:var(--T3);font-size:20px;flex-shrink:0;
   touch-action:none;cursor:grab;padding:4px 2px;
   user-select:none;-webkit-user-select:none;
+  display:flex;flex-direction:column;gap:1px;align-items:center;justify-content:center;
 }
 .ci-drag:active{cursor:grabbing;}
+.ci-drag svg{display:block;}
 .ci-name{flex:1;font-size:14px;color:var(--TX);min-width:0;}
 .ci-badges{display:flex;flex-wrap:wrap;gap:3px;margin-top:3px;}
 .ci-badge{font-size:9px;padding:2px 6px;border-radius:99px;font-weight:600;}
@@ -188,8 +198,49 @@ tr.tot td{background:rgba(0,0,0,0.035);font-weight:600;font-size:13px;}
 .ci-badge.b-temp{background:rgba(255,59,48,0.1);color:var(--R);}
 .ci-badge.b-dat{background:rgba(0,0,0,0.07);color:var(--T2);}
 .ci-meta{display:flex;align-items:center;gap:4px;flex-shrink:0;}
-.edit-btn{background:none;border:none;color:var(--BM);cursor:pointer;font-size:15px;padding:3px 5px;border-radius:6px;}
-.edit-btn:active{background:rgba(0,122,255,0.1);}
+ 
+/* --- Botão de edição sofisticado --- */
+.edit-btn{
+  background:none;border:none;
+  color:var(--T3);cursor:pointer;
+  padding:5px;border-radius:7px;
+  display:flex;align-items:center;justify-content:center;
+  transition:background 0.15s, color 0.15s;
+  position:relative;
+}
+.edit-btn:active{background:rgba(0,122,255,0.12);color:var(--BM);}
+.edit-btn svg{display:block;transition:transform 0.2s cubic-bezier(.34,1.56,.64,1);}
+.edit-btn:active svg{transform:rotate(-12deg) scale(1.15);}
+ 
+/* --- Ghost drag element --- */
+.drag-ghost{
+  position:fixed;
+  pointer-events:none;
+  z-index:9999;
+  left:0;top:0;
+  background:rgba(255,255,255,0.96);
+  border:1.5px solid var(--GM);
+  border-radius:12px;
+  padding:10px 14px;
+  box-shadow:0 12px 40px rgba(0,0,0,0.22),0 2px 8px rgba(46,204,113,0.3);
+  font-size:14px;
+  font-family:var(--f);
+  color:var(--TX);
+  font-weight:500;
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  min-width:160px;
+  transform:rotate(1.5deg) scale(1.04);
+  transition:transform 0.1s ease;
+  display:flex;align-items:center;gap:8px;
+  opacity:0.97;
+}
+.drag-ghost-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:linear-gradient(135deg,var(--GM),var(--G));
+  flex-shrink:0;
+}
+ 
 .slbl{font-size:11px;font-weight:600;color:var(--T3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;}
 .rec-opts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px;}
 .rec-opt{padding:8px 4px;font-size:11px;font-family:var(--f);font-weight:500;border-radius:8px;cursor:pointer;border:0.5px solid rgba(0,0,0,0.12);background:rgba(0,0,0,0.04);color:var(--T3);text-align:center;transition:all 0.15s;}
@@ -207,6 +258,11 @@ tr.tot td{background:rgba(0,0,0,0.035);font-weight:600;font-size:13px;}
 .edit-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
 .edit-header h3{margin-bottom:0;flex:1;}
 .edit-badge{font-size:10px;font-weight:600;padding:3px 8px;border-radius:99px;background:rgba(88,86,214,0.15);color:var(--P);}
+ 
+/* Sub-abas do Balanço */
+.sub-abas{display:flex;gap:0;padding:0 14px;border-bottom:0.5px solid rgba(0,0,0,0.07);background:rgba(255,255,255,0.5);}
+.sub-ab{padding:8px 14px;font-size:12px;font-family:var(--f);font-weight:500;color:var(--T3);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;transition:color 0.15s;}
+.sub-ab.on{color:var(--G);font-weight:600;border-bottom-color:var(--G);}
 </style>
 </head>
 <body>
@@ -316,8 +372,18 @@ function fmtA(v){let a=Math.abs(v),s=v<0?'-':'';if(a>=1e6)return s+'R$'+(a/1e6).
 function fmtS(v){let a=Math.abs(v),s=v<0?'-':'';return a>=1000?s+'R$'+(a/1000).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})+'k':s+'R$'+a.toLocaleString('pt-BR',{minimumFractionDigits:0});}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
  
+/* SVG do ícone de edição sofisticado */
+function editIconSVG(){
+  return`<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M10.5 1.5L13.5 4.5L5 13H2V10L10.5 1.5Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M8.5 3.5L11.5 6.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+    <path d="M2 13H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity="0.35"/>
+  </svg>`;
+}
+ 
 let hoje=new Date(),M=hoje.getMonth(),Y=hoje.getFullYear(),AY=hoje.getFullYear();
-let aba='balanco',chartRef=null;
+// subAba: 'balanco', 'graficos', 'anual'
+let aba='balanco', subAba='balanco', chartRef=null;
 let novaRec='perpetua',editRec='perpetua';
 let editCatId=null;
  
@@ -436,7 +502,8 @@ function atualizaResumo(){
  
 function renderAbas(){
   let nav=document.getElementById('abas');nav.innerHTML='';
-  let visiveis=cats.filter(c=>FIXAS.includes(c.id)||catAtiva(c,M,Y));
+  // Agora: Balanço Geral + todas as categorias (sem Gráficos e Ano separados)
+  let visiveis=cats.filter(c=>c.id==='balanco'||(!FIXAS.includes(c.id)&&catAtiva(c,M,Y)));
   visiveis.forEach(c=>{
     let b=document.createElement('button');
     b.className='ab'+(c.id===aba?' on':'');
@@ -449,14 +516,37 @@ function renderAbas(){
 }
  
 function renderMain(){
-  if(aba==='graficos'){renderGraficos();return;}
-  if(aba==='anual'){renderAnual();return;}
-  if(aba==='balanco'){renderBalanco();return;}
+  if(aba==='balanco'){renderBalancoRoot();return;}
   renderDetalhe();
 }
  
-function renderBalanco(){
+function renderBalancoRoot(){
+  // Renderiza sub-abas + conteúdo
   atualizaResumo();
+  let subHtml=`<div class="sub-abas">
+    <button class="sub-ab ${subAba==='balanco'?'on':''}" onclick="setSubAba('balanco')">Balanço</button>
+    <button class="sub-ab ${subAba==='graficos'?'on':''}" onclick="setSubAba('graficos')">Gráficos</button>
+    <button class="sub-ab ${subAba==='anual'?'on':''}" onclick="setSubAba('anual')">Ano</button>
+  </div>`;
+  document.getElementById('main').innerHTML=subHtml+'<div id="subConteudo"></div>';
+  renderSubConteudo();
+}
+ 
+function setSubAba(s){
+  subAba=s;
+  document.querySelectorAll('.sub-ab').forEach(el=>{
+    el.classList.toggle('on',el.textContent.trim()===(s==='balanco'?'Balanço':s==='graficos'?'Gráficos':'Ano'));
+  });
+  renderSubConteudo();
+}
+ 
+function renderSubConteudo(){
+  if(subAba==='balanco'){renderBalancoConteudo();}
+  else if(subAba==='graficos'){renderGraficos();}
+  else if(subAba==='anual'){renderAnual();}
+}
+ 
+function renderBalancoConteudo(){
   let catAtivas=cats.filter(c=>!FIXAS.includes(c.id)&&catAtiva(c,M,Y));
   let totalRec=totalTipo('receita'),totalDep=totalTipo('despesa'),totalInv=totalTipo('investimento'),saldo=saldoMes(M,Y);
   let pm=M-1,py=Y;if(pm<0){pm=11;py=Y-1;}
@@ -483,7 +573,8 @@ function renderBalanco(){
   });
   rows+=`<tr class="tot"><td>Total despesas</td><td class="val-dep">${fmt(totalDep)}</td></tr>`;
   rows+=`<tr class="tot"><td style="font-weight:700;">Saldo do mês</td><td class="${saldo>=0?'val-rec':'val-dep'}" style="font-weight:700;">${fmt(saldo)}</td></tr>`;
-  document.getElementById('main').innerHTML=`<div class="tc"><div class="tw"><table><thead><tr><th>Categoria</th><th>Valor</th></tr></thead><tbody>${rows}</tbody></table><div class="sf">${ftxt}<br><span style="color:var(--G);font-size:10px;">Toque em uma categoria para ver os lançamentos</span></div></div></div>`;
+  let el=document.getElementById('subConteudo');
+  if(el)el.innerHTML=`<div class="tc"><div class="tw"><table><thead><tr><th>Categoria</th><th>Valor</th></tr></thead><tbody>${rows}</tbody></table><div class="sf">${ftxt}<br><span style="color:var(--G);font-size:10px;">Toque em uma categoria para ver os lançamentos</span></div></div></div>`;
 }
  
 function goToTab(id){aba=id;renderAbas();renderMain();}
@@ -542,13 +633,14 @@ function editDesc(i,v){gd(aba)[i].desc=v;salvar();atualizaResumo();}
 function editVal(i,v){gd(aba)[i].valor=parseFloat(v)||0;salvar();atualizaResumo();}
  
 function renderGraficos(){
-  atualizaResumo();
   let rec=totalTipo('receita'),dep=totalTipo('despesa'),inv=totalTipo('investimento'),maxG=Math.max(rec,dep,inv,1);
   let rA=[],dA=[],iA=[],sA=[];
   for(let m=0;m<12;m++){rA.push(totalTipo('receita',m,Y));dA.push(totalTipo('despesa',m,Y));iA.push(totalTipo('investimento',m,Y));sA.push(saldoMes(m,Y));}
   let cDep=cats.filter(c=>!FIXAS.includes(c.id)&&catAtiva(c,M,Y));
   let maxD=Math.max(...cDep.map(c=>totalCatTipo(c.id,'despesa')),1);
-  document.getElementById('main').innerHTML=`<div class="gc">
+  let el=document.getElementById('subConteudo');
+  if(!el)return;
+  el.innerHTML=`<div class="gc">
     <div class="gcard"><div class="gh">Entradas x saídas — ${MESES[M]}</div><div class="gb">
       <div class="br"><div class="bl">Receitas</div><div class="bb"><div class="bf" style="width:${Math.round(rec/maxG*100)}%;background:#2ECC71;"></div></div><div class="bv cv">${fmt(rec)}</div></div>
       <div class="br"><div class="bl">Despesas</div><div class="bb"><div class="bf" style="width:${Math.round(dep/maxG*100)}%;background:#FF3B30;"></div></div><div class="bv cr">${fmt(dep)}</div></div>
@@ -573,8 +665,9 @@ function renderGraficos(){
 }
  
 function renderAnual(){
-  atualizaResumo();
-  document.getElementById('main').innerHTML=`<div class="anc"><div class="anav"><button onclick="mudaAno(-1)">&#8249;</button><span id="anoTxt">${AY}</span><button onclick="mudaAno(1)">&#8250;</button></div><div id="aConteudo"></div></div>`;
+  let el=document.getElementById('subConteudo');
+  if(!el)return;
+  el.innerHTML=`<div class="anc"><div class="anav"><button onclick="mudaAno(-1)">&#8249;</button><span id="anoTxt">${AY}</span><button onclick="mudaAno(1)">&#8250;</button></div><div id="aConteudo"></div></div>`;
   renderAnualConteudo();
 }
 function renderAnualConteudo(){
@@ -654,13 +747,22 @@ function renderCList(){
     if(c.inicio)badges+=`<span class="ci-badge b-dat">de ${c.inicio}</span>`;
     if(c.fim)badges+=`<span class="ci-badge b-temp">até ${c.fim}</span>`;
     return`<div class="ci" data-id="${c.id}">
-      <span class="ci-drag" data-id="${c.id}" title="Arraste para reordenar">&#8942;&#8942;</span>
+      <span class="ci-drag" data-id="${c.id}" title="Arraste para reordenar">
+        <svg width="14" height="20" viewBox="0 0 14 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="4" cy="5" r="1.5" fill="currentColor" opacity="0.5"/>
+          <circle cx="10" cy="5" r="1.5" fill="currentColor" opacity="0.5"/>
+          <circle cx="4" cy="10" r="1.5" fill="currentColor" opacity="0.5"/>
+          <circle cx="10" cy="10" r="1.5" fill="currentColor" opacity="0.5"/>
+          <circle cx="4" cy="15" r="1.5" fill="currentColor" opacity="0.5"/>
+          <circle cx="10" cy="15" r="1.5" fill="currentColor" opacity="0.5"/>
+        </svg>
+      </span>
       <div style="flex:1;min-width:0;">
         <div class="ci-name">${esc(c.nome)}</div>
         <div class="ci-badges">${badges}</div>
       </div>
       <div class="ci-meta">
-        <button class="edit-btn" onclick="abrirModalEdit('${c.id}')" title="Editar">✏️</button>
+        <button class="edit-btn" onclick="abrirModalEdit('${c.id}')" title="Editar categoria">${editIconSVG()}</button>
         <button class="dbtn" onclick="delCat('${c.id}')">&#215;</button>
       </div>
     </div>`;
@@ -668,12 +770,42 @@ function renderCList(){
   initDragDrop();
 }
  
-let dragId=null,touchY=0,touchEl=null;
+// ---- DRAG & DROP com ghost animado ----
+let dragId=null,ghostEl=null,dragSourceEl=null;
+ 
+function createGhost(nome){
+  let g=document.createElement('div');
+  g.className='drag-ghost';
+  g.innerHTML=`<span class="drag-ghost-dot"></span>${esc(nome)}`;
+  document.body.appendChild(g);
+  return g;
+}
+function moveGhost(x,y){
+  if(!ghostEl)return;
+  ghostEl.style.transform=`translate(${x-80}px, ${y-22}px) rotate(1.5deg) scale(1.04)`;
+}
+function removeGhost(){
+  if(ghostEl){ghostEl.remove();ghostEl=null;}
+}
+function clearTargetClasses(){
+  document.querySelectorAll('.ci').forEach(r=>{r.classList.remove('drag-target-above','drag-target-below');});
+}
+function findTarget(clientY){
+  let rows=[...document.querySelectorAll('#clist .ci:not(.dragging-source)')];
+  let target=null,pos='below';
+  for(let r of rows){
+    let rect=r.getBoundingClientRect();
+    let mid=rect.top+rect.height/2;
+    if(clientY<mid){target=r;pos='above';break;}
+    else{target=r;pos='below';}
+  }
+  return{target,pos};
+}
  
 function initDragDrop(){
   let list=document.getElementById('clist');
   list.querySelectorAll('.ci-drag').forEach(handle=>{
-    handle.addEventListener('mousedown',startMouseDrag);
+    handle.addEventListener('mousedown',startMouseDrag,{passive:false});
     handle.addEventListener('touchstart',startTouchDrag,{passive:false});
   });
 }
@@ -681,69 +813,76 @@ function initDragDrop(){
 function getRow(el){return el.closest('.ci');}
  
 function startMouseDrag(e){
+  e.preventDefault();
   let row=getRow(e.currentTarget);
-  dragId=row.dataset.id;
-  row.classList.add('dragging');
+  let id=row.dataset.id;
+  let cat=cats.find(c=>c.id===id);
+  dragId=id;dragSourceEl=row;
+  row.classList.add('dragging-source');
+  ghostEl=createGhost(cat?cat.nome:id);
+  moveGhost(e.clientX,e.clientY);
   document.addEventListener('mousemove',onMouseMove);
   document.addEventListener('mouseup',stopMouseDrag);
 }
 function onMouseMove(e){
-  let list=document.getElementById('clist');
-  let rows=[...list.querySelectorAll('.ci:not(.dragging)')];
-  let target=rows.find(r=>{let rect=r.getBoundingClientRect();return e.clientY<rect.top+rect.height/2;});
-  rows.forEach(r=>r.classList.remove('drag-over'));
-  if(target)target.classList.add('drag-over');
+  moveGhost(e.clientX,e.clientY);
+  clearTargetClasses();
+  let{target,pos}=findTarget(e.clientY);
+  if(target&&target!==dragSourceEl){
+    target.classList.add(pos==='above'?'drag-target-above':'drag-target-below');
+  }
 }
 function stopMouseDrag(e){
   document.removeEventListener('mousemove',onMouseMove);
   document.removeEventListener('mouseup',stopMouseDrag);
-  let list=document.getElementById('clist');
-  let rows=[...list.querySelectorAll('.ci:not(.dragging)')];
-  let target=rows.find(r=>r.classList.contains('drag-over'));
-  rows.forEach(r=>r.classList.remove('drag-over'));
-  let dragging=list.querySelector('.ci.dragging');
-  if(dragging)dragging.classList.remove('dragging');
-  if(!dragId)return;
-  let targetId=target?target.dataset.id:null;
-  reorderCat(dragId,targetId);
-  dragId=null;
+  clearTargetClasses();
+  removeGhost();
+  if(dragSourceEl)dragSourceEl.classList.remove('dragging-source');
+  if(!dragId){dragId=null;return;}
+  let{target,pos}=findTarget(e.clientY);
+  let targetId=target&&target!==dragSourceEl?target.dataset.id:null;
+  reorderCat(dragId,targetId,pos);
+  dragId=null;dragSourceEl=null;
 }
  
 function startTouchDrag(e){
   e.preventDefault();
   let row=getRow(e.currentTarget);
-  dragId=row.dataset.id;
-  touchEl=row;
-  row.classList.add('dragging');
-  touchY=e.touches[0].clientY;
+  let id=row.dataset.id;
+  let cat=cats.find(c=>c.id===id);
+  dragId=id;dragSourceEl=row;
+  row.classList.add('dragging-source');
+  let t=e.touches[0];
+  ghostEl=createGhost(cat?cat.nome:id);
+  moveGhost(t.clientX,t.clientY);
   document.addEventListener('touchmove',onTouchMove,{passive:false});
   document.addEventListener('touchend',stopTouchDrag);
 }
 function onTouchMove(e){
   e.preventDefault();
-  touchY=e.touches[0].clientY;
-  let list=document.getElementById('clist');
-  let rows=[...list.querySelectorAll('.ci:not(.dragging)')];
-  let target=rows.find(r=>{let rect=r.getBoundingClientRect();return touchY<rect.top+rect.height/2;});
-  rows.forEach(r=>r.classList.remove('drag-over'));
-  if(target)target.classList.add('drag-over');
+  let t=e.touches[0];
+  moveGhost(t.clientX,t.clientY);
+  clearTargetClasses();
+  let{target,pos}=findTarget(t.clientY);
+  if(target&&target!==dragSourceEl){
+    target.classList.add(pos==='above'?'drag-target-above':'drag-target-below');
+  }
 }
 function stopTouchDrag(e){
   document.removeEventListener('touchmove',onTouchMove);
   document.removeEventListener('touchend',stopTouchDrag);
-  let list=document.getElementById('clist');
-  let rows=[...list.querySelectorAll('.ci:not(.dragging)')];
-  let target=rows.find(r=>r.classList.contains('drag-over'));
-  rows.forEach(r=>r.classList.remove('drag-over'));
-  if(touchEl)touchEl.classList.remove('dragging');
-  touchEl=null;
-  if(!dragId)return;
-  let targetId=target?target.dataset.id:null;
-  reorderCat(dragId,targetId);
-  dragId=null;
+  clearTargetClasses();
+  removeGhost();
+  if(dragSourceEl)dragSourceEl.classList.remove('dragging-source');
+  if(!dragId){dragId=null;return;}
+  let t=e.changedTouches[0];
+  let{target,pos}=findTarget(t.clientY);
+  let targetId=target&&target!==dragSourceEl?target.dataset.id:null;
+  reorderCat(dragId,targetId,pos);
+  dragId=null;dragSourceEl=null;
 }
  
-function reorderCat(srcId,targetId){
+function reorderCat(srcId,targetId,pos){
   let fixasBefore=cats.slice(0,cats.findIndex(c=>!FIXAS.includes(c.id)));
   let lastEditIdx=cats.reduce((acc,c,i)=>!FIXAS.includes(c.id)?i:acc,-1);
   let fixasAfter=cats.slice(lastEditIdx+1);
@@ -752,7 +891,15 @@ function reorderCat(srcId,targetId){
   if(si<0)return;
   let[item]=mid.splice(si,1);
   if(!targetId){mid.push(item);}
-  else{let ti=mid.findIndex(c=>c.id===targetId);if(ti<0)mid.push(item);else mid.splice(ti,0,item);}
+  else{
+    let ti=mid.findIndex(c=>c.id===targetId);
+    if(ti<0)mid.push(item);
+    else{
+      // Se pos === 'below', inserir depois
+      let insertAt=pos==='below'?ti+1:ti;
+      mid.splice(insertAt,0,item);
+    }
+  }
   cats=[...fixasBefore,...mid,...fixasAfter];
   salvar();renderCList();renderAbas();
 }
@@ -786,3 +933,4 @@ renderMain();
 </script>
 </body>
 </html>
+ 
