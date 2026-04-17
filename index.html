@@ -190,6 +190,7 @@ tr.tot td{background:rgba(0,0,0,0.035);font-weight:600;font-size:13px;}
 .ci{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:0.5px solid rgba(0,0,0,0.08);cursor:grab;user-select:none;}
 .ci:last-child{border-bottom:none;}
 .ci.dragging{opacity:0.4;}
+.ci.drag-over{background: rgba(0,122,255,0.12);}
 .ci-drag{color:var(--T3);font-size:18px;flex-shrink:0;touch-action:none;}
 .ci-name{flex:1;font-size:14px;color:var(--TX);}
 .ci-meta{display:flex;align-items:center;gap:6px;flex-shrink:0;}
@@ -305,6 +306,7 @@ function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').repl
 let hoje=new Date(),M=hoje.getMonth(),Y=hoje.getFullYear(),AY=hoje.getFullYear();
 let aba='balanco',chartRef=null;
 let novaRec='perpetua'; // estado do formulário
+let editCatId = null;
  
 const FIXAS=['balanco','graficos','anual'];
  
@@ -689,12 +691,17 @@ function mudaMes(d){
  
 // ─── MODAL CATEGORIAS ─────────────────────────────────────────
 function abrirModal(){
+  editCatId = null;
+  document.querySelector('.bok').textContent = 'Adicionar';
+
   novaRec='perpetua';
   setRec('perpetua');
+
   document.getElementById('nNome').value='';
   document.getElementById('nInicio').value='';
   document.getElementById('nFim').value='';
   document.getElementById('nCustomMeses').value='';
+
   renderCList();
   document.getElementById('ov').classList.add('on');
 }
@@ -711,7 +718,7 @@ function renderCList(){
     else if(c.rec==='custom')badges+=`<span class="ci-badge b-rec">a cada ${c.customMeses}m</span>`;
     if(c.inicio)badges+=`<span class="ci-badge b-dat">de ${c.inicio}</span>`;
     if(c.fim)badges+=`<span class="ci-badge b-temp">até ${c.fim}</span>`;
-    return`<div class="ci" draggable="true" data-id="${c.id}" ondragstart="dragStart(event,'${c.id}')" ondragover="dragOver(event)" ondrop="dragDrop(event,'${c.id}')">
+    return`<div class="ci" draggable="true" onclick="editarCat('${c.id}')" data-id="${c.id}" ondragstart="dragStart(event,'${c.id}')" ondragover="dragOver(event)" ondrop="dragDrop(event,'${c.id}')">
       <span class="ci-drag">&#8942;&#8942;</span>
       <div style="flex:1;min-width:0;">
         <div class="ci-name">${esc(c.nome)}</div>
@@ -722,37 +729,148 @@ function renderCList(){
   }).join('');
 }
  
-let dragSrc=null;
-function dragStart(e,id){dragSrc=id;e.currentTarget.classList.add('dragging');}
-function dragOver(e){e.preventDefault();}
-function dragDrop(e,targetId){
-  e.preventDefault();
-  if(!dragSrc||dragSrc===targetId)return;
-  let fixasBefore=cats.slice(0,cats.findIndex(c=>!FIXAS.includes(c.id)));
-  let fixasAfter=cats.slice(cats.findLastIndex(c=>!FIXAS.includes(c.id))+1);
-  let mid=cats.filter(c=>!FIXAS.includes(c.id));
-  let si=mid.findIndex(c=>c.id===dragSrc),ti=mid.findIndex(c=>c.id===targetId);
-  if(si<0||ti<0)return;
-  let [item]=mid.splice(si,1);mid.splice(ti,0,item);
-  cats=[...fixasBefore,...mid,...fixasAfter];
-  dragSrc=null;salvar();renderCList();renderAbas();
+let dragSrc = null;
+let touchSrc = null;
+
+function dragStart(e, id){
+  dragSrc = id;
+  e.currentTarget.classList.add('dragging');
 }
- 
+
+function dragOver(e){
+  e.preventDefault();
+}
+
+function dragDrop(e, targetId){
+  e.preventDefault();
+  reordenar(dragSrc, targetId);
+  dragSrc = null;
+}
+
+// 🔥 TOUCH SUPPORT
+document.addEventListener('touchstart', function(e){
+  let item = e.target.closest('.ci');
+  if(!item) return;
+  touchSrc = item.dataset.id;
+  item.classList.add('dragging');
+}, {passive:true});
+
+document.addEventListener('touchmove', function(e){
+  if(!touchSrc) return;
+
+  let touch = e.touches[0];
+  let el = document.elementFromPoint(touch.clientX, touch.clientY);
+  let target = el ? el.closest('.ci') : null;
+
+  document.querySelectorAll('.ci').forEach(c => c.classList.remove('drag-over'));
+
+  if(target && target.dataset.id !== touchSrc){
+    target.classList.add('drag-over');
+  }
+}, {passive:false});
+
+document.addEventListener('touchend', function(e){
+  if(!touchSrc) return;
+
+  let touch = e.changedTouches[0];
+  let el = document.elementFromPoint(touch.clientX, touch.clientY);
+  let target = el ? el.closest('.ci') : null;
+
+  if(target){
+    let targetId = target.dataset.id;
+    reordenar(touchSrc, targetId);
+  }
+
+  document.querySelectorAll('.ci').forEach(c => {
+    c.classList.remove('dragging');
+    c.classList.remove('drag-over');
+  });
+
+  touchSrc = null;
+});
+
+// 🔥 FUNÇÃO ÚNICA DE REORDENAÇÃO
+function reordenar(srcId, targetId){
+  if(!srcId || !targetId || srcId === targetId) return;
+
+  let fixasBefore = cats.slice(0, cats.findIndex(c => !FIXAS.includes(c.id)));
+  let fixasAfter = cats.slice(cats.findLastIndex(c => !FIXAS.includes(c.id)) + 1);
+
+  let mid = cats.filter(c => !FIXAS.includes(c.id));
+
+  let si = mid.findIndex(c => c.id === srcId);
+  let ti = mid.findIndex(c => c.id === targetId);
+
+  if(si < 0 || ti < 0) return;
+
+  let [item] = mid.splice(si, 1);
+  mid.splice(ti, 0, item);
+
+  cats = [...fixasBefore, ...mid, ...fixasAfter];
+
+  salvar();
+  renderCList();
+  renderAbas();
+}
+
+function editarCat(id){
+  let c = cats.find(x => x.id === id);
+  if(!c) return;
+
+  editCatId = id;
+
+  document.getElementById('nNome').value = c.nome;
+  document.getElementById('nInicio').value = c.inicio || '';
+  document.getElementById('nFim').value = c.fim || '';
+  document.getElementById('nCustomMeses').value = c.customMeses || '';
+
+  setRec(c.rec);
+
+  document.querySelector('.bok').textContent = 'Salvar';
+}
+
 function adicionarCat(){
   let nome=document.getElementById('nNome').value.trim();
   if(!nome)return;
+
   let rec=novaRec;
   let inicio=document.getElementById('nInicio').value||null;
   let fim=(rec!=='perpetua')?document.getElementById('nFim').value||null:null;
   let customMeses=(rec==='custom')?parseInt(document.getElementById('nCustomMeses').value)||2:null;
- 
-  if(rec==='custom'&&(!customMeses||customMeses<1)){alert('Informe o intervalo em meses.');return;}
- 
-  let id='c'+Date.now();
-  let idx=cats.findIndex(c=>c.id==='graficos');
-  cats.splice(idx,0,{id,nome,rec,customMeses,inicio,fim});
+
+  if(rec==='custom'&&(!customMeses||customMeses<1)){
+    alert('Informe o intervalo em meses.');
+    return;
+  }
+
+  // 🔥 SE ESTIVER EDITANDO
+  if(editCatId){
+    let c = cats.find(x => x.id === editCatId);
+    if(c){
+      c.nome = nome;
+      c.rec = rec;
+      c.inicio = inicio;
+      c.fim = fim;
+      c.customMeses = customMeses;
+    }
+    editCatId = null;
+    document.querySelector('.bok').textContent = 'Adicionar';
+  } 
+  // 🔥 NOVA CATEGORIA
+  else {
+    let id='c'+Date.now();
+    let idx=cats.findIndex(c=>c.id==='graficos');
+    cats.splice(idx,0,{id,nome,rec,customMeses,inicio,fim});
+  }
+
   document.getElementById('nNome').value='';
-  salvar();renderCList();renderAbas();
+  document.getElementById('nInicio').value='';
+  document.getElementById('nFim').value='';
+  document.getElementById('nCustomMeses').value='';
+
+  salvar();
+  renderCList();
+  renderAbas();
 }
  
 function delCat(id){
