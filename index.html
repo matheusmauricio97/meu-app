@@ -122,7 +122,8 @@ tr.tot td{background:var(--tot-bg);font-weight:600;font-size:13px;}
 .ptag-x{background:rgba(255,59,48,0.12);color:var(--RM);}
 .dbtn{background:none;border:none;color:var(--T3);cursor:pointer;font-size:16px;line-height:1;padding:2px;flex-shrink:0;}
 .dbtn:active{color:var(--RM);}
-.cat-charts{padding:12px 14px;border-top:0.5px solid var(--row-bd);background:var(--sec-bg);display:flex;flex-direction:column;gap:10px;}
+/* Gráfico de categoria */
+.cat-charts{padding:12px 14px;border-bottom:0.5px solid var(--row-bd);background:var(--sec-bg);display:flex;flex-direction:column;gap:10px;}
 .cat-chart-block{display:flex;flex-direction:column;gap:5px;}
 .cat-chart-title{font-size:10px;font-weight:600;color:var(--T3);text-transform:uppercase;letter-spacing:0.5px;}
 .cat-bar-row{display:flex;align-items:center;gap:7px;}
@@ -130,6 +131,7 @@ tr.tot td{background:var(--tot-bg);font-weight:600;font-size:13px;}
 .cat-bar-track{flex:1;background:var(--bar-bg);border-radius:99px;height:6px;overflow:hidden;}
 .cat-bar-fill{height:100%;border-radius:99px;transition:width 0.5s cubic-bezier(.4,0,.2,1);}
 .cat-bar-val{font-size:10px;font-family:var(--m);color:var(--TX);width:70px;text-align:right;flex-shrink:0;}
+/* Área lançamento */
 .al{display:flex;flex-direction:column;gap:8px;padding:12px 14px;border-top:0.5px solid var(--row-bd);background:var(--sec-bg);}
 .al-tipo{display:flex;gap:6px;}
 .at{flex:1;padding:6px 4px;font-size:11px;font-family:var(--f);font-weight:500;border-radius:6px;cursor:pointer;border:0.5px solid var(--opt-bd);background:var(--opt-bg);color:var(--T3);transition:all 0.15s;}
@@ -555,7 +557,7 @@ function setLncModo(m){
   if(pw)pw.classList.toggle('show',m==='parcelas');
 }
  
-/* ===== GRÁFICO POR CATEGORIA: agrupa por nome e soma valores ===== */
+/* ===== GRÁFICO POR CATEGORIA ===== */
 function renderGraficosCat(cid){
   let linhas=gd(cid);
   let deps=linhas.filter(l=>l.tipo==='despesa');
@@ -563,39 +565,23 @@ function renderGraficosCat(cid){
   let invs=linhas.filter(l=>l.tipo==='investimento');
   if(deps.length===0&&recs.length===0&&invs.length===0)return'';
  
-  // Agrupa lançamentos pelo nome (desc) e soma os valores
   function agrupar(list){
     let mapa={};
-    list.forEach(l=>{
-      let k=(l.desc||'—').trim();
-      mapa[k]=(mapa[k]||0)+(parseFloat(l.valor)||0);
-    });
-    // Ordena do maior para o menor valor
-    return Object.entries(mapa)
-      .map(([desc,valor])=>({desc,valor}))
-      .sort((a,b)=>b.valor-a.valor);
+    list.forEach(l=>{let k=(l.desc||'—').trim();mapa[k]=(mapa[k]||0)+(parseFloat(l.valor)||0);});
+    return Object.entries(mapa).map(([desc,valor])=>({desc,valor})).sort((a,b)=>b.valor-a.valor);
   }
- 
   function blocoGrafico(list,cor,titulo,corCss){
     if(list.length===0)return'';
-    let agrupado=agrupar(list);
-    let max=Math.max(...agrupado.map(i=>i.valor),1);
-    let bars=agrupado.map(i=>{
+    let ag=agrupar(list);
+    let max=Math.max(...ag.map(i=>i.valor),1);
+    let bars=ag.map(i=>{
       let p=Math.round(i.valor/max*100);
       let opac=(0.3+0.7*(i.valor/max)).toFixed(2);
-      return`<div class="cat-bar-row">
-        <div class="cat-bar-lbl">${esc(i.desc)}</div>
-        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:${p}%;background:${cor};opacity:${opac};"></div></div>
-        <div class="cat-bar-val" style="color:${corCss};">${fmt(i.valor)}</div>
-      </div>`;
+      return`<div class="cat-bar-row"><div class="cat-bar-lbl">${esc(i.desc)}</div><div class="cat-bar-track"><div class="cat-bar-fill" style="width:${p}%;background:${cor};opacity:${opac};"></div></div><div class="cat-bar-val" style="color:${corCss};">${fmt(i.valor)}</div></div>`;
     }).join('');
-    let tot=agrupado.reduce((s,i)=>s+i.valor,0);
-    return`<div class="cat-chart-block">
-      <div class="cat-chart-title">${titulo} — Total: <span style="color:${corCss};font-family:var(--m);">${fmt(tot)}</span></div>
-      ${bars}
-    </div>`;
+    let tot=ag.reduce((s,i)=>s+i.valor,0);
+    return`<div class="cat-chart-block"><div class="cat-chart-title">${titulo} — Total: <span style="color:${corCss};font-family:var(--m);">${fmt(tot)}</span></div>${bars}</div>`;
   }
- 
   let html='<div class="cat-charts">';
   html+=blocoGrafico(recs,'#2ECC71','Receitas','var(--G)');
   html+=blocoGrafico(deps,'#FF3B30','Despesas','var(--RM)');
@@ -604,12 +590,68 @@ function renderGraficosCat(cid){
   return html;
 }
  
+/* ===== #1 PROPAGAÇÃO DE EDIÇÕES para lançamentos recorrentes/parcelados =====
+   Quando o usuário edita desc ou valor de um lançamento com modo perpetuo/recebimento,
+   o mesmo lançamento (identificado pelo desc original + modo) existe nos meses seguintes.
+   Precisamos encontrá-los e atualizar também.
+ 
+   Para parcelas: o lançamento tem parcId — atualizamos todas as parcelas com mesmo parcId.
+   Para perpétuo/recebimento: identificamos pelo desc+tipo+modo e propagamos para frente.
+*/
+function propagarEdicao(cid, mAtual, yAtual, linhaOriginal, campo, novoValor){
+  // Meses seguintes neste ano + próximos 2 anos
+  let chaves=[];
+  for(let mi=mAtual+1;mi<12;mi++) chaves.push(chave(mi,yAtual));
+  for(let yi=yAtual+1;yi<=yAtual+2;yi++) for(let mi=0;mi<12;mi++) chaves.push(chave(mi,yi));
+ 
+  if(linhaOriginal.modo==='parcelas'&&linhaOriginal.parcId){
+    // Atualiza todas as parcelas com o mesmo parcId em todos os meses futuros
+    chaves.forEach(k=>{
+      if(!dados[k]||!dados[k][cid])return;
+      dados[k][cid].forEach(l=>{
+        if(l.parcId===linhaOriginal.parcId){l[campo]=novoValor;}
+      });
+    });
+  } else if(linhaOriginal.modo==='perpetuo'||linhaOriginal.modo==='recebimento'){
+    // Identifica pelo desc+tipo+modo originais
+    let descOrig=linhaOriginal.desc,tipoOrig=linhaOriginal.tipo,modoOrig=linhaOriginal.modo;
+    chaves.forEach(k=>{
+      if(!dados[k]||!dados[k][cid])return;
+      dados[k][cid].forEach(l=>{
+        if(l.modo===modoOrig&&l.tipo===tipoOrig&&l.desc===descOrig){l[campo]=novoValor;}
+      });
+    });
+  }
+}
+ 
+/* ===== PROPAGAÇÃO DE DELETE para recorrentes/parcelados ===== */
+function propagarDelete(cid, mAtual, yAtual, linhaOriginal){
+  let chaves=[];
+  for(let mi=mAtual+1;mi<12;mi++) chaves.push(chave(mi,yAtual));
+  for(let yi=yAtual+1;yi<=yAtual+2;yi++) for(let mi=0;mi<12;mi++) chaves.push(chave(mi,yi));
+ 
+  if(linhaOriginal.modo==='parcelas'&&linhaOriginal.parcId){
+    let pid=linhaOriginal.parcId;
+    chaves.forEach(k=>{
+      if(!dados[k]||!dados[k][cid])return;
+      dados[k][cid]=dados[k][cid].filter(l=>l.parcId!==pid);
+    });
+  } else if(linhaOriginal.modo==='perpetuo'||linhaOriginal.modo==='recebimento'){
+    let descOrig=linhaOriginal.desc,tipoOrig=linhaOriginal.tipo,modoOrig=linhaOriginal.modo;
+    chaves.forEach(k=>{
+      if(!dados[k]||!dados[k][cid])return;
+      dados[k][cid]=dados[k][cid].filter(l=>!(l.modo===modoOrig&&l.tipo===tipoOrig&&l.desc===descOrig));
+    });
+  }
+}
+ 
 function renderDetalhe(){
   atualizaResumo();
   let linhas=gd(aba);
   if(!abaTipo[aba])abaTipo[aba]='despesa';
   let t=abaTipo[aba];
   let lRec=linhas.filter(l=>l.tipo==='receita'),lDep=linhas.filter(l=>l.tipo==='despesa'),lInv=linhas.filter(l=>l.tipo==='investimento');
+ 
   function blocoLinhas(list,tipo,colorClass,label){
     if(list.length===0)return'';
     let rows=list.map(l=>{
@@ -624,12 +666,14 @@ function renderDetalhe(){
     let secClass=tipo==='receita'?'s-rec':tipo==='despesa'?'s-dep':'s-inv';
     return`<tr class="${secClass}"><td colspan="2">${label}</td></tr>${rows}<tr class="tot"><td>Total ${label.toLowerCase()}</td><td class="${colorClass} mo">${fmt(tot)}</td></tr>`;
   }
+ 
   let rows='';
   rows+=blocoLinhas(lRec,'receita','cv','Receitas');
   rows+=blocoLinhas(lDep,'despesa','cr','Despesas');
   rows+=blocoLinhas(lInv,'investimento','cb','Investimentos');
   let tRec=lRec.reduce((s,l)=>s+(parseFloat(l.valor)||0),0),tDep=lDep.reduce((s,l)=>s+(parseFloat(l.valor)||0),0),tInv=lInv.reduce((s,l)=>s+(parseFloat(l.valor)||0),0);
   if(linhas.length>0){let net=tRec-tDep-tInv;rows+=`<tr class="tot"><td style="font-weight:600;">Resultado</td><td class="${net>=0?'cv':'cr'} mo" style="font-weight:600;">${fmt(net)}</td></tr>`;}
+ 
   let cat=cats.find(c=>c.id===aba);
   let recInfo='';
   if(cat&&!FIXAS.includes(cat.id)){
@@ -638,7 +682,10 @@ function renderDetalhe(){
     if(cat.fim)parts.push('fim: '+cat.fim);
     recInfo=`<div class="sf" style="color:var(--P);background:rgba(88,86,214,0.06);">${parts.join(' · ')}</div>`;
   }
+ 
+  // #2 Gráfico ANTES da tabela de lançamentos
   let grafCat=renderGraficosCat(aba);
+ 
   let modoHtml=`<div class="lnc-modos">
     <button class="lm${lncModo==='unico'?' on-p':''}" data-m="unico" onclick="setLncModo('unico')">Único</button>
     <button class="lm${lncModo==='perpetuo'?' on-p':''}" data-m="perpetuo" onclick="setLncModo('perpetuo')">Débito ∞</button>
@@ -649,7 +696,9 @@ function renderDetalhe(){
       <span>×</span>
     </div>
   </div>`;
-  document.getElementById('main').innerHTML=`<div class="tc"><div class="tw"><table><thead><tr><th>Descrição</th><th>Valor</th></tr></thead><tbody>${rows}</tbody></table>${recInfo}${grafCat}<div class="al"><div class="al-tipo"><button class="at ${t==='receita'?'ar':''}" id="atR" onclick="setAbaTipo('receita')">Receita</button><button class="at ${t==='despesa'?'ad':''}" id="atD" onclick="setAbaTipo('despesa')">Despesa</button><button class="at ${t==='investimento'?'ai':''}" id="atI" onclick="setAbaTipo('investimento')">Invest.</button></div>${modoHtml}<div class="al-row"><input type="text" id="nDesc" placeholder="Descrição..."/><input type="number" id="nVal" placeholder="0,00" min="0" step="0.01" inputmode="decimal"/><button class="abtn" onclick="addLinha()">+</button></div></div></div></div>`;
+ 
+  // Ordem: gráfico → tabela → adicionar
+  document.getElementById('main').innerHTML=`<div class="tc"><div class="tw">${grafCat}<table><thead><tr><th>Descrição</th><th>Valor</th></tr></thead><tbody>${rows}</tbody></table>${recInfo}<div class="al"><div class="al-tipo"><button class="at ${t==='receita'?'ar':''}" id="atR" onclick="setAbaTipo('receita')">Receita</button><button class="at ${t==='despesa'?'ad':''}" id="atD" onclick="setAbaTipo('despesa')">Despesa</button><button class="at ${t==='investimento'?'ai':''}" id="atI" onclick="setAbaTipo('investimento')">Invest.</button></div>${modoHtml}<div class="al-row"><input type="text" id="nDesc" placeholder="Descrição..."/><input type="number" id="nVal" placeholder="0,00" min="0" step="0.01" inputmode="decimal"/><button class="abtn" onclick="addLinha()">+</button></div></div></div></div>`;
 }
  
 function setAbaTipo(t){
@@ -683,9 +732,56 @@ function addLinha(){
   salvar();renderDetalhe();
 }
  
-function delLinha(i){gd(aba).splice(i,1);salvar();renderDetalhe();}
-function editDesc(i,v){gd(aba)[i].desc=v;salvar();atualizaResumo();}
-function editVal(i,v){gd(aba)[i].valor=parseFloat(v)||0;salvar();atualizaResumo();}
+function delLinha(i){
+  let linhas=gd(aba);
+  let l=linhas[i];
+  // Propaga remoção para meses futuros se for recorrente/parcelado
+  if(l&&(l.modo==='perpetuo'||l.modo==='recebimento'||l.modo==='parcelas')){
+    propagarDelete(aba,M,Y,l);
+  }
+  linhas.splice(i,1);
+  salvar();renderDetalhe();
+}
+ 
+function editDesc(i,v){
+  let linhas=gd(aba);
+  let l=linhas[i];
+  let descAnterior=l.desc;
+  l.desc=v;
+  // Propaga para meses futuros se recorrente/parcelado
+  if(l&&(l.modo==='perpetuo'||l.modo==='recebimento')){
+    // Usa descAnterior para identificar nos meses futuros, mas como já mudou no objeto
+    // precisamos usar descAnterior diretamente
+    let chaves=[];
+    for(let mi=M+1;mi<12;mi++) chaves.push(chave(mi,Y));
+    for(let yi=Y+1;yi<=Y+2;yi++) for(let mi=0;mi<12;mi++) chaves.push(chave(mi,yi));
+    chaves.forEach(k=>{
+      if(!dados[k]||!dados[k][aba])return;
+      dados[k][aba].forEach(ll=>{
+        if(ll.modo===l.modo&&ll.tipo===l.tipo&&ll.desc===descAnterior){ll.desc=v;}
+      });
+    });
+  } else if(l&&l.modo==='parcelas'&&l.parcId){
+    let chaves=[];
+    for(let mi=M+1;mi<12;mi++) chaves.push(chave(mi,Y));
+    for(let yi=Y+1;yi<=Y+2;yi++) for(let mi=0;mi<12;mi++) chaves.push(chave(mi,yi));
+    chaves.forEach(k=>{
+      if(!dados[k]||!dados[k][aba])return;
+      dados[k][aba].forEach(ll=>{if(ll.parcId===l.parcId)ll.desc=v;});
+    });
+  }
+  salvar();atualizaResumo();
+}
+ 
+function editVal(i,v){
+  let linhas=gd(aba);
+  let l=linhas[i];
+  let novoValor=parseFloat(v)||0;
+  l.valor=novoValor;
+  // Propaga para meses futuros se recorrente/parcelado
+  propagarEdicao(aba,M,Y,l,'valor',novoValor);
+  salvar();atualizaResumo();
+}
  
 function renderGraficos(){
   let el=document.getElementById('subConteudo');
