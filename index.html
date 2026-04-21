@@ -694,7 +694,6 @@ function setAbaTipo(t){
   });
 }
  
-/* ===== AJUSTE: novos lançamentos aparecem no topo (unshift em vez de push) ===== */
 function addLinha(){
   let desc=document.getElementById('nDesc').value.trim(),valor=parseFloat(document.getElementById('nVal').value)||0;
   if(!desc)return;
@@ -769,8 +768,23 @@ function renderGraficos(){
   for(let m=0;m<12;m++){rA.push(totalTipo('receita',m,GY));dA.push(totalTipo('despesa',m,GY));iA.push(totalTipo('investimento',m,GY));sA.push(calcSaldo(m,GY).total);}
   let tRec=rA.reduce((a,v)=>a+v,0),tDep=dA.reduce((a,v)=>a+v,0),tInv=iA.reduce((a,v)=>a+v,0),tSaldo=calcSaldo(11,GY).total;
   let rec=totalTipo('receita'),dep=totalTipo('despesa'),inv=totalTipo('investimento'),maxG=Math.max(rec,dep,inv,1);
+ 
+  // ── GRÁFICO DESPESAS POR CATEGORIA ──────────────────────────────────────
+  // Só mostra categorias onde despesas > receitas.
+  // O valor exibido é a diferença (despesa - receita), não a despesa bruta.
   let cDep=cats.filter(c=>!FIXAS.includes(c.id)&&catAtiva(c,M,Y));
-  let maxD=Math.max(...cDep.map(c=>totalCatTipo(c.id,'despesa')),1);
+  let catNeg=cDep
+    .map(c=>{
+      let r=totalCatTipo(c.id,'receita');
+      let d=totalCatTipo(c.id,'despesa');
+      let saldo=d-r;
+      return{c,saldo};
+    })
+    .filter(x=>x.saldo>0)
+    .sort((a,b)=>b.saldo-a.saldo);
+  let maxD=Math.max(...catNeg.map(x=>x.saldo),1);
+  // ────────────────────────────────────────────────────────────────────────
+ 
   el.innerHTML=`<div class="gc">
     <div class="gcard"><div class="gh"><span>Entradas × saídas — ${MESES[M]}</span></div><div class="gb">
       <div class="br"><div class="bl">Receitas</div><div class="bb"><div class="bf" style="width:${Math.round(rec/maxG*100)}%;background:#2ECC71;"></div></div><div class="bv cv">${fmt(rec)}</div></div>
@@ -778,8 +792,12 @@ function renderGraficos(){
       <div class="br"><div class="bl">Investimentos</div><div class="bb"><div class="bf" style="width:${Math.round(inv/maxG*100)}%;background:#007AFF;"></div></div><div class="bv cb">${fmt(inv)}</div></div>
     </div></div>
     <div class="gcard"><div class="gh"><span>Despesas por categoria — ${MESES[M]}</span></div><div class="gb">
-      ${cDep.map(c=>{let v=totalCatTipo(c.id,'despesa'),p=Math.round(v/maxD*100);return`<div class="br"><div class="bl">${esc(c.nome)}</div><div class="bb"><div class="bf" style="width:${p}%;background:#FF3B30;opacity:${(0.3+0.7*(v/maxD)).toFixed(2)};"></div></div><div class="bv">${fmt(v)}</div></div>`;}).join('')}
-      ${cDep.length===0?'<div style="color:var(--T3);font-size:13px;text-align:center;padding:8px 0;">Nenhuma despesa lançada</div>':''}
+      ${catNeg.map(x=>{
+        let p=Math.round(x.saldo/maxD*100);
+        let opac=(0.3+0.7*(x.saldo/maxD)).toFixed(2);
+        return`<div class="br"><div class="bl">${esc(x.c.nome)}</div><div class="bb"><div class="bf" style="width:${p}%;background:#FF3B30;opacity:${opac};"></div></div><div class="bv cr">${fmt(x.saldo)}</div></div>`;
+      }).join('')}
+      ${catNeg.length===0?'<div style="color:var(--T3);font-size:13px;text-align:center;padding:8px 0;">Nenhuma despesa líquida lançada</div>':''}
     </div></div>
     <div class="gcard">
       <div class="gh">
