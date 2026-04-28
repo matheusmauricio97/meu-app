@@ -110,6 +110,14 @@ tbody td{padding:10px 14px;border-bottom:0.5px solid var(--row-bd);font-size:13p
 tbody td:last-child{text-align:right;}
 tbody tr:last-child td{border-bottom:none;}
 tr.tot td{background:var(--tot-bg);font-weight:600;font-size:13px;}
+/* Resultado destacado no topo da tabela de categorias */
+tr.resultado-topo td{
+  background:rgba(88,86,214,0.10);
+  font-weight:700;
+  font-size:14px;
+  padding:11px 14px;
+  border-bottom:1.5px solid rgba(88,86,214,0.18);
+}
 .cd{display:flex;align-items:center;gap:6px;}
 .cd input{border:none;background:none;font-size:13px;font-family:var(--f);color:var(--TX);width:100%;outline:none;padding:2px 0;}
 .cd input:focus{background:var(--foc-bg);border-radius:4px;padding:2px 6px;}
@@ -249,6 +257,8 @@ tr.tot td{background:var(--tot-bg);font-weight:600;font-size:13px;}
 .sub-ab.on{color:var(--G);font-weight:600;border-bottom-color:var(--G);}
 .g-mini-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px;}
 .g-mini{border-radius:8px;padding:7px 8px;}
+/* valor abaixo do nome no balanço */
+.cat-val-sub{font-size:11px;font-family:var(--m);margin-top:3px;font-weight:600;letter-spacing:-0.2px;}
 </style>
 </head>
 <body>
@@ -522,14 +532,20 @@ function renderBalancoConteudo(){
   rows+=`<tr class="s-rec"><td colspan="2">Receitas</td></tr>`;
   if(carry>0)rows+=`<tr><td>Saldo acumulado anterior<span class="cat-tipo-badge badge-rec">carry</span></td><td class="val-rec">${fmt(carry)}</td></tr>`;
   receitasCat.forEach(item=>{
-    rows+=`<tr onclick="goToTab('${item.c.id}')" style="cursor:pointer;"><td>${esc(item.c.nome)}<span class="cat-tipo-badge badge-rec">entrada</span></td><td class="val-rec">${fmt(item.valor)}</td></tr>`;
+    rows+=`<tr onclick="goToTab('${item.c.id}')" style="cursor:pointer;"><td>
+      <div>${esc(item.c.nome)}<span class="cat-tipo-badge badge-rec">entrada</span></div>
+      <div class="cat-val-sub" style="color:var(--G);">${fmt(item.valor)}</div>
+    </td><td class="val-rec">${fmt(item.valor)}</td></tr>`;
     if(item.dep>0)rows+=`<tr onclick="goToTab('${item.c.id}')" style="cursor:pointer;opacity:0.8;"><td style="padding-left:28px;font-size:12px;color:var(--T3);">↳ despesas internas</td><td class="val-dep" style="font-size:12px;">-${fmt(item.dep)}</td></tr>`;
     if(item.inv>0)rows+=`<tr onclick="goToTab('${item.c.id}')" style="cursor:pointer;opacity:0.8;"><td style="padding-left:28px;font-size:12px;color:var(--T3);">↳ invest. internos</td><td class="val-inv" style="font-size:12px;">-${fmt(item.inv)}</td></tr>`;
   });
-  rows+=`<tr class="tot"><td>Total receitas</td><td class="val-rec">${fmt(totalRec+(carry>0?carry:0))}</td></tr>`;
+  rows+=`<tr class="tot"><td>Total receitas</td><td class="val-rec">${fmt(totalRec)}</td></tr>`;
   rows+=`<tr class="s-dep"><td colspan="2">Despesas</td></tr>`;
   despesasCat.forEach(item=>{
-    rows+=`<tr onclick="goToTab('${item.c.id}')" style="cursor:pointer;"><td>${esc(item.c.nome)}<span class="cat-tipo-badge badge-dep">a pagar</span></td><td class="val-dep">${fmt(item.valor)}</td></tr>`;
+    rows+=`<tr onclick="goToTab('${item.c.id}')" style="cursor:pointer;"><td>
+      <div>${esc(item.c.nome)}<span class="cat-tipo-badge badge-dep">a pagar</span></div>
+      <div class="cat-val-sub" style="color:var(--RM);">${fmt(item.valor)}</div>
+    </td><td class="val-dep">${fmt(item.valor)}</td></tr>`;
   });
   rows+=`<tr class="tot"><td>Total despesas</td><td class="val-dep">${fmt(totalDep)}</td></tr>`;
   rows+=`<tr class="tot"><td style="font-weight:700;">Saldo do mês</td><td class="${saldo>=0?'val-rec':'val-dep'}" style="font-weight:700;">${fmt(saldo)}</td></tr>`;
@@ -652,12 +668,21 @@ function renderDetalhe(){
     return`<tr class="${secClass}"><td colspan="2">${label}</td></tr>${rows}<tr class="tot"><td>Total ${label.toLowerCase()}</td><td class="${colorClass} mo">${fmt(tot)}</td></tr>`;
   }
  
+  // ── Calcula o Resultado antecipadamente para mostrar no topo ──
+  let tRec=lRec.reduce((s,l)=>s+(parseFloat(l.valor)||0),0);
+  let tDep=lDep.reduce((s,l)=>s+(parseFloat(l.valor)||0),0);
+  let tInv=lInv.reduce((s,l)=>s+(parseFloat(l.valor)||0),0);
+  let net=tRec-tDep-tInv;
+ 
+  // Linha de Resultado no topo (logo após o thead)
+  let rowResultadoTopo = linhas.length>0
+    ? `<tr class="resultado-topo"><td style="font-weight:700;">Resultado</td><td class="${net>=0?'cv':'cr'} mo" style="font-weight:700;text-align:right;">${fmt(net)}</td></tr>`
+    : '';
+ 
   let rows='';
   rows+=blocoLinhas(lRec,'receita','cv','Receitas');
   rows+=blocoLinhas(lDep,'despesa','cr','Despesas');
   rows+=blocoLinhas(lInv,'investimento','cb','Investimentos');
-  let tRec=lRec.reduce((s,l)=>s+(parseFloat(l.valor)||0),0),tDep=lDep.reduce((s,l)=>s+(parseFloat(l.valor)||0),0),tInv=lInv.reduce((s,l)=>s+(parseFloat(l.valor)||0),0);
-  if(linhas.length>0){let net=tRec-tDep-tInv;rows+=`<tr class="tot"><td style="font-weight:600;">Resultado</td><td class="${net>=0?'cv':'cr'} mo" style="font-weight:600;">${fmt(net)}</td></tr>`;}
  
   let cat=cats.find(c=>c.id===aba);
   let recInfo='';
@@ -681,7 +706,7 @@ function renderDetalhe(){
     </div>
   </div>`;
  
-  document.getElementById('main').innerHTML=`<div class="tc"><div class="tw">${grafCat}<div class="al"><div class="al-tipo"><button class="at ${t==='receita'?'ar':''}" id="atR" onclick="setAbaTipo('receita')">Receita</button><button class="at ${t==='despesa'?'ad':''}" id="atD" onclick="setAbaTipo('despesa')">Despesa</button><button class="at ${t==='investimento'?'ai':''}" id="atI" onclick="setAbaTipo('investimento')">Invest.</button></div>${modoHtml}<div class="al-row"><input type="text" id="nDesc" placeholder="Descrição..."/><input type="number" id="nVal" placeholder="0,00" min="0" step="0.01" inputmode="decimal"/><button class="abtn" onclick="addLinha()">+</button></div></div><table><thead><tr><th>Descrição</th><th>Valor</th></tr></thead><tbody>${rows}</tbody></table>${recInfo}</div></div>`;
+  document.getElementById('main').innerHTML=`<div class="tc"><div class="tw">${grafCat}<div class="al"><div class="al-tipo"><button class="at ${t==='receita'?'ar':''}" id="atR" onclick="setAbaTipo('receita')">Receita</button><button class="at ${t==='despesa'?'ad':''}" id="atD" onclick="setAbaTipo('despesa')">Despesa</button><button class="at ${t==='investimento'?'ai':''}" id="atI" onclick="setAbaTipo('investimento')">Invest.</button></div>${modoHtml}<div class="al-row"><input type="text" id="nDesc" placeholder="Descrição..."/><input type="number" id="nVal" placeholder="0,00" min="0" step="0.01" inputmode="decimal"/><button class="abtn" onclick="addLinha()">+</button></div></div><table><thead><tr><th>Descrição</th><th>Valor</th></tr></thead><tbody>${rowResultadoTopo}${rows}</tbody></table>${recInfo}</div></div>`;
 }
  
 function setAbaTipo(t){
@@ -769,9 +794,6 @@ function renderGraficos(){
   let tRec=rA.reduce((a,v)=>a+v,0),tDep=dA.reduce((a,v)=>a+v,0),tInv=iA.reduce((a,v)=>a+v,0),tSaldo=calcSaldo(11,GY).total;
   let rec=totalTipo('receita'),dep=totalTipo('despesa'),inv=totalTipo('investimento'),maxG=Math.max(rec,dep,inv,1);
  
-  // ── GRÁFICO DESPESAS POR CATEGORIA ──────────────────────────────────────
-  // Só mostra categorias onde despesas > receitas.
-  // O valor exibido é a diferença (despesa - receita), não a despesa bruta.
   let cDep=cats.filter(c=>!FIXAS.includes(c.id)&&catAtiva(c,M,Y));
   let catNeg=cDep
     .map(c=>{
@@ -783,7 +805,6 @@ function renderGraficos(){
     .filter(x=>x.saldo>0)
     .sort((a,b)=>b.saldo-a.saldo);
   let maxD=Math.max(...catNeg.map(x=>x.saldo),1);
-  // ────────────────────────────────────────────────────────────────────────
  
   el.innerHTML=`<div class="gc">
     <div class="gcard"><div class="gh"><span>Entradas × saídas — ${MESES[M]}</span></div><div class="gb">
