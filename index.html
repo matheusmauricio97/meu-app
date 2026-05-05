@@ -110,7 +110,6 @@ tbody td{padding:10px 14px;border-bottom:0.5px solid var(--row-bd);font-size:13p
 tbody td:last-child{text-align:right;}
 tbody tr:last-child td{border-bottom:none;}
 tr.tot td{background:var(--tot-bg);font-weight:600;font-size:13px;}
-/* Resultado destacado no topo da tabela de categorias */
 tr.resultado-topo td{
   background:rgba(88,86,214,0.10);
   font-weight:700;
@@ -119,8 +118,11 @@ tr.resultado-topo td{
   border-bottom:1.5px solid rgba(88,86,214,0.18);
 }
 .cd{display:flex;align-items:center;gap:6px;}
-.cd input{border:none;background:none;font-size:13px;font-family:var(--f);color:var(--TX);width:100%;outline:none;padding:2px 0;}
+/* Remove browser autocomplete underline on inputs */
+.cd input{border:none;background:none;font-size:13px;font-family:var(--f);color:var(--TX);width:100%;outline:none;padding:2px 0;text-decoration:none !important;-webkit-text-decoration:none !important;}
 .cd input:focus{background:var(--foc-bg);border-radius:4px;padding:2px 6px;}
+/* Also suppress autofill highlight */
+.cd input:-webkit-autofill{-webkit-box-shadow:0 0 0 1000px transparent inset !important;box-shadow:0 0 0 1000px transparent inset !important;}
 .cv-cell{display:flex;align-items:center;justify-content:flex-end;gap:4px;flex-wrap:nowrap;}
 .cv-cell input{border:none;background:none;font-size:13px;font-family:var(--m);color:var(--TX);width:76px;text-align:right;outline:none;padding:2px 0;}
 .cv-cell input:focus{background:var(--foc-bg);border-radius:4px;padding:2px 6px;}
@@ -257,7 +259,6 @@ tr.resultado-topo td{
 .sub-ab.on{color:var(--G);font-weight:600;border-bottom-color:var(--G);}
 .g-mini-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px;}
 .g-mini{border-radius:8px;padding:7px 8px;}
-/* valor abaixo do nome no balanço */
 .cat-val-sub{font-size:11px;font-family:var(--m);margin-top:3px;font-weight:600;letter-spacing:-0.2px;}
 </style>
 </head>
@@ -290,7 +291,7 @@ tr.resultado-topo td{
     <h3>Categorias</h3>
     <div class="clist" id="clist"></div>
     <div class="slbl">Nova categoria</div>
-    <input class="mi" id="nNome" placeholder="Nome da categoria..."/>
+    <input class="mi" id="nNome" placeholder="Nome da categoria..." autocomplete="off"/>
     <div class="slbl" style="margin-top:4px;">Recorrência</div>
     <div class="rec-opts" id="rec-opts-new">
       <div class="rec-opt on" data-rec="perpetua" onclick="setRec('perpetua','new')">Perpétua</div>
@@ -322,7 +323,7 @@ tr.resultado-topo td{
       <h3>Editar categoria</h3>
       <span class="edit-badge">Editando</span>
     </div>
-    <input class="mi" id="eNome" placeholder="Nome da categoria..."/>
+    <input class="mi" id="eNome" placeholder="Nome da categoria..." autocomplete="off"/>
     <div class="slbl">Recorrência</div>
     <div class="rec-opts" id="rec-opts-edit">
       <div class="rec-opt on" data-rec="perpetua" onclick="setRec('perpetua','edit')">Perpétua</div>
@@ -457,22 +458,37 @@ function totalTipo(tipo,m,y){
   return cats.filter(c=>!FIXAS.includes(c.id)&&catAtiva(c,m??M,y??Y))
     .reduce((s,c)=>s+gd(c.id,m??M,y??Y).filter(l=>l.tipo===tipo).reduce((a,l)=>a+(parseFloat(l.valor)||0),0),0);
 }
-function saldoBruto(m,y){return totalTipo('receita',m,y)-totalTipo('despesa',m,y)-totalTipo('investimento',m,y);}
-function calcSaldo(m,y){
+ 
+// Carry: soma dos saldos positivos dos meses anteriores no mesmo ano
+function calcCarry(m,y){
   let acum=0;
-  for(let i=0;i<m;i++){acum+=saldoBruto(i,y);if(acum<0)acum=0;}
-  let carry=acum,bruto=saldoBruto(m,y),total=carry+bruto;
-  return{carry,bruto,total:total<0?bruto:total};
+  for(let i=0;i<m;i++){
+    let s=totalTipo('receita',i,y)-totalTipo('despesa',i,y)-totalTipo('investimento',i,y);
+    acum+=s;
+    if(acum<0)acum=0; // carry nunca fica negativo
+  }
+  return acum;
 }
+// Saldo do mês = receitas + carry - despesas - investimentos
+function saldoDoMes(m,y){
+  let rec=totalTipo('receita',m??M,y??Y);
+  let dep=totalTipo('despesa',m??M,y??Y);
+  let inv=totalTipo('investimento',m??M,y??Y);
+  let carry=calcCarry(m??M,y??Y);
+  return rec+carry-dep-inv;
+}
+ 
 function totalCatTipo(cid,tipo,m,y){return gd(cid,m??M,y??Y).filter(l=>l.tipo===tipo).reduce((s,l)=>s+(parseFloat(l.valor)||0),0);}
  
 function atualizaResumo(){
-  let rec=totalTipo('receita'),dep=totalTipo('despesa')+totalTipo('investimento');
-  let{carry,total}=calcSaldo(M,Y);
+  let rec=totalTipo('receita'),dep=totalTipo('despesa'),inv=totalTipo('investimento');
+  let carry=calcCarry(M,Y);
+  let saldo=rec+carry-dep-inv;
   document.getElementById('sRec').textContent=fmtS(rec);
-  document.getElementById('sDep').textContent=fmtS(dep);
-  document.getElementById('sSaldo').textContent=fmtS(total);
-  document.getElementById('sHint').textContent=carry>0?'+ ant. '+fmtS(carry):'';
+  document.getElementById('sDep').textContent=fmtS(dep+inv);
+  document.getElementById('sSaldo').textContent=fmtS(saldo);
+  let hint=document.getElementById('sHint');
+  if(hint)hint.textContent=carry>0?'+ ant. '+fmtS(carry):'';
 }
  
 function renderAbas(){
@@ -520,8 +536,8 @@ function renderSubConteudo(){
 function renderBalancoConteudo(){
   let catAtivas=cats.filter(c=>!FIXAS.includes(c.id)&&catAtiva(c,M,Y));
   let totalRec=totalTipo('receita'),totalDep=totalTipo('despesa'),totalInv=totalTipo('investimento');
-  let{carry,total:saldo}=calcSaldo(M,Y);
-  let ftxt=carry>0?'Inclui saldo acumulado positivo dos meses anteriores':'Receitas − Despesas − Invest.';
+  let carry=calcCarry(M,Y);
+  let saldo=totalRec+carry-totalDep-totalInv;
   let receitasCat=[],despesasCat=[];
   catAtivas.forEach(c=>{
     let rec=totalCatTipo(c.id,'receita'),dep=totalCatTipo(c.id,'despesa'),inv=totalCatTipo(c.id,'investimento'),sal=rec-dep-inv;
@@ -550,7 +566,7 @@ function renderBalancoConteudo(){
   rows+=`<tr class="tot"><td>Total despesas</td><td class="val-dep">${fmt(totalDep)}</td></tr>`;
   rows+=`<tr class="tot"><td style="font-weight:700;">Saldo do mês</td><td class="${saldo>=0?'val-rec':'val-dep'}" style="font-weight:700;">${fmt(saldo)}</td></tr>`;
   let el=document.getElementById('subConteudo');
-  if(el)el.innerHTML=`<div class="tc"><div class="tw"><table><thead><tr><th>Categoria</th><th>Valor</th></tr></thead><tbody>${rows}</tbody></table><div class="sf">${ftxt}<br><span style="color:var(--G);font-size:10px;">Toque em uma categoria para ver os lançamentos</span></div></div></div>`;
+  if(el)el.innerHTML=`<div class="tc"><div class="tw"><table><thead><tr><th>Categoria</th><th>Valor</th></tr></thead><tbody>${rows}</tbody></table><div class="sf">${carry>0?'Inclui saldo acumulado positivo dos meses anteriores':'Receitas − Despesas − Investimentos'}<br><span style="color:var(--G);font-size:10px;">Toque em uma categoria para ver os lançamentos</span></div></div></div>`;
 }
  
 function goToTab(id){aba=id;renderAbas();renderMain();}
@@ -661,20 +677,18 @@ function renderDetalhe(){
       if(l.modo==='perpetuo')tag=`<span class="ptag ptag-p">∞ déb</span>`;
       else if(l.modo==='recebimento')tag=`<span class="ptag ptag-r">∞ rec</span>`;
       else if(l.modo==='parcelas'&&l.parcTotal)tag=`<span class="ptag ptag-x">${l.parcAtual}/${l.parcTotal}x</span>`;
-      return`<tr><td><div class="cd"><button class="dbtn" onclick="delLinha(${i})">&#215;</button><input type="text" value="${esc(l.desc)}" oninput="editDesc(${i},this.value)"/></div></td><td><div class="cv-cell">${tag}<input type="number" value="${l.valor}" oninput="editVal(${i},this.value)" step="0.01" min="0" inputmode="decimal"/></div></td></tr>`;
+      return`<tr><td><div class="cd"><button class="dbtn" onclick="delLinha(${i})">&#215;</button><input type="text" value="${esc(l.desc)}" oninput="editDesc(${i},this.value)" autocomplete="off" autocorrect="off" spellcheck="false"/></div></td><td><div class="cv-cell">${tag}<input type="number" value="${l.valor}" oninput="editVal(${i},this.value)" step="0.01" min="0" inputmode="decimal" autocomplete="off"/></div></td></tr>`;
     }).join('');
     let tot=list.reduce((s,l)=>s+(parseFloat(l.valor)||0),0);
     let secClass=tipo==='receita'?'s-rec':tipo==='despesa'?'s-dep':'s-inv';
     return`<tr class="${secClass}"><td colspan="2">${label}</td></tr>${rows}<tr class="tot"><td>Total ${label.toLowerCase()}</td><td class="${colorClass} mo">${fmt(tot)}</td></tr>`;
   }
  
-  // ── Calcula o Resultado antecipadamente para mostrar no topo ──
   let tRec=lRec.reduce((s,l)=>s+(parseFloat(l.valor)||0),0);
   let tDep=lDep.reduce((s,l)=>s+(parseFloat(l.valor)||0),0);
   let tInv=lInv.reduce((s,l)=>s+(parseFloat(l.valor)||0),0);
   let net=tRec-tDep-tInv;
  
-  // Linha de Resultado no topo (logo após o thead)
   let rowResultadoTopo = linhas.length>0
     ? `<tr class="resultado-topo"><td style="font-weight:700;">Resultado</td><td class="${net>=0?'cv':'cr'} mo" style="font-weight:700;text-align:right;">${fmt(net)}</td></tr>`
     : '';
@@ -701,12 +715,12 @@ function renderDetalhe(){
     <button class="lm${lncModo==='recebimento'?' on-g':''}" data-m="recebimento" onclick="setLncModo('recebimento')">Receb. ∞</button>
     <button class="lm${lncModo==='parcelas'?' on-x':''}" data-m="parcelas" onclick="setLncModo('parcelas')">Parcelas</button>
     <div class="parc-wrap${lncModo==='parcelas'?' show':''}" id="parcWrap">
-      <input type="number" id="nParcelas" value="${lncParcelas}" min="2" max="360" oninput="lncParcelas=parseInt(this.value)||2" inputmode="numeric"/>
+      <input type="number" id="nParcelas" value="${lncParcelas}" min="2" max="360" oninput="lncParcelas=parseInt(this.value)||2" inputmode="numeric" autocomplete="off"/>
       <span>×</span>
     </div>
   </div>`;
  
-  document.getElementById('main').innerHTML=`<div class="tc"><div class="tw">${grafCat}<div class="al"><div class="al-tipo"><button class="at ${t==='receita'?'ar':''}" id="atR" onclick="setAbaTipo('receita')">Receita</button><button class="at ${t==='despesa'?'ad':''}" id="atD" onclick="setAbaTipo('despesa')">Despesa</button><button class="at ${t==='investimento'?'ai':''}" id="atI" onclick="setAbaTipo('investimento')">Invest.</button></div>${modoHtml}<div class="al-row"><input type="text" id="nDesc" placeholder="Descrição..."/><input type="number" id="nVal" placeholder="0,00" min="0" step="0.01" inputmode="decimal"/><button class="abtn" onclick="addLinha()">+</button></div></div><table><thead><tr><th>Descrição</th><th>Valor</th></tr></thead><tbody>${rowResultadoTopo}${rows}</tbody></table>${recInfo}</div></div>`;
+  document.getElementById('main').innerHTML=`<div class="tc"><div class="tw">${grafCat}<div class="al"><div class="al-tipo"><button class="at ${t==='receita'?'ar':''}" id="atR" onclick="setAbaTipo('receita')">Receita</button><button class="at ${t==='despesa'?'ad':''}" id="atD" onclick="setAbaTipo('despesa')">Despesa</button><button class="at ${t==='investimento'?'ai':''}" id="atI" onclick="setAbaTipo('investimento')">Invest.</button></div>${modoHtml}<div class="al-row"><input type="text" id="nDesc" placeholder="Descrição..." autocomplete="off" autocorrect="off" spellcheck="false"/><input type="number" id="nVal" placeholder="0,00" min="0" step="0.01" inputmode="decimal" autocomplete="off"/><button class="abtn" onclick="addLinha()">+</button></div></div><table><thead><tr><th>Descrição</th><th>Valor</th></tr></thead><tbody>${rowResultadoTopo}${rows}</tbody></table>${recInfo}</div></div>`;
 }
  
 function setAbaTipo(t){
@@ -790,8 +804,8 @@ function renderGraficos(){
   let el=document.getElementById('subConteudo');
   if(!el)return;
   let rA=[],dA=[],iA=[],sA=[];
-  for(let m=0;m<12;m++){rA.push(totalTipo('receita',m,GY));dA.push(totalTipo('despesa',m,GY));iA.push(totalTipo('investimento',m,GY));sA.push(calcSaldo(m,GY).total);}
-  let tRec=rA.reduce((a,v)=>a+v,0),tDep=dA.reduce((a,v)=>a+v,0),tInv=iA.reduce((a,v)=>a+v,0),tSaldo=calcSaldo(11,GY).total;
+  for(let m=0;m<12;m++){rA.push(totalTipo('receita',m,GY));dA.push(totalTipo('despesa',m,GY));iA.push(totalTipo('investimento',m,GY));sA.push(saldoDoMes(m,GY));}
+  let tRec=rA.reduce((a,v)=>a+v,0),tDep=dA.reduce((a,v)=>a+v,0),tInv=iA.reduce((a,v)=>a+v,0),tSaldo=rA.reduce((a,v)=>a+v,0)-dA.reduce((a,v)=>a+v,0)-iA.reduce((a,v)=>a+v,0);
   let rec=totalTipo('receita'),dep=totalTipo('despesa'),inv=totalTipo('investimento'),maxG=Math.max(rec,dep,inv,1);
  
   let cDep=cats.filter(c=>!FIXAS.includes(c.id)&&catAtiva(c,M,Y));
@@ -868,7 +882,7 @@ function renderAnualConteudo(){
   let el=document.getElementById('aConteudo');if(!el)return;
   let tR=0,tD=0,tI=0,tS=0,rows='';
   for(let m=0;m<12;m++){
-    let r=totalTipo('receita',m,AY),d=totalTipo('despesa',m,AY),i=totalTipo('investimento',m,AY),s=calcSaldo(m,AY).total;
+    let r=totalTipo('receita',m,AY),d=totalTipo('despesa',m,AY),i=totalTipo('investimento',m,AY),s=saldoDoMes(m,AY);
     tR+=r;tD+=d;tI+=i;tS+=s;
     let vazio=r===0&&d===0&&i===0;
     rows+=`<tr style="${vazio?'opacity:0.4;':''}"><td>${MC[m]}</td><td class="cv">${r>0?fmtA(r):'—'}</td><td class="cr">${d>0?fmtA(d):'—'}</td><td class="cb">${i>0?fmtA(i):'—'}</td><td class="${s>=0?'cp':'cr'}">${fmtA(s)}</td></tr>`;
