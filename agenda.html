@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="WorkFlow">
+<meta name="theme-color" content="#534AB7">
+<title>WorkFlow</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="manifest" id="pwa-manifest">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#ffffff;--bg2:#f7f7f5;--bg3:#f0efe9;
+  --tx:#1a1a1a;--tx2:#666;--tx3:#999;
+  --br:rgba(0,0,0,0.12);--br2:rgba(0,0,0,0.2);
+  --purple:#534AB7;--purple-l:#EEEDFE;--purple-m:#AFA9EC;--purple-d:#3C3489;
+  --r:8px;--rl:12px;
+  --success-bg:#EAF3DE;--success-tx:#3B6D11;--success-br:#97C459;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#1c1c1e;--bg2:#2c2c2e;--bg3:#3a3a3c;
+    --tx:#f5f5f5;--tx2:#aaa;--tx3:#666;
+    --br:rgba(255,255,255,0.1);--br2:rgba(255,255,255,0.2);
+    --purple-l:#2a2660;--purple-m:#534AB7;--purple-d:#AFA9EC;
+    --success-bg:#1a2e0a;--success-tx:#97C459;--success-br:#3B6D11;
+  }
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg3);color:var(--tx);height:100dvh;overflow:hidden}
+ 
+/* Layout */
+.app{display:flex;height:100dvh;overflow:hidden}
+.sidebar{width:220px;background:var(--bg);border-right:0.5px solid var(--br);display:flex;flex-direction:column;flex-shrink:0;transition:transform .25s;z-index:20}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.aip{width:0;background:var(--bg);border-left:0.5px solid var(--br);display:flex;flex-direction:column;overflow:hidden;transition:width .25s;flex-shrink:0}
+.aip.open{width:300px}
+ 
+/* Sidebar */
+.logo{padding:16px 18px;border-bottom:0.5px solid var(--br);display:flex;align-items:center;justify-content:space-between}
+.logo-name{font-size:15px;font-weight:600;color:var(--tx)}
+.logo-sub{font-size:11px;color:var(--tx3);margin-top:1px}
+.nav{padding:8px 0;flex:1;overflow-y:auto}
+.ni{display:flex;align-items:center;gap:9px;padding:9px 18px;font-size:13px;color:var(--tx2);cursor:pointer;transition:background .15s;user-select:none}
+.ni:hover{background:var(--bg2)}
+.ni.on{color:var(--tx);background:var(--bg2);font-weight:500}
+.ni i{font-size:16px;flex-shrink:0}
+.ni .nb{margin-left:auto;font-size:11px;background:var(--bg3);padding:1px 6px;border-radius:20px;color:var(--tx3)}
+.nsec{padding:14px 18px 6px;font-size:10px;color:var(--tx3);letter-spacing:.08em;text-transform:uppercase}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.sidebar-bottom{padding:12px 18px;border-top:0.5px solid var(--br)}
+.settings-btn{display:flex;align-items:center;gap:8px;padding:8px 0;font-size:13px;color:var(--tx2);cursor:pointer;background:none;border:none;width:100%}
+.settings-btn:hover{color:var(--tx)}
+ 
+/* Topbar */
+.topbar{background:var(--bg);border-bottom:0.5px solid var(--br);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-shrink:0}
+.ptitle{font-size:14px;font-weight:500;color:var(--tx)}
+.tbr{display:flex;align-items:center;gap:6px}
+.vtog{display:flex;background:var(--bg2);border-radius:var(--r);padding:3px;gap:2px}
+.vb{padding:5px 9px;font-size:12px;color:var(--tx2);border-radius:6px;cursor:pointer;border:none;background:transparent;display:flex;align-items:center;gap:4px;transition:all .15s}
+.vb.on{background:var(--bg);color:var(--tx);border:0.5px solid var(--br)}
+.abtn{display:flex;align-items:center;gap:5px;padding:7px 12px;font-size:12px;font-weight:500;color:var(--tx);background:var(--bg);border:0.5px solid var(--br2);border-radius:var(--r);cursor:pointer;transition:background .15s}
+.abtn:hover{background:var(--bg2)}
+.aibtn{display:flex;align-items:center;gap:5px;padding:7px 12px;font-size:12px;font-weight:500;color:var(--purple-d);background:var(--purple-l);border:0.5px solid var(--purple-m);border-radius:var(--r);cursor:pointer;transition:all .15s}
+.aibtn:hover{filter:brightness(.95)}
+.hmbg{display:none;align-items:center;justify-content:center;width:32px;height:32px;border:none;background:transparent;cursor:pointer;color:var(--tx);border-radius:var(--r)}
+ 
+/* Content */
+.content{flex:1;overflow-y:auto;padding:16px;-webkit-overflow-scrolling:touch}
+.sh{display:flex;align-items:center;gap:7px;margin-bottom:10px}
+.stitle{font-size:12px;font-weight:500;color:var(--tx2)}
+.cb{background:var(--bg2);padding:1px 6px;border-radius:20px;font-size:11px;color:var(--tx3)}
+.tlist{display:flex;flex-direction:column;gap:6px;margin-bottom:20px}
+.tc{background:var(--bg);border:0.5px solid var(--br);border-radius:var(--r);padding:11px 12px;display:flex;align-items:flex-start;gap:10px;cursor:pointer;transition:border-color .15s;-webkit-tap-highlight-color:transparent}
+.tc:hover{border-color:var(--br2)}
+.tc:hover .ta{opacity:1}
+.chk{width:16px;height:16px;border-radius:4px;border:1px solid var(--br2);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s}
+.chk.done{background:var(--success-bg);border-color:var(--success-br)}
+.chk.done i{font-size:10px;color:var(--success-tx)}
+.ti2{flex:1;min-width:0}
+.tn{font-size:13px;color:var(--tx);margin-bottom:4px;line-height:1.35}
+.tn.done{color:var(--tx3);text-decoration:line-through}
+.tm{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.bdg{font-size:11px;padding:2px 7px;border-radius:20px;font-weight:500;white-space:nowrap}
+.bdg.urgent{background:#FCEBEB;color:#A32D2D}
+.bdg.medium{background:#FAEEDA;color:#854F0B}
+.bdg.low{background:#EAF3DE;color:#3B6D11}
+.td{font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:3px}
+.td i{font-size:12px}
+.ta{display:flex;gap:2px;opacity:0;transition:opacity .15s;margin-left:auto;flex-shrink:0}
+.ib{width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:5px;border:none;background:transparent;cursor:pointer;color:var(--tx3);transition:all .15s}
+.ib:hover{background:var(--bg2);color:var(--tx)}
+ 
+/* Kanban */
+.kanban{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.kcol{background:var(--bg2);border-radius:var(--r);padding:10px}
+.kch{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.kct{font-size:12px;font-weight:500;color:var(--tx2)}
+.kc{background:var(--bg);border:0.5px solid var(--br);border-radius:var(--r);padding:10px;margin-bottom:7px;cursor:pointer;transition:border-color .15s}
+.kc:hover{border-color:var(--br2)}
+.kcn{font-size:12px;color:var(--tx);margin:5px 0 8px;line-height:1.35}
+.kcf{display:flex;align-items:center;justify-content:space-between;gap:4px}
+.kd{font-size:10px;color:var(--tx3);display:flex;align-items:center;gap:2px}
+.kd i{font-size:11px}
+.kadd{display:flex;align-items:center;gap:5px;padding:7px 8px;font-size:12px;color:var(--tx3);cursor:pointer;border-radius:var(--r);border:0.5px dashed var(--br);width:100%;background:transparent;transition:all .15s}
+.kadd:hover{background:var(--bg);color:var(--tx2)}
+ 
+/* AI Panel */
+.aih{padding:14px 16px;border-bottom:0.5px solid var(--br);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.ait{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:500;color:var(--tx)}
+.ait i{color:var(--purple);font-size:17px}
+.aim{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:8px;-webkit-overflow-scrolling:touch}
+.am{max-width:92%;padding:9px 11px;border-radius:var(--r);font-size:13px;line-height:1.5}
+.am.bot{background:var(--purple-l);color:var(--purple-d);align-self:flex-start;border-radius:4px 10px 10px 10px}
+.am.usr{background:var(--bg2);color:var(--tx);align-self:flex-end;border-radius:10px 4px 10px 10px}
+.aia{padding:10px 14px;border-top:0.5px solid var(--br);flex-shrink:0}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.chip{padding:4px 9px;font-size:11px;border:0.5px solid var(--purple-m);border-radius:20px;color:var(--purple);background:var(--purple-l);cursor:pointer;transition:background .15s;white-space:nowrap}
+.chip:hover{filter:brightness(.95)}
+.air{display:flex;gap:7px}
+.ainput{flex:1;padding:7px 10px;font-size:13px;border-radius:var(--r);border:0.5px solid var(--br2);background:var(--bg);color:var(--tx);resize:none;font-family:inherit;line-height:1.4}
+.ainput:focus{outline:none;border-color:var(--purple-m)}
+.aisend{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:var(--r);border:none;background:var(--purple);color:white;cursor:pointer;flex-shrink:0;align-self:flex-end;transition:background .15s}
+.aisend:hover{background:var(--purple-d)}
+.aisend:disabled{background:var(--bg2);color:var(--tx3);cursor:not-allowed}
+ 
+/* Modal Overlay */
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:100;align-items:center;justify-content:center;padding:16px}
+.mo.open{display:flex}
+.modal{background:var(--bg);border-radius:var(--rl);border:0.5px solid var(--br);padding:22px;width:100%;max-width:420px;max-height:90dvh;overflow-y:auto}
+.modal h3{font-size:15px;font-weight:500;color:var(--tx);margin-bottom:18px}
+.fg{margin-bottom:13px}
+.fl{font-size:11px;font-weight:500;color:var(--tx2);display:block;margin-bottom:5px}
+.fi{width:100%;padding:8px 10px;font-size:13px;border-radius:var(--r);border:0.5px solid var(--br2);background:var(--bg);color:var(--tx);font-family:inherit}
+.fi:focus{outline:none;border-color:var(--purple-m)}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mf{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+.bcn{padding:7px 14px;font-size:13px;color:var(--tx2);background:transparent;border:0.5px solid var(--br2);border-radius:var(--r);cursor:pointer}
+.bsv{padding:7px 14px;font-size:13px;font-weight:500;color:white;background:var(--purple);border:none;border-radius:var(--r);cursor:pointer}
+.bsv:hover{background:var(--purple-d)}
+ 
+/* Settings */
+.key-banner{margin:12px 16px 0;padding:10px 12px;background:var(--purple-l);border:0.5px solid var(--purple-m);border-radius:var(--r);font-size:12px;color:var(--purple-d);cursor:pointer}
+.key-banner i{vertical-align:-2px;margin-right:4px}
+ 
+/* Toast */
+.toast{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%) translateY(80px);background:var(--bg);border:0.5px solid var(--br2);border-radius:var(--r);padding:9px 16px;font-size:13px;color:var(--tx);transition:transform .3s;z-index:200;white-space:nowrap;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0)}
+ 
+/* Sidebar overlay for mobile */
+.sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:19}
+ 
+/* Empty */
+.empty{text-align:center;padding:40px 20px;color:var(--tx3)}
+.empty i{font-size:28px;margin-bottom:8px;display:block}
+.empty p{font-size:13px}
+ 
+/* Mobile */
+@media(max-width:640px){
+  .sidebar{position:fixed;top:0;left:0;bottom:0;transform:translateX(-100%);z-index:20;width:240px}
+  .sidebar.mob-open{transform:translateX(0)}
+  .sb-overlay.show{display:block}
+  .aip.open{position:fixed;inset:0;width:100%;z-index:18}
+  .hmbg{display:flex}
+  .vtog{display:none}
+  .kanban{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:380px){
+  .abtn span{display:none}
+  .aibtn span{display:none}
+}
+</style>
+</head>
+<body>
+ 
+<div class="app" id="app">
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="logo">
+      <div>
+        <div class="logo-name">WorkFlow</div>
+        <div style="font-size:11px;color:var(--tx3);margin-top:1px">Gerenciador inteligente</div>
+      </div>
+    </div>
+    <div class="nav" id="nav">
+      <div class="ni on" data-f="all" onclick="setFilter(this)"><i class="ti ti-layout-dashboard"></i>Início<span class="nb" id="nb-all">0</span></div>
+      <div class="ni" data-f="today" onclick="setFilter(this)"><i class="ti ti-sun"></i>Hoje<span class="nb" id="nb-today">0</span></div>
+      <div class="ni" data-f="todo" onclick="setFilter(this)"><i class="ti ti-checklist"></i>A fazer<span class="nb" id="nb-todo">0</span></div>
+      <div class="ni" data-f="urgent" onclick="setFilter(this)"><i class="ti ti-flag"></i>Urgentes<span class="nb" id="nb-urgent">0</span></div>
+      <div class="ni" data-f="done" onclick="setFilter(this)"><i class="ti ti-circle-check"></i>Concluídas<span class="nb" id="nb-done">0</span></div>
+      <div class="nsec">Categorias</div>
+      <div id="catnav"></div>
+    </div>
+    <div class="sidebar-bottom">
+      <button class="settings-btn" onclick="openSettings()"><i class="ti ti-settings" style="font-size:16px"></i>Configurações</button>
+    </div>
+  </div>
+  <div class="sb-overlay" id="sb-overlay" onclick="closeSidebar()"></div>
+ 
+  <!-- Main -->
+  <div class="main">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="hmbg" onclick="toggleSidebar()" aria-label="Menu"><i class="ti ti-menu-2" style="font-size:20px"></i></button>
+        <span class="ptitle" id="ptitle">Todas as tarefas</span>
+      </div>
+      <div class="tbr">
+        <div class="vtog">
+          <button class="vb on" id="vbl" onclick="switchView('list')"><i class="ti ti-list"></i>Lista</button>
+          <button class="vb" id="vbk" onclick="switchView('kanban')"><i class="ti ti-layout-columns"></i>Kanban</button>
+        </div>
+        <button class="abtn" onclick="openModal()"><i class="ti ti-plus"></i><span>Nova tarefa</span></button>
+        <button class="aibtn" onclick="toggleAI()" id="aitoggle"><i class="ti ti-sparkles"></i><span>Assistente</span></button>
+      </div>
+    </div>
+    <div id="key-banner-area"></div>
+    <div class="content" id="content"></div>
+  </div>
+ 
+  <!-- AI Panel -->
+  <div class="aip" id="aip">
+    <div class="aih">
+      <div class="ait"><i class="ti ti-sparkles"></i>Claude</div>
+      <button class="ib" onclick="toggleAI()" aria-label="Fechar"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="aim" id="aim">
+      <div class="am bot">Olá! Sou o Claude. Posso criar, organizar e analisar suas tarefas. Experimente:<br><br>• "Crie uma tarefa urgente para revisar o relatório amanhã às 10h"<br>• "Resumo do que tenho para hoje"<br>• "Quais são minhas tarefas urgentes?"</div>
+    </div>
+    <div class="aia">
+      <div class="chips">
+        <span class="chip" onclick="useChip(this)">Resumo do dia</span>
+        <span class="chip" onclick="useChip(this)">Urgentes</span>
+        <span class="chip" onclick="useChip(this)">Criar tarefa</span>
+        <span class="chip" onclick="useChip(this)">Sugerir prioridades</span>
+      </div>
+      <div class="air">
+        <textarea class="ainput" id="aiinput" rows="2" placeholder="Fale com o assistente..." onkeydown="aiKey(event)"></textarea>
+        <button class="aisend" id="aisend" onclick="sendAI()"><i class="ti ti-send"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+ 
+<!-- Task Modal -->
+<div class="mo" id="mwrap" onclick="handleOvClick(event)">
+  <div class="modal">
+    <h3 id="mtitle">Nova tarefa</h3>
+    <div class="fg">
+      <label class="fl">Nome da tarefa</label>
+      <input class="fi" id="fn" type="text" placeholder="Ex: Revisar proposta do cliente...">
+    </div>
+    <div class="frow">
+      <div class="fg">
+        <label class="fl">Prioridade</label>
+        <select class="fi" id="fp">
+          <option value="urgent">Urgente</option>
+          <option value="medium" selected>Média</option>
+          <option value="low">Baixa</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label class="fl">Categoria</label>
+        <select class="fi" id="fc">
+          <option>Desenvolvimento</option><option>Design</option><option>Reuniões</option><option>Relatórios</option>
+        </select>
+      </div>
+    </div>
+    <div class="frow">
+      <div class="fg">
+        <label class="fl">Data</label>
+        <input class="fi" id="fd" type="date">
+      </div>
+      <div class="fg">
+        <label class="fl">Horário</label>
+        <input class="fi" id="ft" type="time">
+      </div>
+    </div>
+    <div class="fg">
+      <label class="fl">Status</label>
+      <select class="fi" id="fs">
+        <option value="todo">A fazer</option>
+        <option value="inprogress">Em andamento</option>
+        <option value="done">Concluída</option>
+      </select>
+    </div>
+    <div class="mf">
+      <button class="bcn" onclick="closeModal()">Cancelar</button>
+      <button class="bsv" onclick="saveTask()">Salvar</button>
+    </div>
+  </div>
+</div>
+ 
+<!-- Settings Modal -->
+<div class="mo" id="smwrap" onclick="handleSOvClick(event)">
+  <div class="modal">
+    <h3>Configurações</h3>
+    <div class="fg">
+      <label class="fl">Chave da API Anthropic (para o assistente Claude)</label>
+      <input class="fi" id="apikey-input" type="password" placeholder="sk-ant-api03-...">
+      <div style="font-size:11px;color:var(--tx3);margin-top:6px">Obtenha em <a href="https://console.anthropic.com" target="_blank" style="color:var(--purple)">console.anthropic.com</a>. A chave fica salva apenas no seu dispositivo.</div>
+    </div>
+    <div class="fg">
+      <label class="fl">Categorias personalizadas</label>
+      <div id="cat-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px"></div>
+    </div>
+    <div style="margin-top:8px;padding-top:16px;border-top:0.5px solid var(--br)">
+      <button onclick="clearData()" style="font-size:12px;color:#A32D2D;background:transparent;border:none;cursor:pointer;padding:0">Apagar todos os dados</button>
+    </div>
+    <div class="mf">
+      <button class="bcn" onclick="closeSettings()">Cancelar</button>
+      <button class="bsv" onclick="saveSettings()">Salvar</button>
+    </div>
+  </div>
+</div>
+ 
+<div class="toast" id="toast"></div>
+ 
+<script>
+const CATS=[{n:'Desenvolvimento',c:'#378ADD'},{n:'Design',c:'#D4537E'},{n:'Reuniões',c:'#1D9E75'},{n:'Relatórios',c:'#BA7517'}];
+const PL={urgent:'Urgente',medium:'Média',low:'Baixa'};
+let tasks=[],view='list',filter='all',editId=null,aibusy=false;
+let apiKey=localStorage.getItem('wf-apikey')||'';
+ 
+function rdate(d){const x=new Date();x.setDate(x.getDate()+d);return x.toISOString().split('T')[0];}
+function today(){return new Date().toISOString().split('T')[0];}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+ 
+function sample(){const t=today();return[
+  {id:'s1',name:'Revisar proposta do cliente Acme',priority:'urgent',category:'Relatórios',dueDate:t,dueTime:'14:00',status:'todo',at:Date.now()},
+  {id:'s2',name:'Stand-up diário com o time',priority:'low',category:'Reuniões',dueDate:t,dueTime:'09:00',status:'done',at:Date.now()},
+  {id:'s3',name:'Atualizar documentação da API',priority:'medium',category:'Desenvolvimento',dueDate:t,dueTime:'17:00',status:'inprogress',at:Date.now()},
+  {id:'s4',name:'Criar telas do módulo de login',priority:'urgent',category:'Design',dueDate:rdate(1),dueTime:'',status:'todo',at:Date.now()},
+  {id:'s5',name:'Relatório mensal de performance',priority:'medium',category:'Relatórios',dueDate:rdate(2),dueTime:'',status:'todo',at:Date.now()},
+  {id:'s6',name:'Revisar pull requests do time',priority:'low',category:'Desenvolvimento',dueDate:rdate(3),dueTime:'',status:'inprogress',at:Date.now()},
+];}
+ 
+function load(){
+  try{const r=localStorage.getItem('wf-tasks');if(r)tasks=JSON.parse(r);}catch(e){tasks=sample();}
+  if(!tasks.length)tasks=sample();
+  renderBanner();
+  render();
+}
+ 
+function save(){try{localStorage.setItem('wf-tasks',JSON.stringify(tasks));}catch(e){}}
+ 
+function renderBanner(){
+  const el=document.getElementById('key-banner-area');
+  if(!apiKey){
+    el.innerHTML=`<div class="key-banner" onclick="openSettings()"><i class="ti ti-key"></i>Configure sua chave da API para usar o assistente Claude</div>`;
+  }else{el.innerHTML='';}
+}
+ 
+function fdate(d,t){
+  if(!d)return'';
+  const td=today(),tm=rdate(1);
+  let l=d===td?'Hoje':d===tm?'Amanhã':new Date(d+'T12:00').toLocaleDateString('pt-BR',{day:'numeric',month:'short'});
+  return t?l+', '+t:l;
+}
+ 
+function filtered(){
+  const t=today();
+  if(filter==='today')return tasks.filter(x=>x.dueDate===t);
+  if(filter==='todo')return tasks.filter(x=>x.status==='todo');
+  if(filter==='urgent')return tasks.filter(x=>x.priority==='urgent'&&x.status!=='done');
+  if(filter==='done')return tasks.filter(x=>x.status==='done');
+  if(filter.startsWith('c:'))return tasks.filter(x=>x.category===filter.slice(2));
+  return tasks;
+}
+ 
+function render(){renderNav();view==='list'?renderList():renderKanban();}
+ 
+function renderNav(){
+  const t=today();
+  document.getElementById('nb-all').textContent=tasks.length;
+  document.getElementById('nb-today').textContent=tasks.filter(x=>x.dueDate===t).length;
+  document.getElementById('nb-todo').textContent=tasks.filter(x=>x.status==='todo').length;
+  document.getElementById('nb-urgent').textContent=tasks.filter(x=>x.priority==='urgent'&&x.status!=='done').length;
+  document.getElementById('nb-done').textContent=tasks.filter(x=>x.status==='done').length;
+  const cn=document.getElementById('catnav');
+  cn.innerHTML=CATS.map(c=>`<div class="ni" data-f="c:${esc(c.n)}" onclick="setFilter(this)"><div class="dot" style="background:${c.c}"></div>${esc(c.n)}<span class="nb">${tasks.filter(x=>x.category===c.n).length}</span></div>`).join('');
+  document.querySelectorAll('.ni[data-f]').forEach(el=>{el.classList.toggle('on',el.dataset.f===filter);});
+}
+ 
+function renderList(){
+  const fl=filtered(),t=today();
+  const grps=[
+    ['Hoje',fl.filter(x=>x.dueDate===t)],
+    ['Esta semana',fl.filter(x=>x.dueDate>t&&x.dueDate<=rdate(7))],
+    ['Mais tarde',fl.filter(x=>x.dueDate>rdate(7))],
+    ['Sem data',fl.filter(x=>!x.dueDate)],
+  ];
+  let h='';
+  for(const[lbl,items]of grps){
+    if(!items.length)continue;
+    h+=`<div class="sh"><span class="stitle">${lbl}</span><span class="cb">${items.length}</span></div><div class="tlist">${items.map(tcard).join('')}</div>`;
+  }
+  if(!h)h=`<div class="empty"><i class="ti ti-checklist"></i><p>Nenhuma tarefa encontrada</p></div>`;
+  document.getElementById('content').innerHTML=h;
+}
+ 
+function tcard(t){
+  const cat=CATS.find(c=>c.n===t.category)||{c:'#888'};
+  return`<div class="tc" onclick="openModal('${t.id}')">
+    <div class="chk${t.status==='done'?' done':''}" onclick="tog(event,'${t.id}')">${t.status==='done'?'<i class="ti ti-check"></i>':''}</div>
+    <div class="ti2">
+      <div class="tn${t.status==='done'?' done':''}">${esc(t.name)}</div>
+      <div class="tm">
+        <span class="bdg ${t.priority}">${PL[t.priority]}</span>
+        <span class="bdg" style="background:${cat.c}18;color:${cat.c}">${esc(t.category)}</span>
+        ${t.dueDate?`<span class="td"><i class="ti ti-calendar"></i>${fdate(t.dueDate,t.dueTime)}</span>`:''}
+      </div>
+    </div>
+    <div class="ta"><button class="ib" onclick="del(event,'${t.id}')" aria-label="Excluir"><i class="ti ti-trash"></i></button></div>
+  </div>`;
+}
+ 
+function renderKanban(){
+  const fl=filtered();
+  const cols=[['todo','A fazer'],['inprogress','Em andamento'],['done','Concluída']];
+  document.getElementById('content').innerHTML=`<div class="kanban">${cols.map(([st,lbl])=>{
+    const items=fl.filter(x=>x.status===st);
+    return`<div class="kcol"><div class="kch"><span class="kct">${lbl}</span><span class="cb">${items.length}</span></div>
+    ${items.map(t=>{const cat=CATS.find(c=>c.n===t.category)||{c:'#888'};return`<div class="kc" onclick="openModal('${t.id}')">
+      <span class="bdg ${t.priority}">${PL[t.priority]}</span>
+      <div class="kcn">${esc(t.name)}</div>
+      <div class="kcf"><span class="bdg" style="background:${cat.c}18;color:${cat.c};font-size:10px">${esc(t.category)}</span>${t.dueDate?`<span class="kd"><i class="ti ti-calendar"></i>${fdate(t.dueDate,t.dueTime)}</span>`:''}</div>
+    </div>`;}).join('')}
+    <button class="kadd" onclick="openModal(null,'${st}')"><i class="ti ti-plus" style="font-size:13px"></i>Adicionar</button></div>`;
+  }).join('')}</div>`;
+}
+ 
+function tog(e,id){e.stopPropagation();const t=tasks.find(x=>x.id===id);if(t){t.status=t.status==='done'?'todo':'done';save();render();}}
+function del(e,id){e.stopPropagation();tasks=tasks.filter(x=>x.id!==id);save();render();toast('Tarefa excluída');}
+ 
+function setFilter(el){
+  filter=el.dataset.f;
+  const labels={all:'Todas as tarefas',today:'Hoje',todo:'A fazer',urgent:'Urgentes',done:'Concluídas'};
+  document.getElementById('ptitle').textContent=filter.startsWith('c:')?filter.slice(2):(labels[filter]||filter);
+  closeSidebar();render();
+}
+ 
+function switchView(v){
+  view=v;
+  document.getElementById('vbl').classList.toggle('on',v==='list');
+  document.getElementById('vbk').classList.toggle('on',v==='kanban');
+  render();
+}
+ 
+function openModal(id=null,defStatus='todo'){
+  editId=id;
+  document.getElementById('mtitle').textContent=id?'Editar tarefa':'Nova tarefa';
+  const t=id?tasks.find(x=>x.id===id):null;
+  document.getElementById('fn').value=t?t.name:'';
+  document.getElementById('fp').value=t?t.priority:'medium';
+  document.getElementById('fc').value=t?t.category:'Desenvolvimento';
+  document.getElementById('fd').value=t?(t.dueDate||''):'';
+  document.getElementById('ft').value=t?(t.dueTime||''):'';
+  document.getElementById('fs').value=t?t.status:defStatus;
+  document.getElementById('mwrap').classList.add('open');
+  setTimeout(()=>document.getElementById('fn').focus(),50);
+}
+function closeModal(){document.getElementById('mwrap').classList.remove('open');editId=null;}
+function handleOvClick(e){if(e.target===document.getElementById('mwrap'))closeModal();}
+ 
+function saveTask(){
+  const n=document.getElementById('fn').value.trim();
+  if(!n){document.getElementById('fn').focus();return;}
+  if(editId){
+    const t=tasks.find(x=>x.id===editId);
+    if(t){t.name=n;t.priority=document.getElementById('fp').value;t.category=document.getElementById('fc').value;t.dueDate=document.getElementById('fd').value;t.dueTime=document.getElementById('ft').value;t.status=document.getElementById('fs').value;}
+    toast('Tarefa atualizada');
+  }else{
+    tasks.unshift({id:'t'+Date.now(),name:n,priority:document.getElementById('fp').value,category:document.getElementById('fc').value,dueDate:document.getElementById('fd').value,dueTime:document.getElementById('ft').value,status:document.getElementById('fs').value,at:Date.now()});
+    toast('Tarefa criada');
+  }
+  save();render();closeModal();
+}
+ 
+function openSettings(){
+  document.getElementById('apikey-input').value=apiKey;
+  document.getElementById('smwrap').classList.add('open');
+}
+function closeSettings(){document.getElementById('smwrap').classList.remove('open');}
+function handleSOvClick(e){if(e.target===document.getElementById('smwrap'))closeSettings();}
+function saveSettings(){
+  apiKey=document.getElementById('apikey-input').value.trim();
+  localStorage.setItem('wf-apikey',apiKey);
+  renderBanner();closeSettings();toast('Configurações salvas');
+}
+function clearData(){
+  if(!confirm('Apagar todas as tarefas? Esta ação não pode ser desfeita.'))return;
+  tasks=[];save();render();closeSettings();toast('Dados apagados');
+}
+ 
+function toggleSidebar(){
+  const sb=document.getElementById('sidebar'),ov=document.getElementById('sb-overlay');
+  sb.classList.toggle('mob-open');ov.classList.toggle('show');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('mob-open');
+  document.getElementById('sb-overlay').classList.remove('show');
+}
+ 
+function toggleAI(){document.getElementById('aip').classList.toggle('open');}
+function useChip(el){document.getElementById('aiinput').value=el.textContent;sendAI();}
+function aiKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendAI();}}
+ 
+function addMsg(txt,role){
+  const d=document.getElementById('aim');
+  const m=document.createElement('div');
+  m.className=`am ${role}`;m.textContent=txt;d.appendChild(m);d.scrollTop=d.scrollHeight;return m;
+}
+ 
+async function sendAI(){
+  if(aibusy)return;
+  if(!apiKey){openSettings();toast('Configure a chave da API primeiro');return;}
+  const inp=document.getElementById('aiinput');
+  const txt=inp.value.trim();if(!txt)return;
+  inp.value='';
+  addMsg(txt,'usr');
+  const ld=addMsg('Pensando...','bot');ld.style.opacity='0.6';
+  aibusy=true;document.getElementById('aisend').disabled=true;
+ 
+  const ts=tasks.map(t=>`[${t.status}] "${t.name}" | ${PL[t.priority]} | ${t.category}${t.dueDate?' | '+t.dueDate:''}`).join('\n')||'(nenhuma)';
+  const td=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+ 
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',max_tokens:1000,
+        system:`Você é um assistente de produtividade no app WorkFlow. Hoje é ${td}.
+ 
+Tarefas atuais do usuário:
+${ts}
+ 
+Categorias disponíveis: Desenvolvimento, Design, Reuniões, Relatórios.
+Prioridades: urgent, medium, low. Status: todo, inprogress, done.
+ 
+Quando o usuário pedir para criar tarefas, responda APENAS com JSON puro (sem markdown, sem backticks):
+{"message":"mensagem ao usuário","actions":[{"type":"create_task","task":{"name":"...","priority":"urgent|medium|low","category":"...","dueDate":"YYYY-MM-DD ou vazio","dueTime":"HH:MM ou vazio","status":"todo"}}]}
+ 
+Para respostas sem ações: {"message":"sua resposta em português"}
+ 
+Seja conciso, direto e amigável. Datas no formato YYYY-MM-DD.`,
+        messages:[{role:'user',content:txt}]
+      })
+    });
+    const data=await res.json();
+    if(data.error){ld.remove();addMsg('Erro: '+data.error.message,'bot');aibusy=false;document.getElementById('aisend').disabled=false;return;}
+    const raw=(data.content||[]).map(x=>x.text||'').join('');
+    let parsed;
+    try{parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());}catch(e){parsed={message:raw||'Não entendi, tente novamente.'};}
+    ld.remove();addMsg(parsed.message||'Feito!','bot');
+    if(parsed.actions){
+      for(const a of parsed.actions){
+        if(a.type==='create_task'&&a.task){
+          tasks.unshift({id:'t'+Date.now()+Math.random().toString(36).slice(2),name:a.task.name||'Nova tarefa',priority:a.task.priority||'medium',category:a.task.category||'Desenvolvimento',dueDate:a.task.dueDate||'',dueTime:a.task.dueTime||'',status:a.task.status||'todo',at:Date.now()});
+        }
+      }
+      save();render();
+    }
+  }catch(e){ld.remove();addMsg('Erro de conexão. Verifique sua chave da API e tente novamente.','bot');}
+  aibusy=false;document.getElementById('aisend').disabled=false;
+}
+ 
+function toast(msg){
+  const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),2500);
+}
+ 
+// PWA Manifest
+const manifest={name:'WorkFlow',short_name:'WorkFlow',start_url:'./',display:'standalone',background_color:'#ffffff',theme_color:'#534AB7',icons:[{src:`data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='40' fill='%23534AB7'/><text y='130' x='96' font-size='110' text-anchor='middle' fill='white'>✓</text></svg>`,sizes:'192x192',type:'image/svg+xml'}]};
+const blob=new Blob([JSON.stringify(manifest)],{type:'application/json'});
+document.getElementById('pwa-manifest').href=URL.createObjectURL(blob);
+ 
+load();
+</script>
+</body>
+</html>
