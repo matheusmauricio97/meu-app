@@ -8,20 +8,27 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --green:#00d4a0;--red:#ff4d6a;--yellow:#f0c040;--blue:#58a6ff;
+  --green:#00d4a0;--red:#ff4d6a;--yellow:#f0c040;--blue:#58a6ff;--purple:#bc8cff;
   --bg:#0d1117;--bg2:#161b22;--bg3:#21262d;--bg4:#2d333b;
   --border:rgba(255,255,255,0.08);--text:#e6edf3;--muted:#7d8590;
   --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 }
 body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:13px;min-height:100vh;}
-/* TOPBAR */
 .topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:46px;}
 .logo{display:flex;align-items:center;gap:10px;}
-.logo-icon{background:var(--green);color:#0d1117;padding:4px 8px;border-radius:4px;font-size:12px;font-weight:700;}
-.logo-text{font-weight:700;font-size:14px;letter-spacing:.3px;}
-.tag-system{background:#1f6feb22;border:1px solid #388bfd44;color:#79c0ff;font-size:10px;padding:2px 7px;border-radius:3px;font-weight:500;}
+.logo-icon{background:var(--green);color:#0d1117;padding:4px 9px;border-radius:4px;font-size:12px;font-weight:700;}
+.logo-text{font-weight:700;font-size:14px;}
+.tag-system{background:#1f6feb22;border:1px solid #388bfd44;color:#79c0ff;font-size:10px;padding:2px 7px;border-radius:3px;}
 .logo-sub{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;margin-top:1px;}
-/* FILTERS */
+ 
+/* LIVE FETCH BADGE */
+.live-badge{display:flex;align-items:center;gap:6px;background:rgba(0,212,160,.08);border:1px solid rgba(0,212,160,.2);border-radius:6px;padding:4px 10px;cursor:pointer;transition:all .2s;}
+.live-badge:hover{background:rgba(0,212,160,.15);}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(.8);}}
+.live-text{font-size:11px;color:var(--green);font-weight:600;}
+.live-sub{font-size:9px;color:var(--muted);}
+ 
 .filters{background:var(--bg2);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
 .filter-group{display:flex;align-items:center;gap:6px;}
 .filter-label{color:var(--muted);font-size:11px;white-space:nowrap;}
@@ -30,16 +37,13 @@ select.filter-input{appearance:none;background-image:url("data:image/svg+xml,%3C
 .btn-saque{background:var(--yellow);color:#0d1117;border:none;padding:5px 12px;border-radius:5px;cursor:pointer;font-size:12px;font-weight:600;}
 .btn-register{background:var(--green);color:#0d1117;border:none;padding:5px 12px;border-radius:5px;cursor:pointer;font-size:12px;font-weight:600;}
 .btn-clear{background:transparent;border:1px solid var(--border);color:var(--muted);padding:5px 10px;border-radius:5px;cursor:pointer;font-size:12px;}
-/* MAIN */
 .main{padding:12px 16px;display:flex;flex-direction:column;gap:10px;}
-/* METRIC CARDS */
 .metric-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
 .metric-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;}
 .metric-card.saque-card{border-color:rgba(240,192,64,.3);}
 .mlabel{color:var(--muted);font-size:11px;margin-bottom:6px;}
 .mvalue{font-size:20px;font-weight:700;line-height:1.1;}
 .msub{font-size:11px;color:var(--muted);margin-top:4px;}
-/* CARDS */
 .card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;}
 .card-title{font-size:12px;font-weight:600;margin-bottom:2px;}
 .card-sub{font-size:10px;color:var(--muted);margin-bottom:10px;}
@@ -47,37 +51,30 @@ select.filter-input{appearance:none;background-image:url("data:image/svg+xml,%3C
 .bottom-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .chart-legend{display:flex;gap:12px;font-size:10px;color:var(--muted);margin-bottom:6px;}
 .ldot{width:10px;height:3px;border-radius:2px;display:inline-block;margin-right:3px;vertical-align:middle;}
-/* SMALL TABLE */
 .small-table{width:100%;}
 .small-table tr{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);}
 .small-table tr:last-child{border-bottom:none;}
 .small-table .rl{color:var(--text);font-size:11px;}
 .small-table .rv{font-size:11px;font-weight:600;}
-/* WINDOWS */
 .windows-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
 .window-item{background:var(--bg3);border-radius:6px;padding:8px 10px;}
 .wlabel{font-size:10px;color:var(--muted);margin-bottom:3px;}
 .wval{font-size:13px;font-weight:600;}
-/* LEDGER */
 .ledger-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;}
 .ledger-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
 .ledger-search{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:5px 10px;border-radius:5px;font-size:12px;width:240px;}
 .ledger-tabs{display:flex;gap:4px;margin-bottom:10px;}
 .ltab{background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 12px;border-radius:5px;cursor:pointer;font-size:11px;}
 .ltab.active{background:var(--bg3);color:var(--text);border-color:rgba(255,255,255,.15);}
-/* OPS TABLE */
-.ops-head,.ops-row{display:grid;grid-template-columns:38px 72px 1fr 90px 80px 80px 60px 60px;gap:6px;padding:6px 0;font-size:11px;align-items:center;}
+.ops-head,.ops-row{display:grid;grid-template-columns:36px 68px 1fr 100px 90px 70px 50px 110px;gap:6px;padding:6px 0;font-size:11px;align-items:center;}
 .ops-head{border-bottom:1px solid var(--border);color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.3px;}
 .ops-row{border-bottom:1px solid var(--border);}
 .ops-row:hover{background:rgba(255,255,255,.02);}
-/* SAQ TABLE */
 .saq-head,.saq-row{display:grid;grid-template-columns:36px 80px 1fr 110px 90px;gap:6px;padding:6px 0;font-size:11px;align-items:center;}
 .saq-head{border-bottom:1px solid var(--border);color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.3px;}
 .saq-row{border-bottom:1px solid var(--border);}
-/* EMPTY */
 .empty-state{text-align:center;padding:32px 0;color:var(--muted);}
 .empty-icon{font-size:28px;margin-bottom:8px;opacity:.4;}
-/* BADGES */
 .badge{font-size:10px;padding:2px 7px;border-radius:3px;font-weight:500;}
 .badge-saque{background:rgba(240,192,64,.15);color:var(--yellow);}
 .badge-dep{background:rgba(0,212,160,.15);color:var(--green);}
@@ -85,91 +82,139 @@ select.filter-input{appearance:none;background-image:url("data:image/svg+xml,%3C
 .badge-red{background:rgba(255,77,106,.15);color:var(--red);}
 .badge-pend{background:rgba(240,192,64,.12);color:var(--yellow);}
 .badge-mult{background:rgba(88,166,255,.15);color:var(--blue);}
-/* STATUS BTN */
-.status-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:3px 8px;border-radius:4px;cursor:pointer;font-size:10px;white-space:nowrap;}
-.status-btn:hover{border-color:var(--green);color:var(--text);}
-/* MODALS */
-.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.75);align-items:center;justify-content:center;z-index:999;}
+.badge-live{background:rgba(188,140,255,.15);color:var(--purple);animation:badgePulse 2s infinite;}
+@keyframes badgePulse{0%,100%{opacity:1;}50%{opacity:.6;}}
+.status-btn{background:transparent;border:1px solid rgba(240,192,64,.4);color:var(--yellow);padding:3px 8px;border-radius:4px;cursor:pointer;font-size:10px;white-space:nowrap;margin-top:3px;}
+.status-btn:hover{background:rgba(240,192,64,.1);}
+.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.78);align-items:flex-start;justify-content:center;z-index:999;padding-top:40px;overflow-y:auto;}
 .modal-overlay.open{display:flex;}
-.modal{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:22px;width:480px;max-height:88vh;overflow-y:auto;}
-.modal-sm{width:360px;}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:22px;width:500px;margin-bottom:40px;}
+.modal-sm{width:380px;}
 .modal h3{font-size:15px;margin-bottom:16px;}
 .form-group{margin-bottom:11px;}
 .form-group label{display:block;font-size:11px;color:var(--muted);margin-bottom:4px;}
 .form-group input,.form-group select,.form-group textarea{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:7px 10px;border-radius:5px;font-size:13px;font-family:var(--font);}
 .form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:rgba(0,212,160,.4);}
-.form-group textarea{resize:vertical;min-height:56px;}
+.form-group textarea{resize:vertical;min-height:54px;}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .modal-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;}
 .btn-cancel{background:transparent;border:1px solid var(--border);color:var(--muted);padding:7px 16px;border-radius:5px;cursor:pointer;font-size:12px;}
 .btn-save{background:var(--green);color:#0d1117;border:none;padding:7px 16px;border-radius:5px;cursor:pointer;font-weight:600;font-size:12px;}
 .btn-save-yellow{background:var(--yellow);color:#0d1117;border:none;padding:7px 16px;border-radius:5px;cursor:pointer;font-weight:600;font-size:12px;}
-/* TIPO TOGGLE */
-.tipo-toggle{display:flex;gap:6px;margin-bottom:12px;}
-.tipo-btn{flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--muted);padding:8px;border-radius:6px;cursor:pointer;font-size:12px;text-align:center;transition:all .15s;}
+.tipo-toggle{display:flex;gap:6px;margin-bottom:14px;}
+.tipo-btn{flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--muted);padding:9px;border-radius:6px;cursor:pointer;font-size:12px;text-align:center;transition:all .15s;}
 .tipo-btn.active-simples{background:rgba(0,212,160,.12);border-color:var(--green);color:var(--green);font-weight:600;}
 .tipo-btn.active-multipla{background:rgba(88,166,255,.12);border-color:var(--blue);color:var(--blue);font-weight:600;}
-/* LEGS */
-.legs-container{display:flex;flex-direction:column;gap:6px;margin-bottom:8px;}
-.leg-item{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:8px 10px;display:flex;align-items:center;gap:8px;}
-.leg-item input,.leg-item select{flex:1;background:var(--bg4);border:1px solid var(--border);color:var(--text);padding:5px 8px;border-radius:4px;font-size:12px;font-family:var(--font);}
-.leg-remove{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:0 4px;flex-shrink:0;}
-.leg-remove:hover{color:var(--red);}
-.btn-add-leg{background:transparent;border:1px dashed var(--border);color:var(--muted);padding:7px;border-radius:6px;cursor:pointer;font-size:12px;width:100%;text-align:center;}
-.btn-add-leg:hover{border-color:var(--blue);color:var(--blue);}
-/* JOGO SEARCH */
 .jogo-search-wrap{position:relative;}
-.jogo-dropdown{position:absolute;top:100%;left:0;right:0;background:var(--bg3);border:1px solid var(--border);border-radius:6px;z-index:10;max-height:200px;overflow-y:auto;display:none;}
+.jogo-dropdown{position:absolute;top:calc(100% + 2px);left:0;right:0;background:var(--bg3);border:1px solid var(--border);border-radius:6px;z-index:200;max-height:260px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.5);}
 .jogo-dropdown.open{display:block;}
-.jogo-item{padding:7px 10px;cursor:pointer;font-size:12px;border-bottom:1px solid var(--border);}
+.jogo-dropdown{display:none;}
+.jogo-group-label{padding:6px 10px 3px;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;background:var(--bg4);position:sticky;top:0;display:flex;align-items:center;gap:6px;}
+.jogo-item{padding:7px 10px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.04);}
 .jogo-item:last-child{border-bottom:none;}
 .jogo-item:hover{background:var(--bg4);}
-.jogo-item .match-name{color:var(--text);font-weight:500;}
-.jogo-item .match-info{color:var(--muted);font-size:10px;margin-top:1px;}
-/* PREVIEW BOX */
+.jogo-item .mn{color:var(--text);font-size:12px;font-weight:500;}
+.jogo-item .mi{color:var(--muted);font-size:10px;margin-top:1px;}
+.jogo-item.live-match .mn{color:var(--purple);}
+.jogo-item.confirmed-match .mn{color:var(--green);}
+.legs-container{display:flex;flex-direction:column;gap:6px;margin-bottom:8px;}
+.leg-item{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:8px 10px;display:flex;align-items:center;gap:8px;}
+.leg-item .leg-num{color:var(--muted);font-size:11px;flex-shrink:0;width:16px;}
+.leg-item input{flex:1;background:var(--bg4);border:1px solid var(--border);color:var(--text);padding:5px 8px;border-radius:4px;font-size:12px;font-family:var(--font);}
+.leg-remove{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:0 2px;flex-shrink:0;line-height:1;}
+.leg-remove:hover{color:var(--red);}
+.btn-add-leg{background:transparent;border:1px dashed rgba(88,166,255,.3);color:var(--blue);padding:7px;border-radius:6px;cursor:pointer;font-size:12px;width:100%;text-align:center;}
+.btn-add-leg:hover{border-color:var(--blue);background:rgba(88,166,255,.05);}
 .preview-box{background:var(--bg3);border-radius:6px;padding:10px 12px;margin-top:8px;font-size:11px;color:var(--muted);line-height:1.9;}
-/* WINBAR */
-#winbar{height:4px;background:var(--green);border-radius:2px;width:0%;transition:width .4s;}
-/* STATUS MODAL */
 .result-opts{display:flex;gap:8px;margin-top:4px;}
-.result-opt{flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--muted);padding:10px;border-radius:6px;cursor:pointer;font-size:12px;text-align:center;}
-.result-opt:hover{border-color:var(--green);color:var(--text);}
+.result-opt{flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--muted);padding:12px;border-radius:6px;cursor:pointer;font-size:13px;text-align:center;}
+.result-opt:hover{border-color:rgba(255,255,255,.2);color:var(--text);}
 .result-opt.sel-green{background:rgba(0,212,160,.12);border-color:var(--green);color:var(--green);font-weight:600;}
 .result-opt.sel-red{background:rgba(255,77,106,.12);border-color:var(--red);color:var(--red);font-weight:600;}
-@media(max-width:900px){.metric-row{grid-template-columns:repeat(2,1fr);}.charts-row,.bottom-row{grid-template-columns:1fr;}}
+ 
+/* FETCH MODAL */
+.fetch-modal{background:var(--bg2);border:1px solid rgba(0,212,160,.2);border-radius:10px;padding:22px;width:540px;margin-bottom:40px;}
+.fetch-status{background:var(--bg3);border-radius:6px;padding:12px 14px;margin-top:10px;min-height:80px;font-size:12px;line-height:1.7;color:var(--muted);}
+.fetch-status.loading{border:1px solid rgba(0,212,160,.15);}
+.fetch-match-list{display:flex;flex-direction:column;gap:4px;margin-top:8px;max-height:260px;overflow-y:auto;}
+.fetch-match-item{background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:7px 10px;display:flex;justify-content:space-between;align-items:center;font-size:11px;}
+.fetch-match-item .fm-name{font-weight:500;color:var(--text);}
+.fetch-match-item .fm-meta{color:var(--muted);font-size:10px;}
+.fetch-match-item .fm-fase{font-size:10px;padding:2px 6px;border-radius:3px;background:rgba(88,166,255,.12);color:var(--blue);}
+.fetch-match-item .fm-score{font-weight:700;color:var(--green);font-size:12px;}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(0,212,160,.2);border-top-color:var(--green);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+ 
+/* MATA-MATA PREVIEW PANEL */
+.mata-panel{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;}
+.mata-panel-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.mata-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.mata-col-title{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;text-align:center;}
+.mata-match{background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:6px 8px;font-size:10px;text-align:center;}
+.mata-match.confirmed{border-color:rgba(0,212,160,.25);background:rgba(0,212,160,.04);}
+.mata-match.pending{border-color:rgba(240,192,64,.15);}
+.mata-match.tbd{opacity:.4;}
+.mata-match .mm-teams{font-weight:600;color:var(--text);font-size:11px;line-height:1.3;}
+.mata-match .mm-meta{color:var(--muted);font-size:9px;margin-top:2px;}
+.mata-match .mm-score{color:var(--green);font-weight:700;font-size:12px;margin-top:3px;}
+ 
+.btn-fetch-matches{background:rgba(0,212,160,.1);border:1px solid rgba(0,212,160,.3);color:var(--green);padding:4px 10px;border-radius:5px;cursor:pointer;font-size:11px;font-weight:600;display:flex;align-items:center;gap:5px;}
+.btn-fetch-matches:hover{background:rgba(0,212,160,.2);}
+.btn-fetch-matches:disabled{opacity:.4;cursor:not-allowed;}
+.last-update{font-size:10px;color:var(--muted);}
+ 
+#winbar{height:4px;background:var(--green);border-radius:2px;width:0%;transition:width .4s;}
+@media(max-width:900px){.metric-row{grid-template-columns:repeat(2,1fr);}.charts-row,.bottom-row{grid-template-columns:1fr;}.mata-grid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
  
-<!-- TOPBAR -->
 <div class="topbar">
   <div class="logo">
     <span class="logo-icon">⚽</span>
     <div>
       <div style="display:flex;align-items:center;gap:8px;"><span class="logo-text">WORLD CUP 2026</span><span class="tag-system">TRADING SYSTEM</span></div>
-      <div class="logo-sub">Registro de performance de apostas simples e múltiplas</div>
+      <div class="logo-sub">Registro de performance · 104 jogos · EUA / Canadá / México</div>
     </div>
   </div>
-  <div style="display:flex;align-items:center;gap:8px;">
-    <span style="font-size:11px;color:var(--muted);">📊 Painel Geral</span>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <span id="faseAtualLabel" style="font-size:11px;color:var(--muted);">📍 Fase de Grupos</span>
+    <div class="live-badge" onclick="openFetchModal()">
+      <span class="live-dot"></span>
+      <div>
+        <div class="live-text">🔄 Atualizar Jogos</div>
+        <div class="live-sub" id="lastUpdateText">Busca ao vivo via IA</div>
+      </div>
+    </div>
   </div>
 </div>
  
-<!-- FILTERS -->
 <div class="filters">
   <div class="filter-group">
     <span class="filter-label">Banca Inicial (R$)</span>
     <input class="filter-input" type="number" id="bancaInicial" value="50" style="width:72px;" oninput="updateMetrics();updateChart()">
   </div>
   <div class="filter-group">
-    <span class="filter-label">Fase</span>
-    <select class="filter-input" id="filtroFase" onchange="renderLedger()">
+    <span class="filter-label">Fase atual</span>
+    <select class="filter-input" id="faseAtual" onchange="onFaseAtualChange()">
+      <option value="grupos">Fase de Grupos (11–27 Jun)</option>
+      <option value="r32">Round of 32 (28 Jun–3 Jul)</option>
+      <option value="r16">Oitavas de Final (4–7 Jul)</option>
+      <option value="qf">Quartas de Final (9–11 Jul)</option>
+      <option value="sf">Semifinal (14–15 Jul)</option>
+      <option value="final">Final (19 Jul)</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">Filtrar ledger</span>
+    <select class="filter-input" id="filtroFaseLedger" onchange="renderLedger()">
       <option value="">Todas as Fases</option>
-      <option>Fase de Grupos</option>
-      <option>Oitavas de Final</option>
-      <option>Quartas de Final</option>
-      <option>Semifinal</option>
-      <option>Final</option>
+      <option value="grupos">Fase de Grupos</option>
+      <option value="r32">Round of 32</option>
+      <option value="r16">Oitavas de Final</option>
+      <option value="qf">Quartas de Final</option>
+      <option value="sf">Semifinal</option>
+      <option value="final">Final</option>
     </select>
   </div>
   <div class="filter-group">
@@ -181,16 +226,13 @@ select.filter-input{appearance:none;background-image:url("data:image/svg+xml,%3C
     </select>
   </div>
   <div style="margin-left:auto;display:flex;gap:8px;">
-    <button class="btn-clear" onclick="document.getElementById('filtroFase').value='';document.getElementById('filtroTipo').value='';renderLedger();">↺ Limpar</button>
+    <button class="btn-clear" onclick="document.getElementById('filtroFaseLedger').value='';document.getElementById('filtroTipo').value='';renderLedger();">↺ Limpar</button>
     <button class="btn-saque" onclick="openSaqueModal()">💸 Saque / Depósito</button>
     <button class="btn-register" onclick="openOpModal()">+ Registrar Operação</button>
   </div>
 </div>
  
-<!-- MAIN -->
 <div class="main">
- 
-  <!-- MÉTRICAS -->
   <div class="metric-row">
     <div class="metric-card">
       <div class="mlabel">💼 Banca Atual</div>
@@ -214,15 +256,13 @@ select.filter-input{appearance:none;background-image:url("data:image/svg+xml,%3C
     </div>
   </div>
  
-  <!-- GRÁFICOS -->
   <div class="charts-row">
     <div class="card">
       <div class="card-title">📉 Evolução da Banca</div>
-      <div class="card-sub">Curva de saldo correlacionada ao histórico de operações.</div>
+      <div class="card-sub">Curva de saldo ao longo das operações.</div>
       <div class="chart-legend">
         <span><span class="ldot" style="background:var(--green);"></span>Banca</span>
-        <span><span class="ldot" style="background:var(--blue);"></span>Exposição(h)</span>
-        <span><span class="ldot" style="background:var(--yellow);width:6px;height:6px;border-radius:50%;display:inline-block;vertical-align:middle;margin-right:3px;"></span>Movimentação</span>
+        <span><span class="ldot" style="background:var(--yellow);width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:3px;vertical-align:middle;"></span>Movimentação</span>
       </div>
       <div style="position:relative;height:200px;"><canvas id="bancaChart"></canvas></div>
     </div>
@@ -233,16 +273,34 @@ select.filter-input{appearance:none;background-image:url("data:image/svg+xml,%3C
     </div>
   </div>
  
-  <!-- BOTTOM ROW -->
+  <!-- PAINEL MATA-MATA AO VIVO -->
+  <div class="mata-panel">
+    <div class="mata-panel-header">
+      <div>
+        <div class="card-title">🏆 Mata-Mata — Confrontos ao Vivo</div>
+        <div class="card-sub" id="mataSubtitle">Clique em "Atualizar Jogos" para buscar confrontos confirmados da Copa 2026.</div>
+      </div>
+      <button class="btn-fetch-matches" id="btnFetchMata" onclick="fetchMataMatches()">
+        🔄 <span id="btnFetchText">Buscar Confrontos</span>
+      </button>
+    </div>
+    <div id="mataMatchesPanel">
+      <div style="text-align:center;padding:20px 0;color:var(--muted);font-size:12px;">
+        <div style="font-size:24px;margin-bottom:8px;opacity:.3;">🏟️</div>
+        Clique em "Buscar Confrontos" para carregar os jogos do mata-mata em tempo real.
+      </div>
+    </div>
+  </div>
+ 
   <div class="bottom-row">
     <div class="card">
-      <div class="card-title">🏟️ Fase de Grupos vs Mata-Mata</div>
-      <div class="card-sub">Análise do peso regulamentar nos retornos obtidos.</div>
+      <div class="card-title">🏟️ Grupos vs Mata-Mata / Simples vs Múltipla</div>
+      <div class="card-sub">Desempenho por tipo de fase e formato de aposta.</div>
       <table class="small-table">
         <tr><td class="rl">Fase de Grupos</td><td class="rv" id="valGrupos" style="color:var(--green);">R$ 0,00</td></tr>
-        <tr><td class="rl">Mata-Mata &amp; Prorrogações</td><td class="rv" id="valMata" style="color:var(--green);">R$ 0,00</td></tr>
-        <tr><td class="rl">Simples</td><td class="rv" id="valSimples" style="color:var(--green);">R$ 0,00</td></tr>
-        <tr><td class="rl">Múltiplas</td><td class="rv" id="valMultiplas" style="color:var(--blue);">R$ 0,00</td></tr>
+        <tr><td class="rl">Mata-Mata (R32 → Final)</td><td class="rv" id="valMata" style="color:var(--green);">R$ 0,00</td></tr>
+        <tr><td class="rl" style="border-top:1px solid var(--border);padding-top:8px;margin-top:4px;">Apostas Simples</td><td class="rv" id="valSimples" style="color:var(--green);">R$ 0,00</td></tr>
+        <tr><td class="rl">Apostas Múltiplas</td><td class="rv" id="valMultiplas" style="color:var(--blue);">R$ 0,00</td></tr>
       </table>
     </div>
     <div class="card">
@@ -257,12 +315,11 @@ select.filter-input{appearance:none;background-image:url("data:image/svg+xml,%3C
     </div>
   </div>
  
-  <!-- LEDGER -->
   <div class="ledger-card">
     <div class="ledger-header">
       <div>
         <div class="card-title">📒 Diário de Operações (Ledger)</div>
-        <div class="card-sub">Operações gravadas e auditadas. Clique em "Pendente" para atualizar o resultado.</div>
+        <div class="card-sub">Clique em "⏳ Pendente" em qualquer linha para atualizar o resultado.</div>
       </div>
       <input class="ledger-search" placeholder="🔍 Buscar jogo, operação..." id="searchInput" oninput="renderLedger()">
     </div>
@@ -270,8 +327,6 @@ select.filter-input{appearance:none;background-image:url("data:image/svg+xml,%3C
       <button class="ltab active" onclick="switchTab('ops',this)">📋 Operações (<span id="countOps">0</span>)</button>
       <button class="ltab" onclick="switchTab('saques',this)">💸 Saques &amp; Depósitos (<span id="countSaques">0</span>)</button>
     </div>
- 
-    <!-- ABA OPS -->
     <div id="tabOps">
       <div class="ops-head">
         <span>ID</span><span>Data</span><span>Jogo(s) / Raciocínio</span>
@@ -281,12 +336,8 @@ select.filter-input{appearance:none;background-image:url("data:image/svg+xml,%3C
         <div class="empty-state"><div class="empty-icon">📭</div><div>Nenhuma operação ainda. Clique em "+ Registrar Operação".</div></div>
       </div>
     </div>
- 
-    <!-- ABA SAQUES -->
     <div id="tabSaques" style="display:none;">
-      <div class="saq-head">
-        <span>ID</span><span>Data</span><span>Observação</span><span>Valor</span><span>Tipo</span>
-      </div>
+      <div class="saq-head"><span>ID</span><span>Data</span><span>Observação</span><span>Valor</span><span>Tipo</span></div>
       <div id="saquesBody">
         <div class="empty-state"><div class="empty-icon">💸</div><div>Nenhuma movimentação ainda.</div></div>
       </div>
@@ -294,40 +345,65 @@ select.filter-input{appearance:none;background-image:url("data:image/svg+xml,%3C
   </div>
 </div>
  
-<!-- ===================== MODAL OPERAÇÃO ===================== -->
+<!-- ===== MODAL FETCH ===== -->
+<div id="modalFetch" class="modal-overlay">
+  <div class="fetch-modal">
+    <h3>🔄 Buscar Jogos da Copa 2026 via IA</h3>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">A IA vai buscar os confrontos confirmados do mata-mata em tempo real e atualizar automaticamente a busca de jogos.</p>
+    <div class="form-group">
+      <label>Fase para buscar</label>
+      <select id="fetchFaseSelect" class="filter-input" style="width:100%;">
+        <option value="all">Todas as fases disponíveis</option>
+        <option value="r32">Round of 32 (16-avos)</option>
+        <option value="r16">Oitavas de Final</option>
+        <option value="qf">Quartas de Final</option>
+        <option value="sf">Semifinal</option>
+        <option value="final">Final</option>
+      </select>
+    </div>
+    <div class="fetch-status" id="fetchStatus" style="display:none;"></div>
+    <div id="fetchResultList" style="display:none;">
+      <div style="font-size:11px;color:var(--muted);margin-bottom:6px;margin-top:10px;">Confrontos encontrados — clique para adicionar à lista:</div>
+      <div class="fetch-match-list" id="fetchMatchItems"></div>
+    </div>
+    <div class="modal-btns" style="margin-top:14px;">
+      <button class="btn-cancel" onclick="closeModals()">Fechar</button>
+      <button class="btn-save" id="btnStartFetch" onclick="startFetch()">🔍 Buscar Agora</button>
+    </div>
+  </div>
+</div>
+ 
+<!-- ===== MODAL OPERAÇÃO ===== -->
 <div id="modalOp" class="modal-overlay">
   <div class="modal">
     <h3>+ Registrar Operação</h3>
- 
-    <!-- TIPO TOGGLE -->
     <div class="tipo-toggle">
       <button class="tipo-btn active-simples" id="btnSimples" onclick="setTipo('simples')">⚡ Aposta Simples</button>
       <button class="tipo-btn" id="btnMultipla" onclick="setTipo('multipla')">🔗 Aposta Múltipla</button>
     </div>
  
-    <!-- SIMPLES -->
     <div id="secSimples">
       <div class="form-group">
         <label>Jogo</label>
         <div class="jogo-search-wrap">
-          <input type="text" id="fJogo" placeholder="Buscar jogo..." autocomplete="off" oninput="filterJogos('fJogo','ddJogo')" onfocus="filterJogos('fJogo','ddJogo')">
+          <input type="text" id="fJogo" placeholder="Buscar por seleção ou grupo..." autocomplete="off"
+            oninput="filterJogos('fJogo','ddJogo')" onfocus="filterJogos('fJogo','ddJogo')">
           <div class="jogo-dropdown" id="ddJogo"></div>
         </div>
       </div>
     </div>
  
-    <!-- MÚLTIPLA -->
     <div id="secMultipla" style="display:none;">
       <div class="form-group">
         <label>Jogos da Múltipla</label>
         <div class="legs-container" id="legsContainer"></div>
-        <button class="btn-add-leg" onclick="addLeg()">+ Adicionar jogo à múltipla</button>
+        <button class="btn-add-leg" onclick="addLeg()">＋ Adicionar jogo à múltipla</button>
       </div>
     </div>
  
     <div class="form-group">
       <label>Raciocínio Tático</label>
-      <textarea id="fRaciocinio" placeholder="Ex: Over 2.5 — confronto aberto, ambas seleções com alta pressão..."></textarea>
+      <textarea id="fRaciocinio" placeholder="Ex: Over 2.5 — jogo aberto, ambos marcam..."></textarea>
     </div>
  
     <div class="form-row">
@@ -335,19 +411,6 @@ select.filter-input{appearance:none;background-image:url("data:image/svg+xml,%3C
         <label>Data</label>
         <input type="date" id="fData">
       </div>
-      <div class="form-group">
-        <label>Fase</label>
-        <select id="fFase">
-          <option>Fase de Grupos</option>
-          <option>Oitavas de Final</option>
-          <option>Quartas de Final</option>
-          <option>Semifinal</option>
-          <option>Final</option>
-        </select>
-      </div>
-    </div>
- 
-    <div class="form-row">
       <div class="form-group">
         <label>Momento de Entrada</label>
         <select id="fMomento">
@@ -357,25 +420,26 @@ select.filter-input{appearance:none;background-image:url("data:image/svg+xml,%3C
           <option>Live 45'+–90'</option>
         </select>
       </div>
-      <div class="form-group">
-        <label>Stake (R$)</label>
-        <input type="number" id="fStake" placeholder="0.00" step="0.01" oninput="calcPotencial()">
-      </div>
     </div>
  
     <div class="form-row">
       <div class="form-group">
-        <label>Odd <span id="oddLabel" style="color:var(--muted);">(combinada)</span></label>
-        <input type="number" id="fOdd" placeholder="1.50" step="0.01" oninput="calcPotencial()">
+        <label>Stake (R$)</label>
+        <input type="number" id="fStake" placeholder="0.00" step="0.01" oninput="calcPotencial()">
       </div>
       <div class="form-group">
-        <label>Resultado</label>
-        <select id="fResultado">
-          <option value="pendente">⏳ Pendente</option>
-          <option value="green">✅ Green</option>
-          <option value="red">❌ Red</option>
-        </select>
+        <label>Odd <span id="oddLabel" style="color:var(--muted);font-weight:400;">(da aposta)</span></label>
+        <input type="number" id="fOdd" placeholder="1.50" step="0.01" oninput="calcPotencial()">
       </div>
+    </div>
+ 
+    <div class="form-group">
+      <label>Resultado</label>
+      <select id="fResultado">
+        <option value="pendente">⏳ Pendente</option>
+        <option value="green">✅ Green</option>
+        <option value="red">❌ Red</option>
+      </select>
     </div>
  
     <div class="preview-box" id="potencialBox" style="display:none;">
@@ -390,7 +454,7 @@ select.filter-input{appearance:none;background-image:url("data:image/svg+xml,%3C
   </div>
 </div>
  
-<!-- ===================== MODAL SAQUE ===================== -->
+<!-- ===== MODAL SAQUE ===== -->
 <div id="modalSaque" class="modal-overlay">
   <div class="modal modal-sm">
     <h3 style="color:var(--yellow);">💸 Saque ou Depósito</h3>
@@ -417,7 +481,7 @@ select.filter-input{appearance:none;background-image:url("data:image/svg+xml,%3C
   </div>
 </div>
  
-<!-- ===================== MODAL RESULTADO ===================== -->
+<!-- ===== MODAL RESULTADO ===== -->
 <div id="modalResultado" class="modal-overlay">
   <div class="modal modal-sm">
     <h3>✏️ Atualizar Resultado</h3>
@@ -426,7 +490,7 @@ select.filter-input{appearance:none;background-image:url("data:image/svg+xml,%3C
       <div class="result-opt" id="rOptGreen" onclick="selectResultado('green')">✅ Green</div>
       <div class="result-opt" id="rOptRed" onclick="selectResultado('red')">❌ Red</div>
     </div>
-    <div class="form-group" style="margin-top:12px;">
+    <div class="form-group" style="margin-top:14px;">
       <label>Odd final (confirme ou ajuste)</label>
       <input type="number" id="rOdd" step="0.01" placeholder="1.50">
     </div>
@@ -438,203 +502,554 @@ select.filter-input{appearance:none;background-image:url("data:image/svg+xml,%3C
 </div>
  
 <script>
-// ===================== JOGOS DA COPA 2026 =====================
-// Fase de Grupos — todos os 48 jogos + Mata-Mata
-const JOGOS = [
-  // FASE DE GRUPOS (amostra representativa dos grupos A–L)
-  {id:'g001',nome:'México vs Canadá',grupo:'Grupo A',fase:'Fase de Grupos'},
-  {id:'g002',nome:'EUA vs México',grupo:'Grupo A',fase:'Fase de Grupos'},
-  {id:'g003',nome:'Canadá vs EUA',grupo:'Grupo A',fase:'Fase de Grupos'},
-  {id:'g004',nome:'Argentina vs Equador',grupo:'Grupo B',fase:'Fase de Grupos'},
-  {id:'g005',nome:'Chile vs Peru',grupo:'Grupo B',fase:'Fase de Grupos'},
-  {id:'g006',nome:'Argentina vs Chile',grupo:'Grupo B',fase:'Fase de Grupos'},
-  {id:'g007',nome:'Peru vs Equador',grupo:'Grupo B',fase:'Fase de Grupos'},
-  {id:'g008',nome:'Brasil vs Colômbia',grupo:'Grupo C',fase:'Fase de Grupos'},
-  {id:'g009',nome:'Venezuela vs Bolívia',grupo:'Grupo C',fase:'Fase de Grupos'},
-  {id:'g010',nome:'Brasil vs Venezuela',grupo:'Grupo C',fase:'Fase de Grupos'},
-  {id:'g011',nome:'Colômbia vs Bolívia',grupo:'Grupo C',fase:'Fase de Grupos'},
-  {id:'g012',nome:'Brasil vs Bolívia',grupo:'Grupo C',fase:'Fase de Grupos'},
-  {id:'g013',nome:'Colômbia vs Venezuela',grupo:'Grupo C',fase:'Fase de Grupos'},
-  {id:'g014',nome:'Uruguai vs Paraguai',grupo:'Grupo D',fase:'Fase de Grupos'},
-  {id:'g015',nome:'Uruguai vs Costa Rica',grupo:'Grupo D',fase:'Fase de Grupos'},
-  {id:'g016',nome:'Paraguai vs Honduras',grupo:'Grupo D',fase:'Fase de Grupos'},
-  {id:'g017',nome:'França vs Alemanha',grupo:'Grupo E',fase:'Fase de Grupos'},
-  {id:'g018',nome:'Bélgica vs Dinamarca',grupo:'Grupo E',fase:'Fase de Grupos'},
-  {id:'g019',nome:'França vs Dinamarca',grupo:'Grupo E',fase:'Fase de Grupos'},
-  {id:'g020',nome:'Alemanha vs Bélgica',grupo:'Grupo E',fase:'Fase de Grupos'},
-  {id:'g021',nome:'França vs Bélgica',grupo:'Grupo E',fase:'Fase de Grupos'},
-  {id:'g022',nome:'Alemanha vs Dinamarca',grupo:'Grupo E',fase:'Fase de Grupos'},
-  {id:'g023',nome:'Espanha vs Portugal',grupo:'Grupo F',fase:'Fase de Grupos'},
-  {id:'g024',nome:'Marrocos vs Croácia',grupo:'Grupo F',fase:'Fase de Grupos'},
-  {id:'g025',nome:'Espanha vs Croácia',grupo:'Grupo F',fase:'Fase de Grupos'},
-  {id:'g026',nome:'Portugal vs Marrocos',grupo:'Grupo F',fase:'Fase de Grupos'},
-  {id:'g027',nome:'Espanha vs Marrocos',grupo:'Grupo F',fase:'Fase de Grupos'},
-  {id:'g028',nome:'Portugal vs Croácia',grupo:'Grupo F',fase:'Fase de Grupos'},
-  {id:'g029',nome:'Inglaterra vs Holanda',grupo:'Grupo G',fase:'Fase de Grupos'},
-  {id:'g030',nome:'Sérvia vs Suíça',grupo:'Grupo G',fase:'Fase de Grupos'},
-  {id:'g031',nome:'Inglaterra vs Suíça',grupo:'Grupo G',fase:'Fase de Grupos'},
-  {id:'g032',nome:'Holanda vs Sérvia',grupo:'Grupo G',fase:'Fase de Grupos'},
-  {id:'g033',nome:'Japão vs Coreia do Sul',grupo:'Grupo H',fase:'Fase de Grupos'},
-  {id:'g034',nome:'Austrália vs Irã',grupo:'Grupo H',fase:'Fase de Grupos'},
-  {id:'g035',nome:'Japão vs Irã',grupo:'Grupo H',fase:'Fase de Grupos'},
-  {id:'g036',nome:'Coreia do Sul vs Austrália',grupo:'Grupo H',fase:'Fase de Grupos'},
-  {id:'g037',nome:'Senegal vs Egito',grupo:'Grupo I',fase:'Fase de Grupos'},
-  {id:'g038',nome:'Nigéria vs Costa do Marfim',grupo:'Grupo I',fase:'Fase de Grupos'},
-  {id:'g039',nome:'Senegal vs Nigéria',grupo:'Grupo I',fase:'Fase de Grupos'},
-  {id:'g040',nome:'Egito vs Costa do Marfim',grupo:'Grupo I',fase:'Fase de Grupos'},
-  {id:'g041',nome:'Itália vs Turquia',grupo:'Grupo J',fase:'Fase de Grupos'},
-  {id:'g042',nome:'Polônia vs Romênia',grupo:'Grupo J',fase:'Fase de Grupos'},
-  {id:'g043',nome:'Itália vs Polônia',grupo:'Grupo J',fase:'Fase de Grupos'},
-  {id:'g044',nome:'Turquia vs Romênia',grupo:'Grupo J',fase:'Fase de Grupos'},
-  {id:'g045',nome:'Arábia Saudita vs Catar',grupo:'Grupo K',fase:'Fase de Grupos'},
-  {id:'g046',nome:'Arábia Saudita vs Iraque',grupo:'Grupo K',fase:'Fase de Grupos'},
-  {id:'g047',nome:'México vs Jamaica',grupo:'Grupo L',fase:'Fase de Grupos'},
-  {id:'g048',nome:'Costa Rica vs Panamá',grupo:'Grupo L',fase:'Fase de Grupos'},
-  // MATA-MATA (slots dinâmicos — serão preenchidos conforme avança)
-  {id:'o001',nome:'Oitavas: 1A vs 2B',grupo:'',fase:'Oitavas de Final'},
-  {id:'o002',nome:'Oitavas: 1B vs 2A',grupo:'',fase:'Oitavas de Final'},
-  {id:'o003',nome:'Oitavas: 1C vs 2D',grupo:'',fase:'Oitavas de Final'},
-  {id:'o004',nome:'Oitavas: 1D vs 2C',grupo:'',fase:'Oitavas de Final'},
-  {id:'o005',nome:'Oitavas: 1E vs 2F',grupo:'',fase:'Oitavas de Final'},
-  {id:'o006',nome:'Oitavas: 1F vs 2E',grupo:'',fase:'Oitavas de Final'},
-  {id:'o007',nome:'Oitavas: 1G vs 2H',grupo:'',fase:'Oitavas de Final'},
-  {id:'o008',nome:'Oitavas: 1H vs 2G',grupo:'',fase:'Oitavas de Final'},
-  {id:'o009',nome:'Oitavas: 1I vs 2J',grupo:'',fase:'Oitavas de Final'},
-  {id:'o010',nome:'Oitavas: 1J vs 2I',grupo:'',fase:'Oitavas de Final'},
-  {id:'o011',nome:'Oitavas: 1K vs 2L',grupo:'',fase:'Oitavas de Final'},
-  {id:'o012',nome:'Oitavas: 1L vs 2K',grupo:'',fase:'Oitavas de Final'},
-  {id:'q001',nome:'Quartas 1',grupo:'',fase:'Quartas de Final'},
-  {id:'q002',nome:'Quartas 2',grupo:'',fase:'Quartas de Final'},
-  {id:'q003',nome:'Quartas 3',grupo:'',fase:'Quartas de Final'},
-  {id:'q004',nome:'Quartas 4',grupo:'',fase:'Quartas de Final'},
-  {id:'s001',nome:'Semifinal 1',grupo:'',fase:'Semifinal'},
-  {id:'s002',nome:'Semifinal 2',grupo:'',fase:'Semifinal'},
-  {id:'f001',nome:'3º Lugar',grupo:'',fase:'Final'},
-  {id:'f002',nome:'Grande Final',grupo:'',fase:'Final'},
+// =====================================================================
+// BANCO DE JOGOS ESTÁTICOS — Fase de Grupos (72 jogos oficiais FIFA)
+// =====================================================================
+const FASE_KEYS = {
+  grupos:'Fase de Grupos', r32:'Round of 32',
+  r16:'Oitavas de Final', qf:'Quartas de Final',
+  sf:'Semifinal', final:'Final'
+};
+const FASE_ORDER = ['grupos','r32','r16','qf','sf','final'];
+ 
+const JOGOS_GRUPOS = [
+  {id:'A1',g:'A',d:'11/06',nome:'México vs África do Sul',local:'Mexico City · Azteca'},
+  {id:'A2',g:'A',d:'11/06',nome:'Coreia do Sul vs Tchéquia',local:'Guadalajara · Akron'},
+  {id:'A3',g:'A',d:'18/06',nome:'Tchéquia vs África do Sul',local:'Atlanta · Mercedes-Benz'},
+  {id:'A4',g:'A',d:'18/06',nome:'México vs Coreia do Sul',local:'Guadalajara · Akron'},
+  {id:'A5',g:'A',d:'24/06',nome:'Tchéquia vs México',local:'Mexico City · Azteca'},
+  {id:'A6',g:'A',d:'24/06',nome:'África do Sul vs Coreia do Sul',local:'Monterrey · BBVA'},
+  {id:'B1',g:'B',d:'12/06',nome:'Canadá vs Bósnia-Herzegovina',local:'Toronto · BMO Field'},
+  {id:'B2',g:'B',d:'13/06',nome:'Catar vs Suíça',local:"San Francisco · Levi's"},
+  {id:'B3',g:'B',d:'18/06',nome:'Suíça vs Bósnia-Herzegovina',local:'Los Angeles · SoFi'},
+  {id:'B4',g:'B',d:'18/06',nome:'Canadá vs Catar',local:'Vancouver · BC Place'},
+  {id:'B5',g:'B',d:'24/06',nome:'Suíça vs Canadá',local:'Vancouver · BC Place'},
+  {id:'B6',g:'B',d:'24/06',nome:'Bósnia-Herzegovina vs Catar',local:'Seattle · Lumen Field'},
+  {id:'C1',g:'C',d:'13/06',nome:'Brasil vs Marrocos',local:'New York · MetLife'},
+  {id:'C2',g:'C',d:'13/06',nome:'Haiti vs Escócia',local:'Boston · Gillette'},
+  {id:'C3',g:'C',d:'19/06',nome:'Escócia vs Marrocos',local:'Boston · Gillette'},
+  {id:'C4',g:'C',d:'19/06',nome:'Brasil vs Haiti',local:'Philadelphia · Lincoln Financial'},
+  {id:'C5',g:'C',d:'24/06',nome:'Escócia vs Brasil',local:'Miami · Hard Rock'},
+  {id:'C6',g:'C',d:'24/06',nome:'Marrocos vs Haiti',local:'Atlanta · Mercedes-Benz'},
+  {id:'D1',g:'D',d:'12/06',nome:'EUA vs Paraguai',local:'Los Angeles · SoFi'},
+  {id:'D2',g:'D',d:'13/06',nome:'Austrália vs Turquia',local:'Vancouver · BC Place'},
+  {id:'D3',g:'D',d:'19/06',nome:'EUA vs Austrália',local:'Seattle · Lumen Field'},
+  {id:'D4',g:'D',d:'19/06',nome:'Turquia vs Paraguai',local:"San Francisco · Levi's"},
+  {id:'D5',g:'D',d:'25/06',nome:'Turquia vs EUA',local:'Los Angeles · SoFi'},
+  {id:'D6',g:'D',d:'25/06',nome:'Paraguai vs Austrália',local:"San Francisco · Levi's"},
+  {id:'E1',g:'E',d:'14/06',nome:'Alemanha vs Curaçao',local:'Houston · NRG Stadium'},
+  {id:'E2',g:'E',d:'14/06',nome:'Costa do Marfim vs Equador',local:'Philadelphia · Lincoln Financial'},
+  {id:'E3',g:'E',d:'20/06',nome:'Alemanha vs Costa do Marfim',local:'Toronto · BMO Field'},
+  {id:'E4',g:'E',d:'20/06',nome:'Equador vs Curaçao',local:'Kansas City · Arrowhead'},
+  {id:'E5',g:'E',d:'25/06',nome:'Equador vs Alemanha',local:'New York · MetLife'},
+  {id:'E6',g:'E',d:'25/06',nome:'Curaçao vs Costa do Marfim',local:'Philadelphia · Lincoln Financial'},
+  {id:'F1',g:'F',d:'14/06',nome:'Holanda vs Japão',local:"Dallas · AT&T Stadium"},
+  {id:'F2',g:'F',d:'14/06',nome:'Suécia vs Tunísia',local:'Monterrey · BBVA'},
+  {id:'F3',g:'F',d:'20/06',nome:'Holanda vs Suécia',local:'Houston · NRG Stadium'},
+  {id:'F4',g:'F',d:'20/06',nome:'Tunísia vs Japão',local:'Monterrey · BBVA'},
+  {id:'F5',g:'F',d:'25/06',nome:'Japão vs Suécia',local:"Dallas · AT&T Stadium"},
+  {id:'F6',g:'F',d:'25/06',nome:'Tunísia vs Holanda',local:'Kansas City · Arrowhead'},
+  {id:'G1',g:'G',d:'15/06',nome:'Bélgica vs Egito',local:'Seattle · Lumen Field'},
+  {id:'G2',g:'G',d:'15/06',nome:'Irã vs Nova Zelândia',local:'Los Angeles · SoFi'},
+  {id:'G3',g:'G',d:'21/06',nome:'Bélgica vs Irã',local:'Los Angeles · SoFi'},
+  {id:'G4',g:'G',d:'21/06',nome:'Nova Zelândia vs Egito',local:'Vancouver · BC Place'},
+  {id:'G5',g:'G',d:'26/06',nome:'Egito vs Irã',local:'Seattle · Lumen Field'},
+  {id:'G6',g:'G',d:'26/06',nome:'Nova Zelândia vs Bélgica',local:'Vancouver · BC Place'},
+  {id:'H1',g:'H',d:'15/06',nome:'Espanha vs Cabo Verde',local:'Atlanta · Mercedes-Benz'},
+  {id:'H2',g:'H',d:'15/06',nome:'Arábia Saudita vs Uruguai',local:'Miami · Hard Rock'},
+  {id:'H3',g:'H',d:'21/06',nome:'Espanha vs Arábia Saudita',local:'Atlanta · Mercedes-Benz'},
+  {id:'H4',g:'H',d:'21/06',nome:'Uruguai vs Cabo Verde',local:'Miami · Hard Rock'},
+  {id:'H5',g:'H',d:'26/06',nome:'Cabo Verde vs Arábia Saudita',local:'Houston · NRG Stadium'},
+  {id:'H6',g:'H',d:'26/06',nome:'Uruguai vs Espanha',local:'Guadalajara · Akron'},
+  {id:'I1',g:'I',d:'16/06',nome:'França vs Senegal',local:'New York · MetLife'},
+  {id:'I2',g:'I',d:'16/06',nome:'Iraque vs Noruega',local:'Boston · Gillette'},
+  {id:'I3',g:'I',d:'22/06',nome:'França vs Iraque',local:'Philadelphia · Lincoln Financial'},
+  {id:'I4',g:'I',d:'22/06',nome:'Noruega vs Senegal',local:'New York · MetLife'},
+  {id:'I5',g:'I',d:'26/06',nome:'Noruega vs França',local:'Boston · Gillette'},
+  {id:'I6',g:'I',d:'26/06',nome:'Senegal vs Iraque',local:'Toronto · BMO Field'},
+  {id:'J1',g:'J',d:'16/06',nome:'Argentina vs Argélia',local:'Kansas City · Arrowhead'},
+  {id:'J2',g:'J',d:'16/06',nome:'Áustria vs Jordânia',local:"San Francisco · Levi's"},
+  {id:'J3',g:'J',d:'22/06',nome:'Argentina vs Áustria',local:"Dallas · AT&T Stadium"},
+  {id:'J4',g:'J',d:'22/06',nome:'Jordânia vs Argélia',local:"San Francisco · Levi's"},
+  {id:'J5',g:'J',d:'27/06',nome:'Argélia vs Áustria',local:'Kansas City · Arrowhead'},
+  {id:'J6',g:'J',d:'27/06',nome:'Jordânia vs Argentina',local:"Dallas · AT&T Stadium"},
+  {id:'K1',g:'K',d:'17/06',nome:'Portugal vs Congo DR',local:'Houston · NRG Stadium'},
+  {id:'K2',g:'K',d:'17/06',nome:'Uzbequistão vs Colômbia',local:'Mexico City · Azteca'},
+  {id:'K3',g:'K',d:'23/06',nome:'Portugal vs Uzbequistão',local:'Houston · NRG Stadium'},
+  {id:'K4',g:'K',d:'23/06',nome:'Colômbia vs Congo DR',local:'Guadalajara · Akron'},
+  {id:'K5',g:'K',d:'27/06',nome:'Colômbia vs Portugal',local:'Miami · Hard Rock'},
+  {id:'K6',g:'K',d:'27/06',nome:'Congo DR vs Uzbequistão',local:'Atlanta · Mercedes-Benz'},
+  {id:'L1',g:'L',d:'17/06',nome:'Inglaterra vs Croácia',local:"Dallas · AT&T Stadium"},
+  {id:'L2',g:'L',d:'17/06',nome:'Gana vs Panamá',local:'Toronto · BMO Field'},
+  {id:'L3',g:'L',d:'23/06',nome:'Inglaterra vs Gana',local:'Boston · Gillette'},
+  {id:'L4',g:'L',d:'23/06',nome:'Panamá vs Croácia',local:'Toronto · BMO Field'},
+  {id:'L5',g:'L',d:'27/06',nome:'Panamá vs Inglaterra',local:'New York · MetLife'},
+  {id:'L6',g:'L',d:'27/06',nome:'Croácia vs Gana',local:'Philadelphia · Lincoln Financial'},
 ];
  
-// Nomes de jogos customizados (editáveis)
-let customJogos = {};
+// Mata-mata dinamicamente atualizado via API
+let JOGOS_MATA_LIVE = [];
  
-function getJogoNome(id) {
-  return customJogos[id] || (JOGOS.find(j=>j.id===id)||{nome:id}).nome;
-}
- 
-// ===================== STATE =====================
+// =====================================================================
+// STATE
+// =====================================================================
 let operations=[], saques=[], opId=1, saqueId=1;
 let bancaChart, faseChart;
 let editingResultadoId=null, selectedResultado=null;
-let currentTipo='simples', legs=[];
+let currentTipo='simples', legs=[], legId=0;
+let faseAtualKey='grupos';
+let lastFetchTime = null;
+let fetchedMatches = []; // jogos buscados pela API
  
-// ===================== HELPERS =====================
+// =====================================================================
+// HELPERS
+// =====================================================================
 function fmt(v){return 'R$ '+Math.abs(v).toFixed(2).replace('.',',');}
-function fmtSgn(v){return (v>=0?'+R$ ':'-R$ ')+Math.abs(v).toFixed(2).replace('.',',');}
+function fmtSgn(v){return(v>=0?'+R$ ':'-R$ ')+Math.abs(v).toFixed(2).replace('.',',');}
 function getBi(){return parseFloat(document.getElementById('bancaInicial').value)||50;}
 function getTotalPnl(){return operations.reduce((s,o)=>s+o.pnl,0);}
 function getTotalSaq(){return saques.reduce((s,i)=>i.tipo==='saque'?s+i.valor:s-i.valor,0);}
 function getBanca(){return getBi()+getTotalPnl()-getTotalSaq();}
+function faseLabel(k){return FASE_KEYS[k]||k;}
  
-// ===================== JOGO SEARCH =====================
-function filterJogos(inputId, ddId, allowCustom=true) {
-  const input = document.getElementById(inputId);
-  const dd    = document.getElementById(ddId);
-  const q     = (input.value||'').toLowerCase().trim();
-  const fase  = document.getElementById('fFase') ? document.getElementById('fFase').value : '';
+// =====================================================================
+// FASE ATUAL
+// =====================================================================
+function onFaseAtualChange(){
+  faseAtualKey = document.getElementById('faseAtual').value;
+  document.getElementById('faseAtualLabel').textContent = '📍 '+faseLabel(faseAtualKey);
+}
  
-  let list = JOGOS.filter(j=> {
-    const faseOk = !fase || j.fase===fase || j.fase==='Fase de Grupos';
-    const nameOk = !q || j.nome.toLowerCase().includes(q) || (j.grupo||'').toLowerCase().includes(q);
-    return faseOk && nameOk;
+function jogosDisponiveis(){
+  const idx = FASE_ORDER.indexOf(faseAtualKey);
+  let list = JOGOS_GRUPOS.map(j=>({...j, faseKey:'grupos', faseLabel:'Fase de Grupos', status:'fixed'}));
+  // Jogos buscados via API (mata-mata confirmados)
+  fetchedMatches.forEach(j=>{
+    const fi = FASE_ORDER.indexOf(j.faseKey);
+    if(fi<=idx){
+      list.push({...j, status: j.status||'confirmed'});
+    }
   });
-  if(list.length>30) list=list.slice(0,30);
+  // Slots de mata-mata padrão (não preenchidos ainda)
+  const fasesMata = ['r32','r16','qf','sf','final'];
+  fasesMata.forEach(fase=>{
+    const fi = FASE_ORDER.indexOf(fase);
+    if(fi>idx) return;
+    const temConfirmados = fetchedMatches.some(j=>j.faseKey===fase);
+    if(!temConfirmados){
+      // Adiciona slots genéricos
+      const faseNomes = {
+        r32:['R32 Jogo 1 (28/06)','R32 Jogo 2 (28/06)','R32 Jogo 3 (29/06)','R32 Jogo 4 (29/06)',
+             'R32 Jogo 5 (30/06)','R32 Jogo 6 (30/06)','R32 Jogo 7 (01/07)','R32 Jogo 8 (01/07)',
+             'R32 Jogo 9 (02/07)','R32 Jogo 10 (02/07)','R32 Jogo 11 (03/07)','R32 Jogo 12 (03/07)',
+             'R32 Jogo 13 (04/07)','R32 Jogo 14 (04/07)','R32 Jogo 15 (05/07)','R32 Jogo 16 (05/07)'],
+        r16:['Oitavas J1 (06/07)','Oitavas J2 (06/07)','Oitavas J3 (07/07)','Oitavas J4 (07/07)',
+             'Oitavas J5 (08/07)','Oitavas J6 (08/07)','Oitavas J7 (09/07)','Oitavas J8 (09/07)'],
+        qf:['Quartas J1 (11/07)','Quartas J2 (11/07)','Quartas J3 (12/07)','Quartas J4 (12/07)'],
+        sf:['Semifinal 1 (14/07)','Semifinal 2 (15/07)'],
+        final:['3º Lugar (18/07)','Grande Final (19/07) · MetLife']
+      };
+      (faseNomes[fase]||[]).forEach((nome,i)=>{
+        list.push({
+          id:`${fase.toUpperCase()}_${i+1}`,
+          nome, faseKey:fase, faseLabel:faseLabel(fase),
+          status:'tbd', g:'', d:'', local:''
+        });
+      });
+    }
+  });
+  return list;
+}
  
-  if(!list.length && !q){ dd.classList.remove('open'); return; }
- 
-  dd.innerHTML = list.map(j=>`
-    <div class="jogo-item" onclick="selectJogo('${inputId}','${ddId}','${j.id}','${j.nome.replace(/'/g,"\\'")}')">
-      <div class="match-name">${j.nome}</div>
-      <div class="match-info">${j.fase}${j.grupo?' — '+j.grupo:''}</div>
-    </div>`).join('');
- 
-  if(allowCustom && q && !list.find(j=>j.nome.toLowerCase()===q)){
-    dd.innerHTML += `<div class="jogo-item" onclick="selectCustomJogo('${inputId}','${ddId}','${q.replace(/'/g,"\\'")}')">
-      <div class="match-name">➕ Usar: "${input.value}"</div>
-      <div class="match-info" style="color:var(--yellow);">Jogo personalizado</div>
+// =====================================================================
+// JOGO SEARCH
+// =====================================================================
+function filterJogos(inputId, ddId){
+  const inp = document.getElementById(inputId);
+  const dd  = document.getElementById(ddId);
+  const q   = (inp.value||'').toLowerCase().trim();
+  const list = jogosDisponiveis();
+  let filtered = q ? list.filter(j=>
+    j.nome.toLowerCase().includes(q) ||
+    (j.g && ('grupo '+j.g.toLowerCase()).includes(q)) ||
+    (j.local||'').toLowerCase().includes(q) ||
+    j.faseLabel.toLowerCase().includes(q)
+  ) : list;
+  if(!filtered.length){ dd.classList.remove('open'); return; }
+  const groups = {};
+  filtered.forEach(j=>{
+    const k = j.faseLabel;
+    if(!groups[k]) groups[k]=[];
+    groups[k].push(j);
+  });
+  let html='';
+  Object.entries(groups).forEach(([label,items])=>{
+    const isLive = items.some(i=>i.status==='live');
+    const liveDot = isLive ? '<span class="live-dot" style="width:6px;height:6px;"></span>' : '';
+    html+=`<div class="jogo-group-label">${liveDot}${label}</div>`;
+    items.forEach(j=>{
+      const grp = j.g ? ` · Grupo ${j.g}` : '';
+      const data= j.d ? ` · ${j.d}` : '';
+      const loc = j.local ? ` · ${j.local}` : '';
+      let statusIcon='';
+      let cls='jogo-item';
+      if(j.status==='live'){cls+=' live-match';statusIcon=' <span class="badge badge-live">AO VIVO</span>';}
+      else if(j.status==='confirmed'){cls+=' confirmed-match';statusIcon=' <span style="color:var(--green);font-size:9px;">✅ confirmado</span>';}
+      else if(j.status==='tbd'){statusIcon=' <span style="color:var(--muted);font-size:9px;">⏳ a definir</span>';}
+      const scoreStr = j.score ? ` <strong style="color:var(--green);">${j.score}</strong>` : '';
+      html+=`<div class="${cls}" onclick="selectJogo('${inputId}','${ddId}','${j.id}','${j.nome.replace(/'/g,"\\'")}','${j.faseKey}')">
+        <div class="mn">${j.nome}${scoreStr}${statusIcon}</div>
+        <div class="mi">${j.faseLabel}${grp}${data}${loc}</div>
+      </div>`;
+    });
+  });
+  if(q){
+    html+=`<div class="jogo-item" onclick="selectCustomJogo('${inputId}','${ddId}','${q.replace(/'/g,"\\'")}')">
+      <div class="mn">➕ Usar: "${inp.value}"</div>
+      <div class="mi" style="color:var(--yellow);">Jogo personalizado</div>
     </div>`;
   }
+  dd.innerHTML=html;
   dd.classList.add('open');
 }
  
-function selectJogo(inputId, ddId, id, nome){
-  document.getElementById(inputId).value = nome;
-  document.getElementById(inputId).dataset.jogoId = id;
+function selectJogo(inputId, ddId, id, nome, faseKey){
+  const inp = document.getElementById(inputId);
+  inp.value = nome;
+  inp.dataset.jogoId  = id;
+  inp.dataset.faseKey = faseKey;
   document.getElementById(ddId).classList.remove('open');
 }
+ 
 function selectCustomJogo(inputId, ddId, nome){
-  const customId = 'custom_'+Date.now();
-  customJogos[customId] = nome;
-  document.getElementById(inputId).value = nome;
-  document.getElementById(inputId).dataset.jogoId = customId;
+  const inp = document.getElementById(inputId);
+  inp.value = nome;
+  inp.dataset.jogoId  = 'custom_'+Date.now();
+  inp.dataset.faseKey = faseAtualKey;
   document.getElementById(ddId).classList.remove('open');
 }
+ 
 document.addEventListener('click', e=>{
   document.querySelectorAll('.jogo-dropdown').forEach(dd=>{
-    if(!dd.previousElementSibling || !dd.previousElementSibling.contains(e.target)) dd.classList.remove('open');
+    const wrap = dd.closest('.jogo-search-wrap');
+    if(!wrap||!wrap.contains(e.target)) dd.classList.remove('open');
   });
 });
  
-// ===================== TIPO TOGGLE =====================
+// =====================================================================
+// FETCH MATA-MATA VIA CLAUDE API
+// =====================================================================
+async function fetchMataMatches(){
+  const btn = document.getElementById('btnFetchMata');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Buscando...';
+  document.getElementById('mataSubtitle').textContent = 'Consultando dados em tempo real...';
+  
+  try {
+    const faseAtualSel = document.getElementById('faseAtual').value;
+    const today = new Date().toLocaleDateString('pt-BR');
+    
+    const prompt = `Você é um assistente especializado em Copa do Mundo 2026. Hoje é ${today}.
+ 
+Use a ferramenta de busca na web para obter os confrontos ATUAIS e CONFIRMADOS da Copa do Mundo FIFA 2026, especialmente do mata-mata (Round of 32, Oitavas de Final, Quartas de Final, Semifinal e Final).
+ 
+Busque: "Copa do Mundo 2026 mata-mata jogos confirmados ${today}" e "Copa do Mundo 2026 Round of 32 confrontos"
+ 
+Retorne APENAS um JSON válido (sem markdown, sem explicações) com esta estrutura exata:
+{
+  "lastUpdate": "data/hora da busca",
+  "faseAtual": "nome da fase atual em curso",
+  "matches": [
+    {
+      "id": "R32_1",
+      "nome": "País A vs País B",
+      "faseKey": "r32",
+      "faseLabel": "Round of 32",
+      "data": "DD/MM",
+      "local": "Cidade · Estádio",
+      "status": "confirmed",
+      "score": "X-X ou null se não iniciou"
+    }
+  ]
+}
+ 
+faseKey deve ser: "r32", "r16", "qf", "sf" ou "final"
+status deve ser: "confirmed" (definido mas não jogado), "live" (em andamento), "finished" (encerrado), "tbd" (a definir)
+Inclua TODOS os jogos que já foram ou serão disputados no mata-mata.
+Se um jogo ainda não tem confronto definido, use "TBD vs TBD" como nome.
+RETORNE APENAS O JSON, sem nenhum texto adicional.`;
+ 
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        model: "claude-sonnet-4-6",
+        max_tokens: 2000,
+        tools: [{type:"web_search_20250305", name:"web_search"}],
+        messages: [{role:"user", content: prompt}]
+      })
+    });
+ 
+    const data = await response.json();
+    const fullText = data.content
+      .filter(b=>b.type==='text')
+      .map(b=>b.text)
+      .join('\n');
+ 
+    // Extrair JSON
+    let jsonStr = fullText.trim();
+    const jsonMatch = jsonStr.match(/\{[\s\S]*\}/);
+    if(jsonMatch) jsonStr = jsonMatch[0];
+ 
+    const parsed = JSON.parse(jsonStr);
+    
+    if(parsed.matches && Array.isArray(parsed.matches)){
+      fetchedMatches = parsed.matches.filter(m=>m.nome && m.nome !== 'TBD vs TBD');
+      lastFetchTime = parsed.lastUpdate || new Date().toLocaleString('pt-BR');
+      document.getElementById('lastUpdateText').textContent = 'Atualizado: '+lastFetchTime.slice(0,16);
+      renderMataPanel(parsed);
+    }
+ 
+  } catch(err){
+    console.error(err);
+    document.getElementById('mataMatchesPanel').innerHTML = `
+      <div style="text-align:center;padding:16px;color:var(--red);font-size:12px;">
+        ❌ Erro ao buscar dados. Verifique sua conexão e tente novamente.
+        <br><span style="color:var(--muted);font-size:10px;">${err.message}</span>
+      </div>`;
+  }
+ 
+  btn.disabled = false;
+  btn.innerHTML = '🔄 <span id="btnFetchText">Atualizar</span>';
+  document.getElementById('mataSubtitle').textContent = lastFetchTime ? `Última atualização: ${lastFetchTime}` : 'Clique em "Atualizar Jogos" para buscar confrontos confirmados.';
+}
+ 
+function renderMataPanel(data){
+  const fases = {
+    r32:{label:'Round of 32',icon:'⚔️'},
+    r16:{label:'Oitavas de Final',icon:'🏟️'},
+    qf:{label:'Quartas',icon:'🔥'},
+    sf:{label:'Semifinal',icon:'⭐'},
+    final:{label:'Final',icon:'🏆'}
+  };
+  
+  const byFase = {};
+  (data.matches||[]).forEach(m=>{
+    if(!byFase[m.faseKey]) byFase[m.faseKey] = [];
+    byFase[m.faseKey].push(m);
+  });
+ 
+  let html = '';
+  const faseOrder = ['r32','r16','qf','sf','final'];
+  
+  faseOrder.forEach(fk=>{
+    const items = byFase[fk]||[];
+    if(!items.length) return;
+    const f = fases[fk];
+    html += `<div style="margin-bottom:10px;">
+      <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px;">${f.icon} ${f.label}</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:6px;">`;
+    items.forEach(m=>{
+      const isLive = m.status==='live';
+      const isFinished = m.status==='finished';
+      const scoreStr = m.score ? `<div class="mm-score">${m.score}</div>` : '';
+      const statusStr = isLive ? `<span class="badge badge-live" style="font-size:9px;">🔴 AO VIVO</span>` :
+                        isFinished ? `<span style="font-size:9px;color:var(--muted);">⏹ Encerrado</span>` :
+                        m.data ? `<span style="font-size:9px;color:var(--muted);">${m.data}</span>` : '';
+      const cls = isLive ? 'mata-match live' : isFinished ? 'mata-match confirmed' : m.status==='confirmed'?'mata-match confirmed':'mata-match pending';
+      html += `<div class="${cls}">
+        <div class="mm-teams">${m.nome}</div>
+        ${scoreStr}
+        <div class="mm-meta">${statusStr}${m.local?' · '+m.local:''}</div>
+      </div>`;
+    });
+    html += `</div></div>`;
+  });
+  
+  if(!html){
+    html = `<div style="text-align:center;padding:16px;color:var(--muted);font-size:12px;">Nenhum confronto do mata-mata disponível ainda. A fase de grupos termina em 27/06.</div>`;
+  }
+ 
+  document.getElementById('mataMatchesPanel').innerHTML = html;
+}
+ 
+// =====================================================================
+// MODAL FETCH MANUAL
+// =====================================================================
+function openFetchModal(){
+  document.getElementById('modalFetch').classList.add('open');
+  document.getElementById('fetchStatus').style.display='none';
+  document.getElementById('fetchResultList').style.display='none';
+  document.getElementById('btnStartFetch').disabled=false;
+  document.getElementById('btnStartFetch').textContent='🔍 Buscar Agora';
+}
+ 
+async function startFetch(){
+  const btn = document.getElementById('btnStartFetch');
+  const statusEl = document.getElementById('fetchStatus');
+  const resultList = document.getElementById('fetchResultList');
+  const fase = document.getElementById('fetchFaseSelect').value;
+  
+  btn.disabled=true;
+  btn.innerHTML='<span class="spinner"></span> Buscando...';
+  statusEl.style.display='block';
+  statusEl.className='fetch-status loading';
+  statusEl.innerHTML='<span class="spinner"></span> Consultando dados da Copa do Mundo 2026...';
+  resultList.style.display='none';
+ 
+  try {
+    const today = new Date().toLocaleDateString('pt-BR');
+    const faseQuery = fase==='all' ? 'mata-mata todos os confrontos' : `${FASE_KEYS[fase]||fase} confrontos`;
+    
+    const prompt = `Você é especialista em Copa do Mundo 2026. Hoje é ${today}.
+ 
+Use a busca na web para encontrar: "Copa do Mundo 2026 ${faseQuery} ${today}"
+ 
+Retorne APENAS JSON válido (sem markdown):
+{
+  "lastUpdate": "string com data/hora",
+  "faseAtual": "nome da fase atual",
+  "matches": [
+    {
+      "id": "ID_UNICO",
+      "nome": "País A vs País B",
+      "faseKey": "r32|r16|qf|sf|final",
+      "faseLabel": "nome completo da fase",
+      "data": "DD/MM",
+      "local": "Cidade · Estádio",
+      "status": "confirmed|live|finished|tbd",
+      "score": "1-0 ou null"
+    }
+  ]
+}
+ 
+Inclua máximo de jogos possível. Se não há dados para uma fase, pule-a.`;
+ 
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        model:"claude-sonnet-4-6",
+        max_tokens:2000,
+        tools:[{type:"web_search_20250305",name:"web_search"}],
+        messages:[{role:"user",content:prompt}]
+      })
+    });
+ 
+    const data = await response.json();
+    const fullText = data.content.filter(b=>b.type==='text').map(b=>b.text).join('\n');
+    let jsonStr = fullText.trim();
+    const m = jsonStr.match(/\{[\s\S]*\}/);
+    if(m) jsonStr = m[0];
+    const parsed = JSON.parse(jsonStr);
+ 
+    if(parsed.matches){
+      fetchedMatches = [...fetchedMatches];
+      parsed.matches.forEach(nm=>{
+        const idx = fetchedMatches.findIndex(e=>e.id===nm.id);
+        if(idx>=0) fetchedMatches[idx]=nm;
+        else fetchedMatches.push(nm);
+      });
+      lastFetchTime = parsed.lastUpdate || new Date().toLocaleString('pt-BR');
+      document.getElementById('lastUpdateText').textContent = 'Atualizado: '+lastFetchTime.slice(0,16);
+      
+      statusEl.className='fetch-status';
+      statusEl.innerHTML=`✅ <strong>${parsed.matches.length} jogos</strong> encontrados · Fase atual: <strong>${parsed.faseAtual||'—'}</strong><br>
+        <span style="color:var(--muted);font-size:10px;">Atualizado em ${lastFetchTime}</span>`;
+      
+      // Mostra lista
+      resultList.style.display='block';
+      document.getElementById('fetchMatchItems').innerHTML = parsed.matches.map(m=>{
+        const sc = m.score ? `<span class="fm-score">${m.score}</span>` : '';
+        const st = m.status==='live'?'<span class="badge badge-live">AO VIVO</span>':
+                   m.status==='finished'?'<span style="font-size:9px;color:var(--muted);">⏹ Enc.</span>':'';
+        return `<div class="fetch-match-item">
+          <div>
+            <div class="fm-name">${m.nome} ${sc} ${st}</div>
+            <div class="fm-meta">${m.data||''} ${m.local||''}</div>
+          </div>
+          <span class="fm-fase">${m.faseLabel}</span>
+        </div>`;
+      }).join('');
+      
+      renderMataPanel(parsed);
+    } else {
+      throw new Error('Formato de resposta inválido');
+    }
+  } catch(err){
+    statusEl.className='fetch-status';
+    statusEl.innerHTML=`❌ Erro: ${err.message}<br><span style="font-size:10px;color:var(--muted);">Tente novamente em instantes.</span>`;
+  }
+  
+  btn.disabled=false;
+  btn.textContent='🔍 Buscar Novamente';
+}
+ 
+// =====================================================================
+// TIPO TOGGLE
+// =====================================================================
 function setTipo(tipo){
   currentTipo=tipo;
   document.getElementById('btnSimples').className='tipo-btn'+(tipo==='simples'?' active-simples':'');
   document.getElementById('btnMultipla').className='tipo-btn'+(tipo==='multipla'?' active-multipla':'');
   document.getElementById('secSimples').style.display=tipo==='simples'?'':'none';
   document.getElementById('secMultipla').style.display=tipo==='multipla'?'':'none';
-  document.getElementById('oddLabel').textContent=tipo==='multipla'?'(combinada total)':'(da aposta)';
-  if(tipo==='multipla' && legs.length===0){ addLeg(); addLeg(); }
+  document.getElementById('oddLabel').textContent=tipo==='multipla'?'(odd combinada)':'(da aposta)';
+  if(tipo==='multipla'&&legs.length===0){addLeg();addLeg();}
 }
  
-// ===================== LEGS (MÚLTIPLA) =====================
-let legId=0;
+// =====================================================================
+// LEGS
+// =====================================================================
 function addLeg(){
   const id='leg_'+(++legId);
   legs.push(id);
-  const container=document.getElementById('legsContainer');
+  const c=document.getElementById('legsContainer');
   const div=document.createElement('div');
-  div.className='leg-item';
-  div.id=id;
-  div.innerHTML=`
-    <input type="text" id="inp_${id}" placeholder="Buscar jogo..." autocomplete="off"
-      oninput="filterJogos('inp_${id}','dd_${id}')"
-      onfocus="filterJogos('inp_${id}','dd_${id}')">
-    <div class="jogo-dropdown" id="dd_${id}" style="left:0;right:36px;"></div>
+  div.className='leg-item'; div.id=id;
+  const num=legs.length;
+  div.innerHTML=`<span class="leg-num">${num}</span>
+    <div style="position:relative;flex:1;">
+      <input type="text" id="inp_${id}" placeholder="Buscar jogo ${num}..." autocomplete="off"
+        oninput="filterJogos('inp_${id}','dd_${id}')" onfocus="filterJogos('inp_${id}','dd_${id}')">
+      <div class="jogo-dropdown" id="dd_${id}"></div>
+    </div>
     <button class="leg-remove" onclick="removeLeg('${id}')">✕</button>`;
-  container.appendChild(div);
+  c.appendChild(div);
 }
 function removeLeg(id){
   legs=legs.filter(l=>l!==id);
   const el=document.getElementById(id);
   if(el) el.remove();
+  legs.forEach((lid,i)=>{
+    const num=document.querySelector(`#${lid} .leg-num`);
+    if(num) num.textContent=i+1;
+  });
 }
  
-// ===================== POTENCIAL =====================
+// =====================================================================
+// POTENCIAL
+// =====================================================================
 function calcPotencial(){
   const stake=parseFloat(document.getElementById('fStake').value)||0;
   const odd=parseFloat(document.getElementById('fOdd').value)||0;
   const box=document.getElementById('potencialBox');
-  if(stake>0 && odd>1){
+  if(stake>0&&odd>1){
     box.style.display='block';
     document.getElementById('potencialVal').textContent=fmt(stake*(odd-1));
     document.getElementById('retornoVal').textContent=fmt(stake*odd);
   } else { box.style.display='none'; }
 }
  
-// ===================== MODALS =====================
+// =====================================================================
+// MODALS
+// =====================================================================
 function openOpModal(){
   document.getElementById('modalOp').classList.add('open');
   document.getElementById('fData').value=new Date().toISOString().slice(0,10);
   document.getElementById('fJogo').value='';
   document.getElementById('fJogo').dataset.jogoId='';
+  document.getElementById('fJogo').dataset.faseKey='';
   document.getElementById('fRaciocinio').value='';
   document.getElementById('fStake').value='';
   document.getElementById('fOdd').value='';
@@ -656,7 +1071,9 @@ function closeModals(){
   editingResultadoId=null; selectedResultado=null;
 }
  
-// ===================== SAVE OP =====================
+// =====================================================================
+// SAVE OP
+// =====================================================================
 function saveOp(){
   const stake=parseFloat(document.getElementById('fStake').value)||0;
   const odd=parseFloat(document.getElementById('fOdd').value)||1;
@@ -665,36 +1082,35 @@ function saveOp(){
   if(resultado==='green') pnl=+(stake*(odd-1)).toFixed(2);
   else if(resultado==='red') pnl=-stake;
  
-  let jogoNome='', jogoIds=[];
+  let jogoNome='', jogoFaseKey='';
   if(currentTipo==='simples'){
     const inp=document.getElementById('fJogo');
     jogoNome=inp.value||'Jogo não especificado';
-    if(inp.dataset.jogoId) jogoIds=[inp.dataset.jogoId];
+    jogoFaseKey=inp.dataset.faseKey||faseAtualKey;
   } else {
-    const jogosMultipla=legs.map(lid=>{
+    const parts=legs.map(lid=>{
       const inp=document.getElementById('inp_'+lid);
-      return {nome:inp?inp.value:'', id:inp?inp.dataset.jogoId||'':''}; 
-    }).filter(j=>j.nome);
-    jogoNome=jogosMultipla.map(j=>j.nome).join(' + ');
-    jogoIds=jogosMultipla.map(j=>j.id);
+      return inp?inp.value:'';
+    }).filter(Boolean);
+    jogoNome=parts.join(' + ')||'Múltipla';
+    jogoFaseKey=faseAtualKey;
   }
  
   operations.push({
-    id:opId++,
-    tipo:currentTipo,
+    id:opId++, tipo:currentTipo,
     data:document.getElementById('fData').value,
-    jogoNome, jogoIds,
+    jogoNome, jogoFaseKey,
     raciocinio:document.getElementById('fRaciocinio').value,
-    fase:document.getElementById('fFase').value,
     momento:document.getElementById('fMomento').value,
     stake, odd, resultado, pnl
   });
- 
   closeModals();
   renderLedger(); updateMetrics(); updateChart(); updateFaseChart();
 }
  
-// ===================== SAVE SAQUE =====================
+// =====================================================================
+// SAVE SAQUE
+// =====================================================================
 function saveSaque(){
   const val=parseFloat(document.getElementById('sValor').value);
   if(!val||val<=0){alert('Informe um valor válido.');return;}
@@ -709,7 +1125,6 @@ function saveSaque(){
   renderSaques(); updateMetrics(); updateChart();
   document.getElementById('countSaques').textContent=saques.length;
 }
- 
 function updateSaquePreview(){
   const bAtual=getBanca();
   const val=parseFloat(document.getElementById('sValor').value)||0;
@@ -721,13 +1136,14 @@ function updateSaquePreview(){
   el.style.color=apos<bAtual?'var(--red)':'var(--green)';
 }
  
-// ===================== ATUALIZAR RESULTADO =====================
+// =====================================================================
+// RESULTADO
+// =====================================================================
 function openResultadoModal(id){
   const op=operations.find(o=>o.id===id);
   if(!op) return;
-  editingResultadoId=id;
-  selectedResultado=null;
-  document.getElementById('resultadoDesc').textContent=`Operação #${id}: ${op.jogoNome}`;
+  editingResultadoId=id; selectedResultado=null;
+  document.getElementById('resultadoDesc').textContent=`Op. #${id}: ${op.jogoNome}`;
   document.getElementById('rOdd').value=op.odd;
   document.getElementById('rOptGreen').className='result-opt';
   document.getElementById('rOptRed').className='result-opt';
@@ -743,14 +1159,15 @@ function confirmResultado(){
   const op=operations.find(o=>o.id===editingResultadoId);
   if(!op) return;
   const odd=parseFloat(document.getElementById('rOdd').value)||op.odd;
-  op.odd=odd;
-  op.resultado=selectedResultado;
+  op.odd=odd; op.resultado=selectedResultado;
   op.pnl=selectedResultado==='green'?+(op.stake*(odd-1)).toFixed(2):-op.stake;
   closeModals();
   renderLedger(); updateMetrics(); updateChart(); updateFaseChart();
 }
  
-// ===================== TABS =====================
+// =====================================================================
+// TABS
+// =====================================================================
 function switchTab(tab,btn){
   document.querySelectorAll('.ltab').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
@@ -758,20 +1175,20 @@ function switchTab(tab,btn){
   document.getElementById('tabSaques').style.display=tab==='saques'?'':'none';
 }
  
-// ===================== RENDER LEDGER =====================
+// =====================================================================
+// RENDER LEDGER
+// =====================================================================
 function renderLedger(){
   const body=document.getElementById('ledgerBody');
   const q=(document.getElementById('searchInput').value||'').toLowerCase();
-  const filtroFase=document.getElementById('filtroFase').value;
+  const filtroFase=document.getElementById('filtroFaseLedger').value;
   const filtroTipo=document.getElementById('filtroTipo').value;
- 
   let ops=[...operations].reverse().filter(o=>{
     const matchQ=!q||o.jogoNome.toLowerCase().includes(q)||(o.raciocinio||'').toLowerCase().includes(q)||String(o.id).includes(q);
-    const matchFase=!filtroFase||o.fase===filtroFase;
+    const matchFase=!filtroFase||o.jogoFaseKey===filtroFase;
     const matchTipo=!filtroTipo||o.tipo===filtroTipo;
     return matchQ&&matchFase&&matchTipo;
   });
- 
   document.getElementById('countOps').textContent=operations.length;
   if(!ops.length){
     body.innerHTML=`<div class="empty-state"><div class="empty-icon">📭</div><div>Nenhuma operação encontrada.</div></div>`;
@@ -780,32 +1197,29 @@ function renderLedger(){
   body.innerHTML=ops.map(o=>{
     const pc=o.pnl>0?'var(--green)':o.pnl<0?'var(--red)':'var(--muted)';
     const ps=o.resultado==='pendente'?'—':(o.pnl>=0?`+R$${o.pnl.toFixed(2)}`:`-R$${Math.abs(o.pnl).toFixed(2)}`);
-    const badge=o.tipo==='multipla'?`<span class="badge badge-mult">Múltipla</span> `:``;
-    const raciocinio=o.raciocinio?`<br><span style="color:var(--muted);font-size:10px;">↳ ${o.raciocinio.slice(0,50)}${o.raciocinio.length>50?'…':''}</span>`:'';
- 
+    const multBadge=o.tipo==='multipla'?`<span class="badge badge-mult" style="margin-right:4px;">Múltipla</span>`:'';
+    const rac=o.raciocinio?`<br><span style="color:var(--muted);font-size:10px;">↳ ${o.raciocinio.slice(0,55)}${o.raciocinio.length>55?'…':''}</span>`:'';
+    const faseTag=`<span style="font-size:9px;color:var(--muted);">${faseLabel(o.jogoFaseKey)}</span>`;
     let resBadge='';
-    let btnResultado='';
-    if(o.resultado==='green')      resBadge=`<span class="badge badge-green">✅ Green</span>`;
-    else if(o.resultado==='red')   resBadge=`<span class="badge badge-red">❌ Red</span>`;
-    else {
-      resBadge=`<span class="badge badge-pend">⏳ Pendente</span>`;
-      btnResultado=`<button class="status-btn" onclick="openResultadoModal(${o.id})" title="Atualizar resultado">✏️ Atualizar</button>`;
-    }
- 
+    if(o.resultado==='green') resBadge=`<span class="badge badge-green">✅ Green</span><br><span style="color:var(--green);font-weight:600;font-size:11px;">${ps}</span>`;
+    else if(o.resultado==='red') resBadge=`<span class="badge badge-red">❌ Red</span><br><span style="color:var(--red);font-weight:600;font-size:11px;">${ps}</span>`;
+    else resBadge=`<span class="badge badge-pend">⏳ Pendente</span><br><button class="status-btn" onclick="openResultadoModal(${o.id})">✏️ Atualizar</button>`;
     return `<div class="ops-row">
       <span style="color:var(--muted);">#${o.id}</span>
       <span style="color:var(--muted);">${o.data}</span>
-      <span>${badge}<strong style="color:var(--text);">${o.jogoNome}</strong>${raciocinio}</span>
-      <span style="color:var(--muted);font-size:10px;">${o.fase}</span>
+      <span>${multBadge}<strong>${o.jogoNome}</strong>${rac}<br>${faseTag}</span>
+      <span style="color:var(--muted);font-size:10px;">${faseLabel(o.jogoFaseKey)}</span>
       <span style="color:var(--muted);font-size:10px;">${o.momento}</span>
       <span>R$${o.stake.toFixed(2)}</span>
       <span>${o.odd.toFixed(2)}</span>
-      <span style="display:flex;flex-direction:column;gap:3px;">${resBadge}${btnResultado}${o.resultado!=='pendente'?`<span style="color:${pc};font-weight:600;font-size:11px;">${ps}</span>`:''}</span>
+      <span>${resBadge}</span>
     </div>`;
   }).join('');
 }
  
-// ===================== RENDER SAQUES =====================
+// =====================================================================
+// RENDER SAQUES
+// =====================================================================
 function renderSaques(){
   const body=document.getElementById('saquesBody');
   if(!saques.length){
@@ -826,14 +1240,15 @@ function renderSaques(){
   }).join('');
 }
  
-// ===================== UPDATE METRICS =====================
+// =====================================================================
+// MÉTRICAS
+// =====================================================================
 function updateMetrics(){
-  const bi=getBi(), pnl=getTotalPnl(), banca=getBanca(), totalSq=getTotalSaq();
+  const bi=getBi(),pnl=getTotalPnl(),banca=getBanca(),totalSq=getTotalSaq();
   const roi=bi>0?(pnl/bi*100):0;
   const closed=operations.filter(o=>o.resultado!=='pendente');
   const greens=closed.filter(o=>o.resultado==='green');
   const wr=closed.length>0?(greens.length/closed.length*100):0;
- 
   document.getElementById('bancaAtual').textContent=fmt(banca);
   const pEl=document.getElementById('pnlTotal');
   pEl.textContent=`P&L: ${fmtSgn(pnl)} (${roi>=0?'+':''}${roi.toFixed(2)}%)`;
@@ -845,62 +1260,60 @@ function updateMetrics(){
   document.getElementById('winbar').style.width=wr+'%';
   document.getElementById('totalSaques').textContent=fmt(totalSq);
   document.getElementById('saldoLiquido').textContent='Saldo líquido: '+fmt(pnl-totalSq);
- 
-  const pGrupos=operations.filter(o=>o.fase==='Fase de Grupos').reduce((s,o)=>s+o.pnl,0);
-  const pMata=operations.filter(o=>o.fase!=='Fase de Grupos').reduce((s,o)=>s+o.pnl,0);
+  const pGrupos=operations.filter(o=>o.jogoFaseKey==='grupos').reduce((s,o)=>s+o.pnl,0);
+  const pMata=operations.filter(o=>o.jogoFaseKey!=='grupos').reduce((s,o)=>s+o.pnl,0);
   const pSimples=operations.filter(o=>o.tipo==='simples').reduce((s,o)=>s+o.pnl,0);
   const pMulti=operations.filter(o=>o.tipo==='multipla').reduce((s,o)=>s+o.pnl,0);
- 
-  const sv=(id,v,defaultColor)=>{const el=document.getElementById(id);el.textContent=fmt(v);el.style.color=v>0?'var(--green)':v<0?'var(--red)':defaultColor||'var(--muted)';};
-  sv('valGrupos',pGrupos,'var(--muted)');
-  sv('valMata',pMata,'var(--muted)');
-  sv('valSimples',pSimples,'var(--muted)');
-  sv('valMultiplas',pMulti,'var(--blue)');
- 
+  const sv=(id,v,dc)=>{const el=document.getElementById(id);el.textContent=fmt(v);el.style.color=v>0?'var(--green)':v<0?'var(--red)':(dc||'var(--muted)');};
+  sv('valGrupos',pGrupos);sv('valMata',pMata);sv('valSimples',pSimples);
+  document.getElementById('valMultiplas').textContent=fmt(pMulti);
+  document.getElementById('valMultiplas').style.color=pMulti>0?'var(--green)':pMulti<0?'var(--red)':'var(--blue)';
   const momentos={'Pré-Live':'wPreLive',"Live 0'–15'":'w015',"Live 15'–45'":'w1545',"Live 45'+–90'":'w4590'};
   Object.entries(momentos).forEach(([m,id])=>sv(id,operations.filter(o=>o.momento===m).reduce((s,o)=>s+o.pnl,0)));
 }
  
-// ===================== BANCA CHART =====================
+// =====================================================================
+// CHARTS
+// =====================================================================
 function updateChart(){
   const bi=getBi();
-  const labels=['Início'], bancaData=[bi], expData=[0];
+  const labels=['Início'],bancaData=[bi];
   let acc=bi;
   const events=[
     ...operations.map(o=>({date:o.data,type:'op',data:o})),
     ...saques.map(s=>({date:s.data,type:'mov',data:s}))
   ].sort((a,b)=>a.date.localeCompare(b.date)||(a.type==='op'?-1:1));
   events.forEach(e=>{
-    if(e.type==='op'){ acc+=e.data.pnl; labels.push(`#${e.data.id}`); }
-    else{ acc=e.data.tipo==='saque'?acc-e.data.valor:acc+e.data.valor; labels.push(e.data.tipo==='saque'?'💸':'💰'); }
+    if(e.type==='op'){acc+=e.data.pnl;labels.push(`#${e.data.id}`);}
+    else{acc=e.data.tipo==='saque'?acc-e.data.valor:acc+e.data.valor;labels.push(e.data.tipo==='saque'?'💸':'💰');}
     bancaData.push(parseFloat(acc.toFixed(2)));
-    expData.push(0);
   });
   bancaChart.data.labels=labels;
   bancaChart.data.datasets[0].data=bancaData;
   bancaChart.update();
 }
  
-// ===================== FASE CHART =====================
 function updateFaseChart(){
-  const fases=['Fase de Grupos','Oitavas de Final','Quartas de Final','Semifinal','Final'];
-  const vals=fases.map(f=>operations.filter(o=>o.fase===f).reduce((s,o)=>s+o.pnl,0));
+  const fases=FASE_ORDER;
+  const vals=fases.map(f=>operations.filter(o=>o.jogoFaseKey===f).reduce((s,o)=>s+o.pnl,0));
+  const labels=['Grupos','R32','Oitavas','Quartas','Semi','Final'];
+  faseChart.data.labels=labels;
   faseChart.data.datasets[0].data=vals;
   faseChart.data.datasets[0].backgroundColor=vals.map(v=>v>=0?'rgba(0,212,160,.65)':'rgba(255,77,106,.65)');
   faseChart.update();
 }
  
-// ===================== INIT CHARTS =====================
+// =====================================================================
+// INIT
+// =====================================================================
 window.addEventListener('DOMContentLoaded',()=>{
-  const bi=getBi();
   bancaChart=new Chart(document.getElementById('bancaChart').getContext('2d'),{
     type:'line',
-    data:{
-      labels:['Início'],
-      datasets:[
-        {label:'Banca',data:[bi],borderColor:'#00d4a0',backgroundColor:'rgba(0,212,160,.08)',tension:.4,pointRadius:4,pointBackgroundColor:'#00d4a0',fill:true},
-      ]
-    },
+    data:{labels:['Início'],datasets:[{
+      label:'Banca',data:[getBi()],borderColor:'#00d4a0',
+      backgroundColor:'rgba(0,212,160,.08)',tension:.4,pointRadius:4,
+      pointBackgroundColor:'#00d4a0',fill:true
+    }]},
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false}},
       scales:{
@@ -911,10 +1324,9 @@ window.addEventListener('DOMContentLoaded',()=>{
   });
   faseChart=new Chart(document.getElementById('faseChart').getContext('2d'),{
     type:'bar',
-    data:{
-      labels:['Grupos','Oitavas','Quartas','Semi','Final'],
-      datasets:[{label:'P&L',data:[0,0,0,0,0],backgroundColor:Array(5).fill('rgba(0,212,160,.5)'),borderRadius:4}]
-    },
+    data:{labels:['Grupos','R32','Oitavas','Quartas','Semi','Final'],
+      datasets:[{label:'P&L',data:[0,0,0,0,0,0],
+        backgroundColor:Array(6).fill('rgba(0,212,160,.5)'),borderRadius:4}]},
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false}},
       scales:{
@@ -924,6 +1336,9 @@ window.addEventListener('DOMContentLoaded',()=>{
     }
   });
   updateMetrics();
+  onFaseAtualChange();
+  // Auto-fetch ao carregar
+  setTimeout(()=>fetchMataMatches(), 800);
 });
 </script>
 </body>
