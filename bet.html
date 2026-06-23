@@ -6,109 +6,137 @@
 <title>World Cup 2026 — Trading System</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --green: #00d4a0; --red: #ff4d6a; --yellow: #f0c040;
-  --bg: #0d1117; --bg2: #161b22; --bg3: #21262d;
-  --border: rgba(255,255,255,0.08); --text: #e6edf3; --muted: #7d8590;
-  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --green:#00d4a0;--red:#ff4d6a;--yellow:#f0c040;--blue:#58a6ff;
+  --bg:#0d1117;--bg2:#161b22;--bg3:#21262d;--bg4:#2d333b;
+  --border:rgba(255,255,255,0.08);--text:#e6edf3;--muted:#7d8590;
+  --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 }
-body { background: #0d1117; color: var(--text); font-family: var(--font); font-size: 13px; min-height: 100vh; }
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:13px;min-height:100vh;}
 /* TOPBAR */
-.topbar { background: #161b22; border-bottom: 1px solid var(--border); padding: 0 16px; display: flex; align-items: center; justify-content: space-between; height: 44px; }
-.logo { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; }
-.logo-icon { background: var(--green); color: #0d1117; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; }
-.tag-system { background: #1f6feb22; border: 1px solid #388bfd44; color: #79c0ff; font-size: 10px; padding: 2px 6px; border-radius: 3px; }
-.subtitle { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
-.topbar-nav { display: flex; gap: 4px; }
-.nav-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 4px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; }
-.nav-btn.active { background: var(--bg3); color: var(--text); border-color: rgba(255,255,255,0.15); }
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:46px;}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-icon{background:var(--green);color:#0d1117;padding:4px 8px;border-radius:4px;font-size:12px;font-weight:700;}
+.logo-text{font-weight:700;font-size:14px;letter-spacing:.3px;}
+.tag-system{background:#1f6feb22;border:1px solid #388bfd44;color:#79c0ff;font-size:10px;padding:2px 7px;border-radius:3px;font-weight:500;}
+.logo-sub{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;margin-top:1px;}
 /* FILTERS */
-.filters { background: #161b22; border-bottom: 1px solid var(--border); padding: 8px 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.filter-group { display: flex; align-items: center; gap: 6px; }
-.filter-label { color: var(--muted); font-size: 11px; white-space: nowrap; }
-.filter-input { background: var(--bg3); border: 1px solid var(--border); color: var(--text); padding: 4px 8px; border-radius: 5px; font-size: 12px; }
-select.filter-input { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath fill='%237d8590' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 6px center; padding-right: 22px; cursor: pointer; }
-.btn-clear { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 4px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; }
-.btn-register { background: var(--green); color: #0d1117; border: none; padding: 5px 12px; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: 600; }
-.btn-saque { background: var(--yellow); color: #0d1117; border: none; padding: 5px 12px; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: 600; }
+.filters{background:var(--bg2);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.filter-group{display:flex;align-items:center;gap:6px;}
+.filter-label{color:var(--muted);font-size:11px;white-space:nowrap;}
+.filter-input{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:4px 8px;border-radius:5px;font-size:12px;}
+select.filter-input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath fill='%237d8590' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 7px center;padding-right:24px;cursor:pointer;}
+.btn-saque{background:var(--yellow);color:#0d1117;border:none;padding:5px 12px;border-radius:5px;cursor:pointer;font-size:12px;font-weight:600;}
+.btn-register{background:var(--green);color:#0d1117;border:none;padding:5px 12px;border-radius:5px;cursor:pointer;font-size:12px;font-weight:600;}
+.btn-clear{background:transparent;border:1px solid var(--border);color:var(--muted);padding:5px 10px;border-radius:5px;cursor:pointer;font-size:12px;}
 /* MAIN */
-.main { padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; }
+.main{padding:12px 16px;display:flex;flex-direction:column;gap:10px;}
 /* METRIC CARDS */
-.metric-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
-.metric-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; }
-.metric-card.saque-card { border-color: rgba(240,192,64,0.3); }
-.metric-card .label { color: var(--muted); font-size: 11px; margin-bottom: 6px; }
-.metric-card .value { font-size: 20px; font-weight: 700; color: var(--text); line-height: 1.1; }
-.metric-card .sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
+.metric-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.metric-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;}
+.metric-card.saque-card{border-color:rgba(240,192,64,.3);}
+.mlabel{color:var(--muted);font-size:11px;margin-bottom:6px;}
+.mvalue{font-size:20px;font-weight:700;line-height:1.1;}
+.msub{font-size:11px;color:var(--muted);margin-top:4px;}
 /* CARDS */
-.card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; }
-.card-title { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
-.card-sub { font-size: 10px; color: var(--muted); margin-bottom: 10px; }
-.charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.bottom-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-.chart-legend { display: flex; gap: 12px; font-size: 10px; color: var(--muted); margin-bottom: 6px; }
-.legend-dot { width: 10px; height: 3px; border-radius: 2px; display: inline-block; margin-right: 4px; vertical-align: middle; }
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;}
+.card-title{font-size:12px;font-weight:600;margin-bottom:2px;}
+.card-sub{font-size:10px;color:var(--muted);margin-bottom:10px;}
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.bottom-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.chart-legend{display:flex;gap:12px;font-size:10px;color:var(--muted);margin-bottom:6px;}
+.ldot{width:10px;height:3px;border-radius:2px;display:inline-block;margin-right:3px;vertical-align:middle;}
 /* SMALL TABLE */
-.small-table { width: 100%; }
-.small-table tr { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid var(--border); }
-.small-table tr:last-child { border-bottom: none; }
-.small-table .row-label { color: var(--text); font-size: 11px; }
-.small-table .row-val { font-size: 11px; font-weight: 600; }
-/* WINDOWS / TIER */
-.windows-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.window-item { background: var(--bg3); border-radius: 6px; padding: 8px 10px; }
-.window-label { font-size: 10px; color: var(--muted); margin-bottom: 4px; }
-.window-val { font-size: 13px; font-weight: 600; }
-.tier-item { display: flex; align-items: center; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid var(--border); }
-.tier-item:last-child { border-bottom: none; }
-.tier-dot { width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; flex-shrink: 0; }
-.tier-name { font-size: 11px; color: var(--text); display: flex; align-items: center; }
-.tier-val { font-size: 11px; }
+.small-table{width:100%;}
+.small-table tr{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);}
+.small-table tr:last-child{border-bottom:none;}
+.small-table .rl{color:var(--text);font-size:11px;}
+.small-table .rv{font-size:11px;font-weight:600;}
+/* WINDOWS */
+.windows-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.window-item{background:var(--bg3);border-radius:6px;padding:8px 10px;}
+.wlabel{font-size:10px;color:var(--muted);margin-bottom:3px;}
+.wval{font-size:13px;font-weight:600;}
 /* LEDGER */
-.ledger-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; }
-.ledger-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-.ledger-search { background: var(--bg3); border: 1px solid var(--border); color: var(--text); padding: 5px 10px; border-radius: 5px; font-size: 12px; width: 220px; }
-.ledger-tabs { display: flex; gap: 4px; margin-bottom: 10px; }
-.ltab { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 4px 12px; border-radius: 5px; cursor: pointer; font-size: 11px; }
-.ltab.active { background: var(--bg3); color: var(--text); border-color: rgba(255,255,255,0.15); }
-.ledger-cols { display: grid; gap: 6px; padding: 5px 0; border-bottom: 1px solid var(--border); color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.3px; }
-.ledger-cols.ops-cols { grid-template-columns: 36px 68px 1fr 56px 78px 68px 58px 56px 72px 54px 58px; }
-.ledger-cols.saq-cols { grid-template-columns: 36px 80px 1fr 110px 90px; }
-.ops-row { display: grid; grid-template-columns: 36px 68px 1fr 56px 78px 68px 58px 56px 72px 54px 58px; gap: 6px; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 11px; align-items: center; }
-.saq-row { display: grid; grid-template-columns: 36px 80px 1fr 110px 90px; gap: 6px; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 11px; align-items: center; }
-.empty-state { text-align: center; padding: 32px 0; color: var(--muted); }
-.empty-icon { font-size: 28px; margin-bottom: 8px; opacity: .4; }
+.ledger-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;}
+.ledger-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.ledger-search{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:5px 10px;border-radius:5px;font-size:12px;width:240px;}
+.ledger-tabs{display:flex;gap:4px;margin-bottom:10px;}
+.ltab{background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 12px;border-radius:5px;cursor:pointer;font-size:11px;}
+.ltab.active{background:var(--bg3);color:var(--text);border-color:rgba(255,255,255,.15);}
+/* OPS TABLE */
+.ops-head,.ops-row{display:grid;grid-template-columns:38px 72px 1fr 90px 80px 80px 60px 60px;gap:6px;padding:6px 0;font-size:11px;align-items:center;}
+.ops-head{border-bottom:1px solid var(--border);color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.3px;}
+.ops-row{border-bottom:1px solid var(--border);}
+.ops-row:hover{background:rgba(255,255,255,.02);}
+/* SAQ TABLE */
+.saq-head,.saq-row{display:grid;grid-template-columns:36px 80px 1fr 110px 90px;gap:6px;padding:6px 0;font-size:11px;align-items:center;}
+.saq-head{border-bottom:1px solid var(--border);color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.3px;}
+.saq-row{border-bottom:1px solid var(--border);}
+/* EMPTY */
+.empty-state{text-align:center;padding:32px 0;color:var(--muted);}
+.empty-icon{font-size:28px;margin-bottom:8px;opacity:.4;}
 /* BADGES */
-.badge { font-size: 10px; padding: 2px 6px; border-radius: 3px; }
-.badge-saque { background: rgba(240,192,64,0.15); color: var(--yellow); }
-.badge-deposito { background: rgba(0,212,160,0.15); color: var(--green); }
+.badge{font-size:10px;padding:2px 7px;border-radius:3px;font-weight:500;}
+.badge-saque{background:rgba(240,192,64,.15);color:var(--yellow);}
+.badge-dep{background:rgba(0,212,160,.15);color:var(--green);}
+.badge-green{background:rgba(0,212,160,.15);color:var(--green);}
+.badge-red{background:rgba(255,77,106,.15);color:var(--red);}
+.badge-pend{background:rgba(240,192,64,.12);color:var(--yellow);}
+.badge-mult{background:rgba(88,166,255,.15);color:var(--blue);}
+/* STATUS BTN */
+.status-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:3px 8px;border-radius:4px;cursor:pointer;font-size:10px;white-space:nowrap;}
+.status-btn:hover{border-color:var(--green);color:var(--text);}
 /* MODALS */
-.modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); align-items: center; justify-content: center; z-index: 999; }
-.modal-overlay.open { display: flex; }
-.modal { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 20px; width: 420px; max-height: 85vh; overflow-y: auto; }
-.modal h3 { font-size: 15px; margin-bottom: 14px; color: var(--text); }
-.form-group { margin-bottom: 10px; }
-.form-group label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 4px; }
-.form-group input, .form-group select, .form-group textarea {
-  width: 100%; background: var(--bg3); border: 1px solid var(--border);
-  color: var(--text); padding: 6px 10px; border-radius: 5px; font-size: 13px; font-family: var(--font);
-}
-.form-group textarea { resize: vertical; min-height: 60px; }
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.modal-btns { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
-.btn-cancel { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 6px 14px; border-radius: 5px; cursor: pointer; }
-.btn-save { background: var(--green); color: #0d1117; border: none; padding: 6px 14px; border-radius: 5px; cursor: pointer; font-weight: 600; }
-.btn-save-yellow { background: var(--yellow); color: #0d1117; border: none; padding: 6px 14px; border-radius: 5px; cursor: pointer; font-weight: 600; }
-.preview-box { background: var(--bg3); border-radius: 6px; padding: 10px; margin-top: 8px; font-size: 11px; color: var(--muted); line-height: 1.8; }
+.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.75);align-items:center;justify-content:center;z-index:999;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:22px;width:480px;max-height:88vh;overflow-y:auto;}
+.modal-sm{width:360px;}
+.modal h3{font-size:15px;margin-bottom:16px;}
+.form-group{margin-bottom:11px;}
+.form-group label{display:block;font-size:11px;color:var(--muted);margin-bottom:4px;}
+.form-group input,.form-group select,.form-group textarea{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:7px 10px;border-radius:5px;font-size:13px;font-family:var(--font);}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:rgba(0,212,160,.4);}
+.form-group textarea{resize:vertical;min-height:56px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.modal-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;}
+.btn-cancel{background:transparent;border:1px solid var(--border);color:var(--muted);padding:7px 16px;border-radius:5px;cursor:pointer;font-size:12px;}
+.btn-save{background:var(--green);color:#0d1117;border:none;padding:7px 16px;border-radius:5px;cursor:pointer;font-weight:600;font-size:12px;}
+.btn-save-yellow{background:var(--yellow);color:#0d1117;border:none;padding:7px 16px;border-radius:5px;cursor:pointer;font-weight:600;font-size:12px;}
+/* TIPO TOGGLE */
+.tipo-toggle{display:flex;gap:6px;margin-bottom:12px;}
+.tipo-btn{flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--muted);padding:8px;border-radius:6px;cursor:pointer;font-size:12px;text-align:center;transition:all .15s;}
+.tipo-btn.active-simples{background:rgba(0,212,160,.12);border-color:var(--green);color:var(--green);font-weight:600;}
+.tipo-btn.active-multipla{background:rgba(88,166,255,.12);border-color:var(--blue);color:var(--blue);font-weight:600;}
+/* LEGS */
+.legs-container{display:flex;flex-direction:column;gap:6px;margin-bottom:8px;}
+.leg-item{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:8px 10px;display:flex;align-items:center;gap:8px;}
+.leg-item input,.leg-item select{flex:1;background:var(--bg4);border:1px solid var(--border);color:var(--text);padding:5px 8px;border-radius:4px;font-size:12px;font-family:var(--font);}
+.leg-remove{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:0 4px;flex-shrink:0;}
+.leg-remove:hover{color:var(--red);}
+.btn-add-leg{background:transparent;border:1px dashed var(--border);color:var(--muted);padding:7px;border-radius:6px;cursor:pointer;font-size:12px;width:100%;text-align:center;}
+.btn-add-leg:hover{border-color:var(--blue);color:var(--blue);}
+/* JOGO SEARCH */
+.jogo-search-wrap{position:relative;}
+.jogo-dropdown{position:absolute;top:100%;left:0;right:0;background:var(--bg3);border:1px solid var(--border);border-radius:6px;z-index:10;max-height:200px;overflow-y:auto;display:none;}
+.jogo-dropdown.open{display:block;}
+.jogo-item{padding:7px 10px;cursor:pointer;font-size:12px;border-bottom:1px solid var(--border);}
+.jogo-item:last-child{border-bottom:none;}
+.jogo-item:hover{background:var(--bg4);}
+.jogo-item .match-name{color:var(--text);font-weight:500;}
+.jogo-item .match-info{color:var(--muted);font-size:10px;margin-top:1px;}
+/* PREVIEW BOX */
+.preview-box{background:var(--bg3);border-radius:6px;padding:10px 12px;margin-top:8px;font-size:11px;color:var(--muted);line-height:1.9;}
 /* WINBAR */
-#winbar { height: 4px; background: var(--green); border-radius: 2px; width: 0%; transition: width .4s; }
-/* RESPONSIVE */
-@media (max-width: 900px) {
-  .metric-row { grid-template-columns: repeat(2, 1fr); }
-  .charts-row, .bottom-row { grid-template-columns: 1fr; }
-  .topbar-nav { display: none; }
-}
+#winbar{height:4px;background:var(--green);border-radius:2px;width:0%;transition:width .4s;}
+/* STATUS MODAL */
+.result-opts{display:flex;gap:8px;margin-top:4px;}
+.result-opt{flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--muted);padding:10px;border-radius:6px;cursor:pointer;font-size:12px;text-align:center;}
+.result-opt:hover{border-color:var(--green);color:var(--text);}
+.result-opt.sel-green{background:rgba(0,212,160,.12);border-color:var(--green);color:var(--green);font-weight:600;}
+.result-opt.sel-red{background:rgba(255,77,106,.12);border-color:var(--red);color:var(--red);font-weight:600;}
+@media(max-width:900px){.metric-row{grid-template-columns:repeat(2,1fr);}.charts-row,.bottom-row{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -118,15 +146,12 @@ select.filter-input { appearance: none; background-image: url("data:image/svg+xm
   <div class="logo">
     <span class="logo-icon">⚽</span>
     <div>
-      <div style="display:flex;align-items:center;gap:6px;">WORLD CUP 2026 <span class="tag-system">TRADING SYSTEM</span></div>
-      <div class="subtitle">Registro de performance de apostas simples e múltiplas</div>
+      <div style="display:flex;align-items:center;gap:8px;"><span class="logo-text">WORLD CUP 2026</span><span class="tag-system">TRADING SYSTEM</span></div>
+      <div class="logo-sub">Registro de performance de apostas simples e múltiplas</div>
     </div>
   </div>
-  <div class="topbar-nav">
-    <button class="nav-btn active">📊 Painel Geral</button>
-    <button class="nav-btn">🏆 Meta Copa</button>
-    <button class="nav-btn">📅 Calendário</button>
-    <button class="nav-btn">📐 Fórmulas &amp; Modelo</button>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <span style="font-size:11px;color:var(--muted);">📊 Painel Geral</span>
   </div>
 </div>
  
@@ -134,31 +159,30 @@ select.filter-input { appearance: none; background-image: url("data:image/svg+xm
 <div class="filters">
   <div class="filter-group">
     <span class="filter-label">Banca Inicial (R$)</span>
-    <input class="filter-input" type="number" id="bancaInicial" value="50" style="width:70px;" oninput="updateMetrics();updateChart()">
+    <input class="filter-input" type="number" id="bancaInicial" value="50" style="width:72px;" oninput="updateMetrics();updateChart()">
   </div>
   <div class="filter-group">
     <span class="filter-label">Fase</span>
-    <select class="filter-input">
-      <option>Todas as Fases</option><option>Fase de Grupos</option><option>Oitavas</option>
-      <option>Quartas</option><option>Semifinal</option><option>Final</option>
+    <select class="filter-input" id="filtroFase" onchange="renderLedger()">
+      <option value="">Todas as Fases</option>
+      <option>Fase de Grupos</option>
+      <option>Oitavas de Final</option>
+      <option>Quartas de Final</option>
+      <option>Semifinal</option>
+      <option>Final</option>
     </select>
   </div>
   <div class="filter-group">
-    <span class="filter-label">Disparidade Técnica</span>
-    <select class="filter-input">
-      <option>Todos os Tiers</option><option>Tier 1</option><option>Tier 2</option><option>Tier 3</option>
-    </select>
-  </div>
-  <div class="filter-group">
-    <span class="filter-label">Mercado</span>
-    <select class="filter-input">
-      <option>Todos os Mercados</option><option>1X2</option><option>Over/Under</option>
-      <option>Ambos Marcam</option><option>Handicap</option>
+    <span class="filter-label">Tipo</span>
+    <select class="filter-input" id="filtroTipo" onchange="renderLedger()">
+      <option value="">Todos</option>
+      <option value="simples">Simples</option>
+      <option value="multipla">Múltipla</option>
     </select>
   </div>
   <div style="margin-left:auto;display:flex;gap:8px;">
-    <button class="btn-clear">↺ Limpar</button>
-    <button class="btn-saque" onclick="openSaqueModal()">💸 Registrar Saque / Depósito</button>
+    <button class="btn-clear" onclick="document.getElementById('filtroFase').value='';document.getElementById('filtroTipo').value='';renderLedger();">↺ Limpar</button>
+    <button class="btn-saque" onclick="openSaqueModal()">💸 Saque / Depósito</button>
     <button class="btn-register" onclick="openOpModal()">+ Registrar Operação</button>
   </div>
 </div>
@@ -169,53 +193,43 @@ select.filter-input { appearance: none; background-image: url("data:image/svg+xm
   <!-- MÉTRICAS -->
   <div class="metric-row">
     <div class="metric-card">
-      <div class="label">💼 Gestão: Banca Atual</div>
-      <div class="value" id="bancaAtual">R$ 50,00</div>
-      <div class="sub" id="pnlTotal" style="color:var(--green);">P&L: +R$0,00 (+0.00%)</div>
+      <div class="mlabel">💼 Banca Atual</div>
+      <div class="mvalue" id="bancaAtual">R$ 50,00</div>
+      <div class="msub" id="pnlTotal" style="color:var(--green);">P&L: +R$0,00 (+0.00%)</div>
     </div>
     <div class="metric-card">
-      <div class="label">📈 ROI do Campeonato</div>
-      <div class="value" id="roi">0.00%</div>
-      <div class="sub">Rentabilidade Total</div>
+      <div class="mlabel">📈 ROI do Campeonato</div>
+      <div class="mvalue" id="roi">0.00%</div>
+      <div class="msub">Rentabilidade Total</div>
     </div>
     <div class="metric-card">
-      <div class="label">🎯 Taxa de Acerto (Win Rate)</div>
-      <div class="value" id="winrate">0.0%</div>
-      <div style="height:4px;background:var(--bg3);border-radius:2px;margin-top:6px;"><div id="winbar"></div></div>
-    </div>
-    <div class="metric-card">
-      <div class="label">⚡ Fator de Lucro / Payoff</div>
-      <div class="value" id="fator">0.00 <span style="font-size:12px;font-weight:400;color:var(--muted);">Payoff: 0.00</span></div>
-      <div class="sub" style="color:var(--red);" id="fatorStatus">Fator Crítico (&lt; 1.0)</div>
+      <div class="mlabel">🎯 Win Rate</div>
+      <div class="mvalue" id="winrate">0.0%</div>
+      <div style="height:4px;background:var(--bg3);border-radius:2px;margin-top:7px;"><div id="winbar"></div></div>
     </div>
     <div class="metric-card saque-card">
-      <div class="label" style="color:var(--yellow);">💸 Saques Realizados</div>
-      <div class="value" style="color:var(--yellow);" id="totalSaques">R$ 0,00</div>
-      <div class="sub" id="saldoLiquido">Saldo líquido: R$ 0,00</div>
+      <div class="mlabel" style="color:var(--yellow);">💸 Saques Realizados</div>
+      <div class="mvalue" style="color:var(--yellow);" id="totalSaques">R$ 0,00</div>
+      <div class="msub" id="saldoLiquido">Saldo líquido: R$ 0,00</div>
     </div>
   </div>
  
   <!-- GRÁFICOS -->
   <div class="charts-row">
     <div class="card">
-      <div class="card-title">📉 Evolução da Banca vs. Exposição Linear</div>
-      <div class="card-sub">Curva de Saldo Corrente correlacionada ao tempo acumulado em exposição de mercado.</div>
+      <div class="card-title">📉 Evolução da Banca</div>
+      <div class="card-sub">Curva de saldo correlacionada ao histórico de operações.</div>
       <div class="chart-legend">
-        <span><span class="legend-dot" style="background:var(--green);"></span>Banca</span>
-        <span><span class="legend-dot" style="background:#58a6ff;"></span>Exposição</span>
-        <span><span class="legend-dot" style="background:var(--yellow);width:6px;height:6px;border-radius:50%;"></span>Saque/Depósito</span>
+        <span><span class="ldot" style="background:var(--green);"></span>Banca</span>
+        <span><span class="ldot" style="background:var(--blue);"></span>Exposição(h)</span>
+        <span><span class="ldot" style="background:var(--yellow);width:6px;height:6px;border-radius:50%;display:inline-block;vertical-align:middle;margin-right:3px;"></span>Movimentação</span>
       </div>
-      <div style="position:relative;width:100%;height:200px;">
-        <canvas id="bancaChart"></canvas>
-      </div>
+      <div style="position:relative;height:200px;"><canvas id="bancaChart"></canvas></div>
     </div>
     <div class="card">
-      <div class="card-title">📊 P&L por Mercado</div>
-      <div class="card-sub">Análise volumétrica do resultado financeiro acumulado por mercado.</div>
-      <div style="position:relative;width:100%;height:200px;">
-        <canvas id="mercadoChart"></canvas>
-      </div>
-      <div id="mercadoEmpty" style="display:none;text-align:center;padding:20px 0;color:var(--muted);font-size:11px;">Nenhum mercado operado</div>
+      <div class="card-title">📊 P&L por Fase</div>
+      <div class="card-sub">Resultado acumulado por fase do campeonato.</div>
+      <div style="position:relative;height:200px;"><canvas id="faseChart"></canvas></div>
     </div>
   </div>
  
@@ -225,27 +239,20 @@ select.filter-input { appearance: none; background-image: url("data:image/svg+xm
       <div class="card-title">🏟️ Fase de Grupos vs Mata-Mata</div>
       <div class="card-sub">Análise do peso regulamentar nos retornos obtidos.</div>
       <table class="small-table">
-        <tr><td class="row-label">Fase de Grupos</td><td class="row-val" id="valGrupos" style="color:var(--green);">R$ 0,00</td></tr>
-        <tr><td class="row-label">Mata-Mata &amp; Prorrogações</td><td class="row-val" id="valMata" style="color:var(--green);">R$ 0,00</td></tr>
+        <tr><td class="rl">Fase de Grupos</td><td class="rv" id="valGrupos" style="color:var(--green);">R$ 0,00</td></tr>
+        <tr><td class="rl">Mata-Mata &amp; Prorrogações</td><td class="rv" id="valMata" style="color:var(--green);">R$ 0,00</td></tr>
+        <tr><td class="rl">Simples</td><td class="rv" id="valSimples" style="color:var(--green);">R$ 0,00</td></tr>
+        <tr><td class="rl">Múltiplas</td><td class="rv" id="valMultiplas" style="color:var(--blue);">R$ 0,00</td></tr>
       </table>
     </div>
     <div class="card">
       <div class="card-title">⏱️ P&L por Momento de Entrada</div>
       <div class="card-sub">Janelas do cronômetro com maior índice de greens.</div>
       <div class="windows-grid">
-        <div class="window-item"><div class="window-label">Pré-Live</div><div class="window-val" id="wPreLive" style="color:var(--green);">R$ 0,00</div></div>
-        <div class="window-item"><div class="window-label">Live 0'–15'</div><div class="window-val" id="w015" style="color:var(--green);">R$ 0,00</div></div>
-        <div class="window-item"><div class="window-label">Live 15'–45'</div><div class="window-val" id="w1545" style="color:var(--green);">R$ 0,00</div></div>
-        <div class="window-item"><div class="window-label">Live 45'+–90'</div><div class="window-val" id="w4590" style="color:var(--green);">R$ 0,00</div></div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">🚩 P&L por Tier de Seleções</div>
-      <div class="card-sub">Efetividade do modelo de acordo com o favoritismo da seleção.</div>
-      <div>
-        <div class="tier-item"><span class="tier-name"><span class="tier-dot" style="background:#58a6ff;"></span>Clássico Equilibrado</span><span class="tier-val" id="tClassico">R$ 0,00</span></div>
-        <div class="tier-item"><span class="tier-name"><span class="tier-dot" style="background:var(--green);"></span>Super Favorito vs Zebra</span><span class="tier-val" id="tFavorito">R$ 0,00</span></div>
-        <div class="tier-item"><span class="tier-name"><span class="tier-dot" style="background:#f78166;"></span>Favorito vs Médio</span><span class="tier-val" id="tMedio">R$ 0,00</span></div>
+        <div class="window-item"><div class="wlabel">Pré-Live</div><div class="wval" id="wPreLive" style="color:var(--green);">R$ 0,00</div></div>
+        <div class="window-item"><div class="wlabel">Live 0'–15'</div><div class="wval" id="w015" style="color:var(--green);">R$ 0,00</div></div>
+        <div class="window-item"><div class="wlabel">Live 15'–45'</div><div class="wval" id="w1545" style="color:var(--green);">R$ 0,00</div></div>
+        <div class="window-item"><div class="wlabel">Live 45'+–90'</div><div class="wval" id="w4590" style="color:var(--green);">R$ 0,00</div></div>
       </div>
     </div>
   </div>
@@ -255,79 +262,127 @@ select.filter-input { appearance: none; background-image: url("data:image/svg+xm
     <div class="ledger-header">
       <div>
         <div class="card-title">📒 Diário de Operações (Ledger)</div>
-        <div class="card-sub">Operações gravadas e auditadas vinculadas ao calendário.</div>
+        <div class="card-sub">Operações gravadas e auditadas. Clique em "Pendente" para atualizar o resultado.</div>
       </div>
-      <input class="ledger-search" placeholder="🔍 Buscar seleção, ID ou raciocínio..." id="searchInput" oninput="filterLedger()">
+      <input class="ledger-search" placeholder="🔍 Buscar jogo, operação..." id="searchInput" oninput="renderLedger()">
     </div>
     <div class="ledger-tabs">
-      <button class="ltab active" onclick="switchTab('ops', this)">📋 Operações (<span id="countOps">0</span>)</button>
-      <button class="ltab" onclick="switchTab('saques', this)">💸 Saques &amp; Depósitos (<span id="countSaques">0</span>)</button>
+      <button class="ltab active" onclick="switchTab('ops',this)">📋 Operações (<span id="countOps">0</span>)</button>
+      <button class="ltab" onclick="switchTab('saques',this)">💸 Saques &amp; Depósitos (<span id="countSaques">0</span>)</button>
     </div>
  
+    <!-- ABA OPS -->
     <div id="tabOps">
-      <div class="ledger-cols ops-cols">
-        <span>ID</span><span>Data</span><span>Seleções / Raciocínio</span>
-        <span>Tier</span><span>Fase</span><span>Mercado</span>
-        <span>Entrada</span><span>Exp(min)</span><span>Stake</span><span>Odd</span><span>P&L(R$)</span>
+      <div class="ops-head">
+        <span>ID</span><span>Data</span><span>Jogo(s) / Raciocínio</span>
+        <span>Fase</span><span>Momento</span><span>Stake</span><span>Odd</span><span>Resultado</span>
       </div>
       <div id="ledgerBody">
-        <div class="empty-state">
-          <div class="empty-icon">📭</div>
-          <div>Nenhum trade registrado ainda. Clique em "Registrar Operação" para começar!</div>
-        </div>
+        <div class="empty-state"><div class="empty-icon">📭</div><div>Nenhuma operação ainda. Clique em "+ Registrar Operação".</div></div>
       </div>
     </div>
  
+    <!-- ABA SAQUES -->
     <div id="tabSaques" style="display:none;">
-      <div class="ledger-cols saq-cols">
-        <span>ID</span><span>Data</span><span>Observação</span><span>Valor (R$)</span><span>Tipo</span>
+      <div class="saq-head">
+        <span>ID</span><span>Data</span><span>Observação</span><span>Valor</span><span>Tipo</span>
       </div>
       <div id="saquesBody">
-        <div class="empty-state">
-          <div class="empty-icon">💸</div>
-          <div>Nenhum saque ou depósito registrado ainda.</div>
-        </div>
+        <div class="empty-state"><div class="empty-icon">💸</div><div>Nenhuma movimentação ainda.</div></div>
       </div>
     </div>
   </div>
+</div>
  
-</div><!-- /main -->
- 
-<!-- MODAL OPERAÇÃO -->
+<!-- ===================== MODAL OPERAÇÃO ===================== -->
 <div id="modalOp" class="modal-overlay">
   <div class="modal">
-    <h3>+ Registrar Nova Operação</h3>
-    <div class="form-row">
-      <div class="form-group"><label>Data</label><input type="date" id="fData"></div>
-      <div class="form-group"><label>Seleções / Bilhete</label><input type="text" id="fBilhete" placeholder="Ex: Brasil vs Argentina"></div>
+    <h3>+ Registrar Operação</h3>
+ 
+    <!-- TIPO TOGGLE -->
+    <div class="tipo-toggle">
+      <button class="tipo-btn active-simples" id="btnSimples" onclick="setTipo('simples')">⚡ Aposta Simples</button>
+      <button class="tipo-btn" id="btnMultipla" onclick="setTipo('multipla')">🔗 Aposta Múltipla</button>
     </div>
-    <div class="form-group"><label>Raciocínio Tático</label><textarea id="fRaciocinio" placeholder="Ex: Over 2.5 — confronto aberto com high press..."></textarea></div>
-    <div class="form-row">
-      <div class="form-group"><label>Tier</label>
-        <select id="fTier"><option>Clássico Equilibrado</option><option>Super Favorito vs Zebra</option><option>Favorito vs Médio</option></select>
-      </div>
-      <div class="form-group"><label>Fase</label>
-        <select id="fFase"><option>Fase de Grupos</option><option>Oitavas</option><option>Quartas</option><option>Semifinal</option><option>Final</option></select>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group"><label>Mercado</label>
-        <select id="fMercado"><option>1X2</option><option>Over/Under</option><option>Ambos Marcam</option><option>Handicap</option></select>
-      </div>
-      <div class="form-group"><label>Momento de Entrada</label>
-        <select id="fMomento"><option>Pré-Live</option><option>Live 0'–15'</option><option>Live 15'–45'</option><option>Live 45'+–90'</option></select>
+ 
+    <!-- SIMPLES -->
+    <div id="secSimples">
+      <div class="form-group">
+        <label>Jogo</label>
+        <div class="jogo-search-wrap">
+          <input type="text" id="fJogo" placeholder="Buscar jogo..." autocomplete="off" oninput="filterJogos('fJogo','ddJogo')" onfocus="filterJogos('fJogo','ddJogo')">
+          <div class="jogo-dropdown" id="ddJogo"></div>
+        </div>
       </div>
     </div>
-    <div class="form-row">
-      <div class="form-group"><label>Stake (R$)</label><input type="number" id="fStake" placeholder="0.00" step="0.01"></div>
-      <div class="form-group"><label>Odd Combinada</label><input type="number" id="fOdd" placeholder="1.50" step="0.01"></div>
-    </div>
-    <div class="form-row">
-      <div class="form-group"><label>Exposição (min)</label><input type="number" id="fExp" placeholder="90"></div>
-      <div class="form-group"><label>Resultado</label>
-        <select id="fResultado"><option value="pendente">Pendente</option><option value="green">Green ✅</option><option value="red">Red ❌</option></select>
+ 
+    <!-- MÚLTIPLA -->
+    <div id="secMultipla" style="display:none;">
+      <div class="form-group">
+        <label>Jogos da Múltipla</label>
+        <div class="legs-container" id="legsContainer"></div>
+        <button class="btn-add-leg" onclick="addLeg()">+ Adicionar jogo à múltipla</button>
       </div>
     </div>
+ 
+    <div class="form-group">
+      <label>Raciocínio Tático</label>
+      <textarea id="fRaciocinio" placeholder="Ex: Over 2.5 — confronto aberto, ambas seleções com alta pressão..."></textarea>
+    </div>
+ 
+    <div class="form-row">
+      <div class="form-group">
+        <label>Data</label>
+        <input type="date" id="fData">
+      </div>
+      <div class="form-group">
+        <label>Fase</label>
+        <select id="fFase">
+          <option>Fase de Grupos</option>
+          <option>Oitavas de Final</option>
+          <option>Quartas de Final</option>
+          <option>Semifinal</option>
+          <option>Final</option>
+        </select>
+      </div>
+    </div>
+ 
+    <div class="form-row">
+      <div class="form-group">
+        <label>Momento de Entrada</label>
+        <select id="fMomento">
+          <option>Pré-Live</option>
+          <option>Live 0'–15'</option>
+          <option>Live 15'–45'</option>
+          <option>Live 45'+–90'</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Stake (R$)</label>
+        <input type="number" id="fStake" placeholder="0.00" step="0.01" oninput="calcPotencial()">
+      </div>
+    </div>
+ 
+    <div class="form-row">
+      <div class="form-group">
+        <label>Odd <span id="oddLabel" style="color:var(--muted);">(combinada)</span></label>
+        <input type="number" id="fOdd" placeholder="1.50" step="0.01" oninput="calcPotencial()">
+      </div>
+      <div class="form-group">
+        <label>Resultado</label>
+        <select id="fResultado">
+          <option value="pendente">⏳ Pendente</option>
+          <option value="green">✅ Green</option>
+          <option value="red">❌ Red</option>
+        </select>
+      </div>
+    </div>
+ 
+    <div class="preview-box" id="potencialBox" style="display:none;">
+      Potencial de lucro: <strong id="potencialVal" style="color:var(--green);">R$ 0,00</strong> &nbsp;|&nbsp;
+      Retorno total: <strong id="retornoVal" style="color:var(--text);">R$ 0,00</strong>
+    </div>
+ 
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeModals()">Cancelar</button>
       <button class="btn-save" onclick="saveOp()">Salvar Operação</button>
@@ -335,12 +390,12 @@ select.filter-input { appearance: none; background-image: url("data:image/svg+xm
   </div>
 </div>
  
-<!-- MODAL SAQUE / DEPÓSITO -->
+<!-- ===================== MODAL SAQUE ===================== -->
 <div id="modalSaque" class="modal-overlay">
-  <div class="modal" style="width:380px;">
-    <h3 style="color:var(--yellow);">💸 Registrar Saque ou Depósito</h3>
+  <div class="modal modal-sm">
+    <h3 style="color:var(--yellow);">💸 Saque ou Depósito</h3>
     <div class="form-group">
-      <label>Tipo de Movimentação</label>
+      <label>Tipo</label>
       <select id="sTipo" onchange="updateSaquePreview()">
         <option value="saque">💸 Saque — retirada da banca</option>
         <option value="deposito">💰 Depósito — aporte na banca</option>
@@ -350,7 +405,7 @@ select.filter-input { appearance: none; background-image: url("data:image/svg+xm
       <div class="form-group"><label>Data</label><input type="date" id="sData"></div>
       <div class="form-group"><label>Valor (R$)</label><input type="number" id="sValor" placeholder="0.00" step="0.01" min="0.01" oninput="updateSaquePreview()"></div>
     </div>
-    <div class="form-group"><label>Observação (opcional)</label><input type="text" id="sObs" placeholder="Ex: lucro da rodada 3..."></div>
+    <div class="form-group"><label>Observação (opcional)</label><input type="text" id="sObs" placeholder="Ex: lucro rodada 3..."></div>
     <div class="preview-box">
       Banca atual: <strong style="color:var(--text);" id="prevBancaAtual">R$ 0,00</strong><br>
       Após movimentação: <strong id="prevBancaApos" style="color:var(--green);">R$ 0,00</strong>
@@ -362,284 +417,512 @@ select.filter-input { appearance: none; background-image: url("data:image/svg+xm
   </div>
 </div>
  
+<!-- ===================== MODAL RESULTADO ===================== -->
+<div id="modalResultado" class="modal-overlay">
+  <div class="modal modal-sm">
+    <h3>✏️ Atualizar Resultado</h3>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:14px;" id="resultadoDesc">Selecione o resultado da operação:</p>
+    <div class="result-opts">
+      <div class="result-opt" id="rOptGreen" onclick="selectResultado('green')">✅ Green</div>
+      <div class="result-opt" id="rOptRed" onclick="selectResultado('red')">❌ Red</div>
+    </div>
+    <div class="form-group" style="margin-top:12px;">
+      <label>Odd final (confirme ou ajuste)</label>
+      <input type="number" id="rOdd" step="0.01" placeholder="1.50">
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModals()">Cancelar</button>
+      <button class="btn-save" onclick="confirmResultado()">Confirmar</button>
+    </div>
+  </div>
+</div>
+ 
 <script>
-let operations = [], saques = [], opId = 1, saqueId = 1;
-let bancaChart, mercadoChart;
+// ===================== JOGOS DA COPA 2026 =====================
+// Fase de Grupos — todos os 48 jogos + Mata-Mata
+const JOGOS = [
+  // FASE DE GRUPOS (amostra representativa dos grupos A–L)
+  {id:'g001',nome:'México vs Canadá',grupo:'Grupo A',fase:'Fase de Grupos'},
+  {id:'g002',nome:'EUA vs México',grupo:'Grupo A',fase:'Fase de Grupos'},
+  {id:'g003',nome:'Canadá vs EUA',grupo:'Grupo A',fase:'Fase de Grupos'},
+  {id:'g004',nome:'Argentina vs Equador',grupo:'Grupo B',fase:'Fase de Grupos'},
+  {id:'g005',nome:'Chile vs Peru',grupo:'Grupo B',fase:'Fase de Grupos'},
+  {id:'g006',nome:'Argentina vs Chile',grupo:'Grupo B',fase:'Fase de Grupos'},
+  {id:'g007',nome:'Peru vs Equador',grupo:'Grupo B',fase:'Fase de Grupos'},
+  {id:'g008',nome:'Brasil vs Colômbia',grupo:'Grupo C',fase:'Fase de Grupos'},
+  {id:'g009',nome:'Venezuela vs Bolívia',grupo:'Grupo C',fase:'Fase de Grupos'},
+  {id:'g010',nome:'Brasil vs Venezuela',grupo:'Grupo C',fase:'Fase de Grupos'},
+  {id:'g011',nome:'Colômbia vs Bolívia',grupo:'Grupo C',fase:'Fase de Grupos'},
+  {id:'g012',nome:'Brasil vs Bolívia',grupo:'Grupo C',fase:'Fase de Grupos'},
+  {id:'g013',nome:'Colômbia vs Venezuela',grupo:'Grupo C',fase:'Fase de Grupos'},
+  {id:'g014',nome:'Uruguai vs Paraguai',grupo:'Grupo D',fase:'Fase de Grupos'},
+  {id:'g015',nome:'Uruguai vs Costa Rica',grupo:'Grupo D',fase:'Fase de Grupos'},
+  {id:'g016',nome:'Paraguai vs Honduras',grupo:'Grupo D',fase:'Fase de Grupos'},
+  {id:'g017',nome:'França vs Alemanha',grupo:'Grupo E',fase:'Fase de Grupos'},
+  {id:'g018',nome:'Bélgica vs Dinamarca',grupo:'Grupo E',fase:'Fase de Grupos'},
+  {id:'g019',nome:'França vs Dinamarca',grupo:'Grupo E',fase:'Fase de Grupos'},
+  {id:'g020',nome:'Alemanha vs Bélgica',grupo:'Grupo E',fase:'Fase de Grupos'},
+  {id:'g021',nome:'França vs Bélgica',grupo:'Grupo E',fase:'Fase de Grupos'},
+  {id:'g022',nome:'Alemanha vs Dinamarca',grupo:'Grupo E',fase:'Fase de Grupos'},
+  {id:'g023',nome:'Espanha vs Portugal',grupo:'Grupo F',fase:'Fase de Grupos'},
+  {id:'g024',nome:'Marrocos vs Croácia',grupo:'Grupo F',fase:'Fase de Grupos'},
+  {id:'g025',nome:'Espanha vs Croácia',grupo:'Grupo F',fase:'Fase de Grupos'},
+  {id:'g026',nome:'Portugal vs Marrocos',grupo:'Grupo F',fase:'Fase de Grupos'},
+  {id:'g027',nome:'Espanha vs Marrocos',grupo:'Grupo F',fase:'Fase de Grupos'},
+  {id:'g028',nome:'Portugal vs Croácia',grupo:'Grupo F',fase:'Fase de Grupos'},
+  {id:'g029',nome:'Inglaterra vs Holanda',grupo:'Grupo G',fase:'Fase de Grupos'},
+  {id:'g030',nome:'Sérvia vs Suíça',grupo:'Grupo G',fase:'Fase de Grupos'},
+  {id:'g031',nome:'Inglaterra vs Suíça',grupo:'Grupo G',fase:'Fase de Grupos'},
+  {id:'g032',nome:'Holanda vs Sérvia',grupo:'Grupo G',fase:'Fase de Grupos'},
+  {id:'g033',nome:'Japão vs Coreia do Sul',grupo:'Grupo H',fase:'Fase de Grupos'},
+  {id:'g034',nome:'Austrália vs Irã',grupo:'Grupo H',fase:'Fase de Grupos'},
+  {id:'g035',nome:'Japão vs Irã',grupo:'Grupo H',fase:'Fase de Grupos'},
+  {id:'g036',nome:'Coreia do Sul vs Austrália',grupo:'Grupo H',fase:'Fase de Grupos'},
+  {id:'g037',nome:'Senegal vs Egito',grupo:'Grupo I',fase:'Fase de Grupos'},
+  {id:'g038',nome:'Nigéria vs Costa do Marfim',grupo:'Grupo I',fase:'Fase de Grupos'},
+  {id:'g039',nome:'Senegal vs Nigéria',grupo:'Grupo I',fase:'Fase de Grupos'},
+  {id:'g040',nome:'Egito vs Costa do Marfim',grupo:'Grupo I',fase:'Fase de Grupos'},
+  {id:'g041',nome:'Itália vs Turquia',grupo:'Grupo J',fase:'Fase de Grupos'},
+  {id:'g042',nome:'Polônia vs Romênia',grupo:'Grupo J',fase:'Fase de Grupos'},
+  {id:'g043',nome:'Itália vs Polônia',grupo:'Grupo J',fase:'Fase de Grupos'},
+  {id:'g044',nome:'Turquia vs Romênia',grupo:'Grupo J',fase:'Fase de Grupos'},
+  {id:'g045',nome:'Arábia Saudita vs Catar',grupo:'Grupo K',fase:'Fase de Grupos'},
+  {id:'g046',nome:'Arábia Saudita vs Iraque',grupo:'Grupo K',fase:'Fase de Grupos'},
+  {id:'g047',nome:'México vs Jamaica',grupo:'Grupo L',fase:'Fase de Grupos'},
+  {id:'g048',nome:'Costa Rica vs Panamá',grupo:'Grupo L',fase:'Fase de Grupos'},
+  // MATA-MATA (slots dinâmicos — serão preenchidos conforme avança)
+  {id:'o001',nome:'Oitavas: 1A vs 2B',grupo:'',fase:'Oitavas de Final'},
+  {id:'o002',nome:'Oitavas: 1B vs 2A',grupo:'',fase:'Oitavas de Final'},
+  {id:'o003',nome:'Oitavas: 1C vs 2D',grupo:'',fase:'Oitavas de Final'},
+  {id:'o004',nome:'Oitavas: 1D vs 2C',grupo:'',fase:'Oitavas de Final'},
+  {id:'o005',nome:'Oitavas: 1E vs 2F',grupo:'',fase:'Oitavas de Final'},
+  {id:'o006',nome:'Oitavas: 1F vs 2E',grupo:'',fase:'Oitavas de Final'},
+  {id:'o007',nome:'Oitavas: 1G vs 2H',grupo:'',fase:'Oitavas de Final'},
+  {id:'o008',nome:'Oitavas: 1H vs 2G',grupo:'',fase:'Oitavas de Final'},
+  {id:'o009',nome:'Oitavas: 1I vs 2J',grupo:'',fase:'Oitavas de Final'},
+  {id:'o010',nome:'Oitavas: 1J vs 2I',grupo:'',fase:'Oitavas de Final'},
+  {id:'o011',nome:'Oitavas: 1K vs 2L',grupo:'',fase:'Oitavas de Final'},
+  {id:'o012',nome:'Oitavas: 1L vs 2K',grupo:'',fase:'Oitavas de Final'},
+  {id:'q001',nome:'Quartas 1',grupo:'',fase:'Quartas de Final'},
+  {id:'q002',nome:'Quartas 2',grupo:'',fase:'Quartas de Final'},
+  {id:'q003',nome:'Quartas 3',grupo:'',fase:'Quartas de Final'},
+  {id:'q004',nome:'Quartas 4',grupo:'',fase:'Quartas de Final'},
+  {id:'s001',nome:'Semifinal 1',grupo:'',fase:'Semifinal'},
+  {id:'s002',nome:'Semifinal 2',grupo:'',fase:'Semifinal'},
+  {id:'f001',nome:'3º Lugar',grupo:'',fase:'Final'},
+  {id:'f002',nome:'Grande Final',grupo:'',fase:'Final'},
+];
  
-/* HELPERS */
-function fmt(v)       { return 'R$ ' + Math.abs(v).toFixed(2).replace('.', ','); }
-function fmtSgn(v)    { return (v >= 0 ? '+R$ ' : '-R$ ') + Math.abs(v).toFixed(2).replace('.', ','); }
-function getBi()      { return parseFloat(document.getElementById('bancaInicial').value) || 50; }
-function getTotalPnl(){ return operations.reduce((s,o) => s + o.pnl, 0); }
-function getTotalSaq(){ return saques.reduce((s,i) => i.tipo === 'saque' ? s + i.valor : s - i.valor, 0); }
-function getBanca()   { return getBi() + getTotalPnl() - getTotalSaq(); }
+// Nomes de jogos customizados (editáveis)
+let customJogos = {};
  
-/* MODALS */
-function openOpModal() {
-  document.getElementById('modalOp').classList.add('open');
-  document.getElementById('fData').value = new Date().toISOString().slice(0,10);
+function getJogoNome(id) {
+  return customJogos[id] || (JOGOS.find(j=>j.id===id)||{nome:id}).nome;
 }
-function openSaqueModal() {
+ 
+// ===================== STATE =====================
+let operations=[], saques=[], opId=1, saqueId=1;
+let bancaChart, faseChart;
+let editingResultadoId=null, selectedResultado=null;
+let currentTipo='simples', legs=[];
+ 
+// ===================== HELPERS =====================
+function fmt(v){return 'R$ '+Math.abs(v).toFixed(2).replace('.',',');}
+function fmtSgn(v){return (v>=0?'+R$ ':'-R$ ')+Math.abs(v).toFixed(2).replace('.',',');}
+function getBi(){return parseFloat(document.getElementById('bancaInicial').value)||50;}
+function getTotalPnl(){return operations.reduce((s,o)=>s+o.pnl,0);}
+function getTotalSaq(){return saques.reduce((s,i)=>i.tipo==='saque'?s+i.valor:s-i.valor,0);}
+function getBanca(){return getBi()+getTotalPnl()-getTotalSaq();}
+ 
+// ===================== JOGO SEARCH =====================
+function filterJogos(inputId, ddId, allowCustom=true) {
+  const input = document.getElementById(inputId);
+  const dd    = document.getElementById(ddId);
+  const q     = (input.value||'').toLowerCase().trim();
+  const fase  = document.getElementById('fFase') ? document.getElementById('fFase').value : '';
+ 
+  let list = JOGOS.filter(j=> {
+    const faseOk = !fase || j.fase===fase || j.fase==='Fase de Grupos';
+    const nameOk = !q || j.nome.toLowerCase().includes(q) || (j.grupo||'').toLowerCase().includes(q);
+    return faseOk && nameOk;
+  });
+  if(list.length>30) list=list.slice(0,30);
+ 
+  if(!list.length && !q){ dd.classList.remove('open'); return; }
+ 
+  dd.innerHTML = list.map(j=>`
+    <div class="jogo-item" onclick="selectJogo('${inputId}','${ddId}','${j.id}','${j.nome.replace(/'/g,"\\'")}')">
+      <div class="match-name">${j.nome}</div>
+      <div class="match-info">${j.fase}${j.grupo?' — '+j.grupo:''}</div>
+    </div>`).join('');
+ 
+  if(allowCustom && q && !list.find(j=>j.nome.toLowerCase()===q)){
+    dd.innerHTML += `<div class="jogo-item" onclick="selectCustomJogo('${inputId}','${ddId}','${q.replace(/'/g,"\\'")}')">
+      <div class="match-name">➕ Usar: "${input.value}"</div>
+      <div class="match-info" style="color:var(--yellow);">Jogo personalizado</div>
+    </div>`;
+  }
+  dd.classList.add('open');
+}
+ 
+function selectJogo(inputId, ddId, id, nome){
+  document.getElementById(inputId).value = nome;
+  document.getElementById(inputId).dataset.jogoId = id;
+  document.getElementById(ddId).classList.remove('open');
+}
+function selectCustomJogo(inputId, ddId, nome){
+  const customId = 'custom_'+Date.now();
+  customJogos[customId] = nome;
+  document.getElementById(inputId).value = nome;
+  document.getElementById(inputId).dataset.jogoId = customId;
+  document.getElementById(ddId).classList.remove('open');
+}
+document.addEventListener('click', e=>{
+  document.querySelectorAll('.jogo-dropdown').forEach(dd=>{
+    if(!dd.previousElementSibling || !dd.previousElementSibling.contains(e.target)) dd.classList.remove('open');
+  });
+});
+ 
+// ===================== TIPO TOGGLE =====================
+function setTipo(tipo){
+  currentTipo=tipo;
+  document.getElementById('btnSimples').className='tipo-btn'+(tipo==='simples'?' active-simples':'');
+  document.getElementById('btnMultipla').className='tipo-btn'+(tipo==='multipla'?' active-multipla':'');
+  document.getElementById('secSimples').style.display=tipo==='simples'?'':'none';
+  document.getElementById('secMultipla').style.display=tipo==='multipla'?'':'none';
+  document.getElementById('oddLabel').textContent=tipo==='multipla'?'(combinada total)':'(da aposta)';
+  if(tipo==='multipla' && legs.length===0){ addLeg(); addLeg(); }
+}
+ 
+// ===================== LEGS (MÚLTIPLA) =====================
+let legId=0;
+function addLeg(){
+  const id='leg_'+(++legId);
+  legs.push(id);
+  const container=document.getElementById('legsContainer');
+  const div=document.createElement('div');
+  div.className='leg-item';
+  div.id=id;
+  div.innerHTML=`
+    <input type="text" id="inp_${id}" placeholder="Buscar jogo..." autocomplete="off"
+      oninput="filterJogos('inp_${id}','dd_${id}')"
+      onfocus="filterJogos('inp_${id}','dd_${id}')">
+    <div class="jogo-dropdown" id="dd_${id}" style="left:0;right:36px;"></div>
+    <button class="leg-remove" onclick="removeLeg('${id}')">✕</button>`;
+  container.appendChild(div);
+}
+function removeLeg(id){
+  legs=legs.filter(l=>l!==id);
+  const el=document.getElementById(id);
+  if(el) el.remove();
+}
+ 
+// ===================== POTENCIAL =====================
+function calcPotencial(){
+  const stake=parseFloat(document.getElementById('fStake').value)||0;
+  const odd=parseFloat(document.getElementById('fOdd').value)||0;
+  const box=document.getElementById('potencialBox');
+  if(stake>0 && odd>1){
+    box.style.display='block';
+    document.getElementById('potencialVal').textContent=fmt(stake*(odd-1));
+    document.getElementById('retornoVal').textContent=fmt(stake*odd);
+  } else { box.style.display='none'; }
+}
+ 
+// ===================== MODALS =====================
+function openOpModal(){
+  document.getElementById('modalOp').classList.add('open');
+  document.getElementById('fData').value=new Date().toISOString().slice(0,10);
+  document.getElementById('fJogo').value='';
+  document.getElementById('fJogo').dataset.jogoId='';
+  document.getElementById('fRaciocinio').value='';
+  document.getElementById('fStake').value='';
+  document.getElementById('fOdd').value='';
+  document.getElementById('fResultado').value='pendente';
+  document.getElementById('potencialBox').style.display='none';
+  document.getElementById('legsContainer').innerHTML='';
+  legs=[]; legId=0;
+  setTipo('simples');
+}
+function openSaqueModal(){
   document.getElementById('modalSaque').classList.add('open');
-  document.getElementById('sData').value = new Date().toISOString().slice(0,10);
-  document.getElementById('sValor').value = '';
-  document.getElementById('sObs').value = '';
+  document.getElementById('sData').value=new Date().toISOString().slice(0,10);
+  document.getElementById('sValor').value='';
+  document.getElementById('sObs').value='';
   updateSaquePreview();
 }
-function closeModals() {
-  document.getElementById('modalOp').classList.remove('open');
-  document.getElementById('modalSaque').classList.remove('open');
+function closeModals(){
+  document.querySelectorAll('.modal-overlay').forEach(m=>m.classList.remove('open'));
+  editingResultadoId=null; selectedResultado=null;
 }
  
-function updateSaquePreview() {
-  const bAtual = getBanca();
-  const val    = parseFloat(document.getElementById('sValor').value) || 0;
-  const tipo   = document.getElementById('sTipo').value;
-  const apos   = tipo === 'saque' ? bAtual - val : bAtual + val;
-  document.getElementById('prevBancaAtual').textContent = fmt(bAtual);
-  const el = document.getElementById('prevBancaApos');
-  el.textContent = fmt(apos);
-  el.style.color = apos < bAtual ? 'var(--red)' : 'var(--green)';
-}
+// ===================== SAVE OP =====================
+function saveOp(){
+  const stake=parseFloat(document.getElementById('fStake').value)||0;
+  const odd=parseFloat(document.getElementById('fOdd').value)||1;
+  const resultado=document.getElementById('fResultado').value;
+  let pnl=0;
+  if(resultado==='green') pnl=+(stake*(odd-1)).toFixed(2);
+  else if(resultado==='red') pnl=-stake;
  
-/* SAVE OPERATION */
-function saveOp() {
-  const stake     = parseFloat(document.getElementById('fStake').value) || 0;
-  const odd       = parseFloat(document.getElementById('fOdd').value) || 1;
-  const resultado = document.getElementById('fResultado').value;
-  let pnl = 0;
-  if (resultado === 'green') pnl = +(stake * (odd - 1)).toFixed(2);
-  else if (resultado === 'red') pnl = -stake;
+  let jogoNome='', jogoIds=[];
+  if(currentTipo==='simples'){
+    const inp=document.getElementById('fJogo');
+    jogoNome=inp.value||'Jogo não especificado';
+    if(inp.dataset.jogoId) jogoIds=[inp.dataset.jogoId];
+  } else {
+    const jogosMultipla=legs.map(lid=>{
+      const inp=document.getElementById('inp_'+lid);
+      return {nome:inp?inp.value:'', id:inp?inp.dataset.jogoId||'':''}; 
+    }).filter(j=>j.nome);
+    jogoNome=jogosMultipla.map(j=>j.nome).join(' + ');
+    jogoIds=jogosMultipla.map(j=>j.id);
+  }
  
   operations.push({
-    id:         opId++,
-    data:       document.getElementById('fData').value,
-    bilhete:    document.getElementById('fBilhete').value || '—',
-    raciocinio: document.getElementById('fRaciocinio').value,
-    tier:       document.getElementById('fTier').value,
-    fase:       document.getElementById('fFase').value,
-    mercado:    document.getElementById('fMercado').value,
-    momento:    document.getElementById('fMomento').value,
-    stake, odd, resultado, pnl,
-    exp: parseInt(document.getElementById('fExp').value) || 0
+    id:opId++,
+    tipo:currentTipo,
+    data:document.getElementById('fData').value,
+    jogoNome, jogoIds,
+    raciocinio:document.getElementById('fRaciocinio').value,
+    fase:document.getElementById('fFase').value,
+    momento:document.getElementById('fMomento').value,
+    stake, odd, resultado, pnl
   });
+ 
   closeModals();
-  renderLedger(); updateMetrics(); updateChart(); updateMercadoChart();
+  renderLedger(); updateMetrics(); updateChart(); updateFaseChart();
 }
  
-/* SAVE SAQUE */
-function saveSaque() {
-  const val = parseFloat(document.getElementById('sValor').value);
-  if (!val || val <= 0) { alert('Informe um valor válido.'); return; }
-  const tipo = document.getElementById('sTipo').value;
+// ===================== SAVE SAQUE =====================
+function saveSaque(){
+  const val=parseFloat(document.getElementById('sValor').value);
+  if(!val||val<=0){alert('Informe um valor válido.');return;}
+  const tipo=document.getElementById('sTipo').value;
   saques.push({
-    id:   saqueId++,
-    data: document.getElementById('sData').value,
-    obs:  document.getElementById('sObs').value || (tipo === 'saque' ? 'Saque' : 'Depósito'),
-    valor: val, tipo
+    id:saqueId++,
+    data:document.getElementById('sData').value,
+    obs:document.getElementById('sObs').value||(tipo==='saque'?'Saque':'Depósito'),
+    valor:val, tipo
   });
   closeModals();
   renderSaques(); updateMetrics(); updateChart();
-  document.getElementById('countSaques').textContent = saques.length;
+  document.getElementById('countSaques').textContent=saques.length;
 }
  
-/* TABS */
-function switchTab(tab, btn) {
-  document.querySelectorAll('.ltab').forEach(b => b.classList.remove('active'));
+function updateSaquePreview(){
+  const bAtual=getBanca();
+  const val=parseFloat(document.getElementById('sValor').value)||0;
+  const tipo=document.getElementById('sTipo').value;
+  const apos=tipo==='saque'?bAtual-val:bAtual+val;
+  document.getElementById('prevBancaAtual').textContent=fmt(bAtual);
+  const el=document.getElementById('prevBancaApos');
+  el.textContent=fmt(apos);
+  el.style.color=apos<bAtual?'var(--red)':'var(--green)';
+}
+ 
+// ===================== ATUALIZAR RESULTADO =====================
+function openResultadoModal(id){
+  const op=operations.find(o=>o.id===id);
+  if(!op) return;
+  editingResultadoId=id;
+  selectedResultado=null;
+  document.getElementById('resultadoDesc').textContent=`Operação #${id}: ${op.jogoNome}`;
+  document.getElementById('rOdd').value=op.odd;
+  document.getElementById('rOptGreen').className='result-opt';
+  document.getElementById('rOptRed').className='result-opt';
+  document.getElementById('modalResultado').classList.add('open');
+}
+function selectResultado(r){
+  selectedResultado=r;
+  document.getElementById('rOptGreen').className='result-opt'+(r==='green'?' sel-green':'');
+  document.getElementById('rOptRed').className='result-opt'+(r==='red'?' sel-red':'');
+}
+function confirmResultado(){
+  if(!selectedResultado){alert('Selecione Green ou Red.');return;}
+  const op=operations.find(o=>o.id===editingResultadoId);
+  if(!op) return;
+  const odd=parseFloat(document.getElementById('rOdd').value)||op.odd;
+  op.odd=odd;
+  op.resultado=selectedResultado;
+  op.pnl=selectedResultado==='green'?+(op.stake*(odd-1)).toFixed(2):-op.stake;
+  closeModals();
+  renderLedger(); updateMetrics(); updateChart(); updateFaseChart();
+}
+ 
+// ===================== TABS =====================
+function switchTab(tab,btn){
+  document.querySelectorAll('.ltab').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('tabOps').style.display    = tab === 'ops'    ? '' : 'none';
-  document.getElementById('tabSaques').style.display = tab === 'saques' ? '' : 'none';
+  document.getElementById('tabOps').style.display=tab==='ops'?'':'none';
+  document.getElementById('tabSaques').style.display=tab==='saques'?'':'none';
 }
  
-function filterLedger() {
-  renderLedger(document.getElementById('searchInput').value.toLowerCase());
-}
+// ===================== RENDER LEDGER =====================
+function renderLedger(){
+  const body=document.getElementById('ledgerBody');
+  const q=(document.getElementById('searchInput').value||'').toLowerCase();
+  const filtroFase=document.getElementById('filtroFase').value;
+  const filtroTipo=document.getElementById('filtroTipo').value;
  
-/* RENDER LEDGER */
-function renderLedger(filter='') {
-  const body = document.getElementById('ledgerBody');
-  const ops  = filter ? operations.filter(o =>
-    o.bilhete.toLowerCase().includes(filter) ||
-    o.raciocinio.toLowerCase().includes(filter) ||
-    String(o.id).includes(filter)
-  ) : operations;
+  let ops=[...operations].reverse().filter(o=>{
+    const matchQ=!q||o.jogoNome.toLowerCase().includes(q)||(o.raciocinio||'').toLowerCase().includes(q)||String(o.id).includes(q);
+    const matchFase=!filtroFase||o.fase===filtroFase;
+    const matchTipo=!filtroTipo||o.tipo===filtroTipo;
+    return matchQ&&matchFase&&matchTipo;
+  });
  
-  document.getElementById('countOps').textContent = operations.length;
-  if (!ops.length) {
-    body.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div><div>Nenhum trade registrado ainda. Clique em "Registrar Operação" para começar!</div></div>`;
+  document.getElementById('countOps').textContent=operations.length;
+  if(!ops.length){
+    body.innerHTML=`<div class="empty-state"><div class="empty-icon">📭</div><div>Nenhuma operação encontrada.</div></div>`;
     return;
   }
-  body.innerHTML = ops.map(o => {
-    const pc  = o.pnl > 0 ? 'var(--green)' : o.pnl < 0 ? 'var(--red)' : 'var(--muted)';
-    const ps  = o.pnl >= 0 ? `+R$${o.pnl.toFixed(2)}` : `-R$${Math.abs(o.pnl).toFixed(2)}`;
-    const rc  = o.resultado === 'green' ? '✅' : o.resultado === 'red' ? '❌' : '⏳';
-    const rac = o.raciocinio ? ` <span style="color:var(--muted);">— ${o.raciocinio.slice(0,28)}${o.raciocinio.length > 28 ? '…' : ''}</span>` : '';
+  body.innerHTML=ops.map(o=>{
+    const pc=o.pnl>0?'var(--green)':o.pnl<0?'var(--red)':'var(--muted)';
+    const ps=o.resultado==='pendente'?'—':(o.pnl>=0?`+R$${o.pnl.toFixed(2)}`:`-R$${Math.abs(o.pnl).toFixed(2)}`);
+    const badge=o.tipo==='multipla'?`<span class="badge badge-mult">Múltipla</span> `:``;
+    const raciocinio=o.raciocinio?`<br><span style="color:var(--muted);font-size:10px;">↳ ${o.raciocinio.slice(0,50)}${o.raciocinio.length>50?'…':''}</span>`:'';
+ 
+    let resBadge='';
+    let btnResultado='';
+    if(o.resultado==='green')      resBadge=`<span class="badge badge-green">✅ Green</span>`;
+    else if(o.resultado==='red')   resBadge=`<span class="badge badge-red">❌ Red</span>`;
+    else {
+      resBadge=`<span class="badge badge-pend">⏳ Pendente</span>`;
+      btnResultado=`<button class="status-btn" onclick="openResultadoModal(${o.id})" title="Atualizar resultado">✏️ Atualizar</button>`;
+    }
+ 
     return `<div class="ops-row">
       <span style="color:var(--muted);">#${o.id}</span>
       <span style="color:var(--muted);">${o.data}</span>
-      <span>${rc} <strong>${o.bilhete}</strong>${rac}</span>
-      <span style="color:var(--muted);font-size:10px;">${o.tier.slice(0,9)}…</span>
-      <span style="color:var(--muted);">${o.fase}</span>
-      <span style="color:var(--muted);">${o.mercado}</span>
-      <span style="color:var(--muted);">${o.momento.slice(0,8)}</span>
-      <span style="color:var(--muted);">${o.exp}'</span>
+      <span>${badge}<strong style="color:var(--text);">${o.jogoNome}</strong>${raciocinio}</span>
+      <span style="color:var(--muted);font-size:10px;">${o.fase}</span>
+      <span style="color:var(--muted);font-size:10px;">${o.momento}</span>
       <span>R$${o.stake.toFixed(2)}</span>
       <span>${o.odd.toFixed(2)}</span>
-      <span style="color:${pc};font-weight:600;">${ps}</span>
+      <span style="display:flex;flex-direction:column;gap:3px;">${resBadge}${btnResultado}${o.resultado!=='pendente'?`<span style="color:${pc};font-weight:600;font-size:11px;">${ps}</span>`:''}</span>
     </div>`;
   }).join('');
 }
  
-/* RENDER SAQUES */
-function renderSaques() {
-  const body = document.getElementById('saquesBody');
-  if (!saques.length) {
-    body.innerHTML = `<div class="empty-state"><div class="empty-icon">💸</div><div>Nenhum saque ou depósito registrado ainda.</div></div>`;
+// ===================== RENDER SAQUES =====================
+function renderSaques(){
+  const body=document.getElementById('saquesBody');
+  if(!saques.length){
+    body.innerHTML=`<div class="empty-state"><div class="empty-icon">💸</div><div>Nenhuma movimentação ainda.</div></div>`;
     return;
   }
-  body.innerHTML = saques.map(s => {
-    const isSaque = s.tipo === 'saque';
-    const badge   = isSaque ? '<span class="badge badge-saque">💸 Saque</span>' : '<span class="badge badge-deposito">💰 Depósito</span>';
-    const cor     = isSaque ? 'var(--yellow)' : 'var(--green)';
-    const sinal   = isSaque ? '-' : '+';
+  body.innerHTML=[...saques].reverse().map(s=>{
+    const isSq=s.tipo==='saque';
+    const badge=isSq?'<span class="badge badge-saque">💸 Saque</span>':'<span class="badge badge-dep">💰 Depósito</span>';
+    const cor=isSq?'var(--yellow)':'var(--green)';
     return `<div class="saq-row">
       <span style="color:var(--muted);">#${s.id}</span>
       <span style="color:var(--muted);">${s.data}</span>
       <span>${s.obs}</span>
-      <span style="color:${cor};font-weight:600;">${sinal}R$ ${s.valor.toFixed(2)}</span>
+      <span style="color:${cor};font-weight:600;">${isSq?'-':'+'}R$ ${s.valor.toFixed(2)}</span>
       <span>${badge}</span>
     </div>`;
   }).join('');
 }
  
-/* UPDATE METRICS */
-function updateMetrics() {
-  const bi      = getBi();
-  const pnl     = getTotalPnl();
-  const banca   = getBanca();
-  const totalSq = getTotalSaq();
-  const roi     = bi > 0 ? (pnl / bi * 100) : 0;
-  const closed  = operations.filter(o => o.resultado !== 'pendente');
-  const greens  = closed.filter(o => o.resultado === 'green');
-  const wr      = closed.length > 0 ? (greens.length / closed.length * 100) : 0;
-  const ganho   = greens.reduce((s,o) => s + o.pnl, 0);
-  const perdido = Math.abs(operations.filter(o => o.resultado === 'red').reduce((s,o) => s + o.pnl, 0));
-  const fator   = perdido > 0 ? ganho / perdido : 0;
-  const payoff  = greens.length > 0 && (closed.length - greens.length) > 0
-    ? (ganho / greens.length) / (perdido / (closed.length - greens.length)) : 0;
+// ===================== UPDATE METRICS =====================
+function updateMetrics(){
+  const bi=getBi(), pnl=getTotalPnl(), banca=getBanca(), totalSq=getTotalSaq();
+  const roi=bi>0?(pnl/bi*100):0;
+  const closed=operations.filter(o=>o.resultado!=='pendente');
+  const greens=closed.filter(o=>o.resultado==='green');
+  const wr=closed.length>0?(greens.length/closed.length*100):0;
  
-  document.getElementById('bancaAtual').textContent = fmt(banca);
-  const pnlEl = document.getElementById('pnlTotal');
-  pnlEl.textContent = `P&L: ${fmtSgn(pnl)} (${roi >= 0 ? '+' : ''}${roi.toFixed(2)}%)`;
-  pnlEl.style.color = pnl >= 0 ? 'var(--green)' : 'var(--red)';
+  document.getElementById('bancaAtual').textContent=fmt(banca);
+  const pEl=document.getElementById('pnlTotal');
+  pEl.textContent=`P&L: ${fmtSgn(pnl)} (${roi>=0?'+':''}${roi.toFixed(2)}%)`;
+  pEl.style.color=pnl>=0?'var(--green)':'var(--red)';
+  const rEl=document.getElementById('roi');
+  rEl.textContent=(roi>=0?'+':'')+roi.toFixed(2)+'%';
+  rEl.style.color=roi>=0?'var(--green)':'var(--red)';
+  document.getElementById('winrate').textContent=wr.toFixed(1)+'%';
+  document.getElementById('winbar').style.width=wr+'%';
+  document.getElementById('totalSaques').textContent=fmt(totalSq);
+  document.getElementById('saldoLiquido').textContent='Saldo líquido: '+fmt(pnl-totalSq);
  
-  const roiEl = document.getElementById('roi');
-  roiEl.textContent = `${roi >= 0 ? '+' : ''}${roi.toFixed(2)}%`;
-  roiEl.style.color = roi >= 0 ? 'var(--green)' : 'var(--red)';
+  const pGrupos=operations.filter(o=>o.fase==='Fase de Grupos').reduce((s,o)=>s+o.pnl,0);
+  const pMata=operations.filter(o=>o.fase!=='Fase de Grupos').reduce((s,o)=>s+o.pnl,0);
+  const pSimples=operations.filter(o=>o.tipo==='simples').reduce((s,o)=>s+o.pnl,0);
+  const pMulti=operations.filter(o=>o.tipo==='multipla').reduce((s,o)=>s+o.pnl,0);
  
-  document.getElementById('winrate').textContent = `${wr.toFixed(1)}%`;
-  document.getElementById('winbar').style.width  = wr + '%';
+  const sv=(id,v,defaultColor)=>{const el=document.getElementById(id);el.textContent=fmt(v);el.style.color=v>0?'var(--green)':v<0?'var(--red)':defaultColor||'var(--muted)';};
+  sv('valGrupos',pGrupos,'var(--muted)');
+  sv('valMata',pMata,'var(--muted)');
+  sv('valSimples',pSimples,'var(--muted)');
+  sv('valMultiplas',pMulti,'var(--blue)');
  
-  document.getElementById('fator').innerHTML = `${fator.toFixed(2)} <span style="font-size:12px;font-weight:400;color:var(--muted);">Payoff: ${payoff.toFixed(2)}</span>`;
-  const fEl = document.getElementById('fatorStatus');
-  fEl.textContent  = fator >= 1 ? 'Fator Positivo (≥ 1.0)' : 'Fator Crítico (< 1.0)';
-  fEl.style.color  = fator >= 1 ? 'var(--green)' : 'var(--red)';
- 
-  document.getElementById('totalSaques').textContent = fmt(totalSq);
-  document.getElementById('saldoLiquido').textContent = `Saldo líquido: ${fmt(pnl - totalSq)}`;
- 
-  /* Fases */
-  const pGrupos = operations.filter(o => o.fase === 'Fase de Grupos').reduce((s,o) => s+o.pnl, 0);
-  const pMata   = operations.filter(o => o.fase !== 'Fase de Grupos').reduce((s,o) => s+o.pnl, 0);
-  const setVal  = (id, v) => { const el = document.getElementById(id); el.textContent = fmt(v); el.style.color = v >= 0 ? 'var(--green)' : 'var(--red)'; };
-  setVal('valGrupos', pGrupos); setVal('valMata', pMata);
- 
-  /* Momentos */
-  const momentos = { 'Pré-Live':'wPreLive', "Live 0'–15'":'w015', "Live 15'–45'":'w1545', "Live 45'+–90'":'w4590' };
-  Object.entries(momentos).forEach(([m,id]) => setVal(id, operations.filter(o => o.momento === m).reduce((s,o) => s+o.pnl, 0)));
- 
-  /* Tiers */
-  const tiers = { 'Clássico Equilibrado':'tClassico', 'Super Favorito vs Zebra':'tFavorito', 'Favorito vs Médio':'tMedio' };
-  Object.entries(tiers).forEach(([t,id]) => setVal(id, operations.filter(o => o.tier === t).reduce((s,o) => s+o.pnl, 0)));
+  const momentos={'Pré-Live':'wPreLive',"Live 0'–15'":'w015',"Live 15'–45'":'w1545',"Live 45'+–90'":'w4590'};
+  Object.entries(momentos).forEach(([m,id])=>sv(id,operations.filter(o=>o.momento===m).reduce((s,o)=>s+o.pnl,0)));
 }
  
-/* UPDATE BANCA CHART */
-function updateChart() {
-  const bi = getBi();
-  const labels = ['Início'], bancaData = [bi], expData = [0];
-  let acc = bi, expAcc = 0;
-  const events = [
-    ...operations.map(o => ({ date: o.data, type: 'op',  data: o })),
-    ...saques.map(s     => ({ date: s.data, type: 'mov', data: s }))
-  ].sort((a,b) => a.date.localeCompare(b.date) || (a.type === 'op' ? -1 : 1));
- 
-  events.forEach(e => {
-    if (e.type === 'op') {
-      acc += e.data.pnl; expAcc += e.data.exp;
-      labels.push(`Op #${e.data.id}`);
-    } else {
-      acc = e.data.tipo === 'saque' ? acc - e.data.valor : acc + e.data.valor;
-      labels.push(e.data.tipo === 'saque' ? '💸' : '💰');
-    }
+// ===================== BANCA CHART =====================
+function updateChart(){
+  const bi=getBi();
+  const labels=['Início'], bancaData=[bi], expData=[0];
+  let acc=bi;
+  const events=[
+    ...operations.map(o=>({date:o.data,type:'op',data:o})),
+    ...saques.map(s=>({date:s.data,type:'mov',data:s}))
+  ].sort((a,b)=>a.date.localeCompare(b.date)||(a.type==='op'?-1:1));
+  events.forEach(e=>{
+    if(e.type==='op'){ acc+=e.data.pnl; labels.push(`#${e.data.id}`); }
+    else{ acc=e.data.tipo==='saque'?acc-e.data.valor:acc+e.data.valor; labels.push(e.data.tipo==='saque'?'💸':'💰'); }
     bancaData.push(parseFloat(acc.toFixed(2)));
-    expData.push(parseFloat((expAcc / 60).toFixed(2)));
+    expData.push(0);
   });
- 
-  bancaChart.data.labels              = labels;
-  bancaChart.data.datasets[0].data   = bancaData;
-  bancaChart.data.datasets[1].data   = expData;
+  bancaChart.data.labels=labels;
+  bancaChart.data.datasets[0].data=bancaData;
   bancaChart.update();
 }
  
-/* UPDATE MERCADO CHART */
-function updateMercadoChart() {
-  const mercados = ['1X2', 'Over/Under', 'Ambos Marcam', 'Handicap'];
-  const vals = mercados.map(m => operations.filter(o => o.mercado === m).reduce((s,o) => s+o.pnl, 0));
-  mercadoChart.data.datasets[0].data              = vals;
-  mercadoChart.data.datasets[0].backgroundColor   = vals.map(v => v >= 0 ? 'rgba(0,212,160,0.65)' : 'rgba(255,77,106,0.65)');
-  mercadoChart.update();
-  document.getElementById('mercadoEmpty').style.display = vals.every(v => v === 0) ? 'block' : 'none';
+// ===================== FASE CHART =====================
+function updateFaseChart(){
+  const fases=['Fase de Grupos','Oitavas de Final','Quartas de Final','Semifinal','Final'];
+  const vals=fases.map(f=>operations.filter(o=>o.fase===f).reduce((s,o)=>s+o.pnl,0));
+  faseChart.data.datasets[0].data=vals;
+  faseChart.data.datasets[0].backgroundColor=vals.map(v=>v>=0?'rgba(0,212,160,.65)':'rgba(255,77,106,.65)');
+  faseChart.update();
 }
  
-/* INIT CHARTS */
-window.addEventListener('DOMContentLoaded', () => {
-  const bi = getBi();
-  bancaChart = new Chart(document.getElementById('bancaChart').getContext('2d'), {
-    type: 'line',
-    data: {
-      labels: ['Início'],
-      datasets: [
-        { label: 'Banca', data: [bi], borderColor: '#00d4a0', backgroundColor: 'rgba(0,212,160,0.08)', tension: 0.4, pointRadius: 4, pointBackgroundColor: '#00d4a0', fill: true, yAxisID: 'y' },
-        { label: 'Exposição (h)', data: [0], borderColor: '#58a6ff', tension: 0.4, pointRadius: 3, pointBackgroundColor: '#58a6ff', fill: false, yAxisID: 'y1', borderDash: [4,4] }
+// ===================== INIT CHARTS =====================
+window.addEventListener('DOMContentLoaded',()=>{
+  const bi=getBi();
+  bancaChart=new Chart(document.getElementById('bancaChart').getContext('2d'),{
+    type:'line',
+    data:{
+      labels:['Início'],
+      datasets:[
+        {label:'Banca',data:[bi],borderColor:'#00d4a0',backgroundColor:'rgba(0,212,160,.08)',tension:.4,pointRadius:4,pointBackgroundColor:'#00d4a0',fill:true},
       ]
     },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        x:  { ticks: { color: '#7d8590', font: { size: 10 }, maxRotation: 30 }, grid: { color: 'rgba(255,255,255,0.04)' } },
-        y:  { position: 'left',  ticks: { color: '#7d8590', font: { size: 10 }, callback: v => 'R$'+v }, grid: { color: 'rgba(255,255,255,0.04)' } },
-        y1: { position: 'right', ticks: { color: '#58a6ff', font: { size: 10 }, callback: v => v+'h' }, grid: { display: false } }
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{ticks:{color:'#7d8590',font:{size:10},maxRotation:30},grid:{color:'rgba(255,255,255,.04)'}},
+        y:{ticks:{color:'#7d8590',font:{size:10},callback:v=>'R$'+v},grid:{color:'rgba(255,255,255,.04)'}}
       }
     }
   });
- 
-  mercadoChart = new Chart(document.getElementById('mercadoChart').getContext('2d'), {
-    type: 'bar',
-    data: {
-      labels: ['1X2', 'Over/Under', 'Ambos Marcam', 'Handicap'],
-      datasets: [{ label: 'P&L', data: [0,0,0,0], backgroundColor: Array(4).fill('rgba(0,212,160,0.5)'), borderRadius: 4 }]
+  faseChart=new Chart(document.getElementById('faseChart').getContext('2d'),{
+    type:'bar',
+    data:{
+      labels:['Grupos','Oitavas','Quartas','Semi','Final'],
+      datasets:[{label:'P&L',data:[0,0,0,0,0],backgroundColor:Array(5).fill('rgba(0,212,160,.5)'),borderRadius:4}]
     },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { ticks: { color: '#7d8590', font: { size: 10 } }, grid: { display: false } },
-        y: { ticks: { color: '#7d8590', font: { size: 10 }, callback: v => 'R$'+v }, grid: { color: 'rgba(255,255,255,0.04)' } }
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{ticks:{color:'#7d8590',font:{size:10}},grid:{display:false}},
+        y:{ticks:{color:'#7d8590',font:{size:10},callback:v=>'R$'+v},grid:{color:'rgba(255,255,255,.04)'}}
       }
     }
   });
- 
   updateMetrics();
 });
 </script>
